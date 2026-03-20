@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>PHẦN MỀM KIỂM TOÁN</title>
+<title>AssetPro Luxury - Tài Chính Cá Nhân</title>
 <style>
 :root {
 --primary: #1a1a1a;
@@ -216,7 +216,7 @@ box-sizing: border-box;
 <div id="auth-screen" class="auth-wrapper">
     <div class="auth-overlay"></div>
     <div class="auth-box" id="login-box">
-        <div class="auth-title">ĐĂNG NHẬP HỆ THỐNG KIỂM TOÁN</div>
+        <div class="auth-title">HỆ THỐNG KIỂM TOÁN</div>
         <div class="form-group">
             <label>Số điện thoại</label>
             <input type="tel" id="login-phone" placeholder="Nhập số điện thoại...">
@@ -655,19 +655,7 @@ box-sizing: border-box;
 </div>
 </div>
 
-<div class="modal-overlay" id="modal-stk-nop">
-<div class="modal-content" style="max-width:400px;">
-<div class="modal-title">NỘP TIỀN TÍCH LŨY</div>
-<div class="form-group"><label>SỐ TIỀN NỘP THÊM (VNĐ)</label><input type="text" id="in-nop-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div>
-<div class="form-group"><label>Ngày nộp</label><input type="date" id="in-stk-nop-date"></div>
-<div class="form-group"><label>LÃI SUẤT ÁP DỤNG (%)</label><input type="number" id="in-nop-ls" step="any"></div>
-<input type="hidden" id="hid-nop-id">
-<div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-stk-nop')">HỦY BỎ</button>
-<button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2" onclick="confirmNop()">XÁC NHẬN NỘP</button>
-</div>
-</div>
-</div>
+<div class="modal-overlay" id="modal-stk-nop"><div class="modal-content" style="max-width:400px;"><div class="modal-title">NỘP TIỀN TÍCH LŨY</div><div class="form-group"><label>SỐ TIỀN NỘP THÊM (VNĐ)</label><input type="text" id="in-nop-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div><div class="form-group"><label>Ngày nộp</label><input type="date" id="in-stk-nop-date"></div><div class="form-group"><label>LÃI SUẤT ÁP DỤNG (%)</label><input type="number" id="in-nop-ls" step="any"></div><input type="hidden" id="hid-nop-id"><div style="display:flex; gap:15px; margin-top:30px;"><button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-stk-nop')">HỦY BỎ</button><button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2" onclick="confirmNop()">XÁC NHẬN NỘP</button></div></div></div>
 
 <div class="modal-overlay" id="modal-stk-rut">
 <div class="modal-content" style="max-width:400px;">
@@ -684,7 +672,7 @@ box-sizing: border-box;
 </div>
 
 <div class="modal-overlay" id="modal-stk-dh"><div class="modal-content" style="max-width:450px;"><div class="modal-title">ĐÁO HẠN VÀ TÁI TỤC</div><div class="form-group"><label>LÃI THỰC NHẬN ĐỢT NÀY</label><input type="text" id="in-dh-lai" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div><div style="display:flex; gap:15px; background:#f4f4f4; padding:15px; border:1px solid #ccc;"><div class="form-group" style="margin-bottom:0; flex:1"><label>LÃI SUẤT VÒNG TỚI</label><input type="number" id="in-dh-ls" step="any"></div><div class="form-group" style="margin-bottom:0; flex:1"><label>KỲ HẠN TỚI (THÁNG)</label><input type="number" id="in-dh-mo" placeholder="Trống = Kế thừa cũ"></div></div><input type="hidden" id="hid-dh-id"><div style="display:flex; gap:15px; margin-top:30px;"><button class="btn-main" style="background:var(--danger); color:white; border:color:var(--danger); flex:1" onclick="confirmDH(false)">TẤT TOÁN SỔ</button><button class="btn-main" style="background:var(--primary); color:var(--accent); flex:2" onclick="confirmDH(true)">XÁC NHẬN TÁI TỤC</button></div></div></div>
-<div class="modal-overlay" id="modal-stk-detail"><div class="modal-content" style="max-width:750px;"><div class="modal-title">BIÊN BẢN GIAO DỊCH SỔ</div><div id="detail-summary" style="background:#f4f9f4; padding:20px; border:1px solid var(--success); margin-bottom:20px; font-size:15px; line-height:1.6;"></div><div style="overflow-x:auto;"><table class="data-table"><thead><tr style="background:#e9ecef"><th>Ngày GD</th><th>Nội Dung</th><th>Lãi Suất</th><th>Số Ngày Gửi</th><th>Lãi Ước Tính</th><th>THANH ĐỔI SỐ DƯ</th></tr></thead><tbody id="detail-tbody"></tbody></table></div><button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-stk-detail')">ĐÓNG BIÊN BẢN</button></div></div>
+<div class="modal-overlay" id="modal-stk-detail"><div class="modal-content" style="max-width:750px;"><div class="modal-title">BIÊN BẢN GIAO DỊCH SỔ</div><div id="detail-summary" style="background:#f4f9f4; padding:20px; border:1px solid var(--success); margin-bottom:20px; font-size:15px; line-height:1.6;"></div><div style="overflow-x:auto;"><table class="data-table"><thead><tr style="background:#e9ecef"><th>Ngày GD</th><th>Nội Dung</th><th>Lãi Suất</th><th>Số Ngày Gửi</th><th>Lãi Ước Tính</th><th>Biến Động Nợ</th></tr></thead><tbody id="detail-tbody"></tbody></table></div><button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-stk-detail')">ĐÓNG BIÊN BẢN</button></div></div>
 
 <div class="modal-overlay" id="modal-admin-name">
 <div class="modal-content" style="max-width:400px;">
@@ -969,8 +957,19 @@ function renderAdminPanel() {
         let rowStyle = isForgot ? 'style="background-color: #ffe6e6;"' : '';
         let warningIcon = isForgot ? '<span style="color:red; font-weight:bold; margin-left:5px;">(!) Yêu cầu Pass</span>' : '';
         
-        let promoteBtn = isRoot ? '' : `<button class="btn-sm" style="background:${role==='admin'?'#555':'var(--success)'}; color:white; border:none;" onclick="adminToggleRole('${phone}')">${role==='admin'?'Hạ Quyền':'Cấp Admin'}</button>`;
-        let delBtn = isRoot ? '' : `<button class="btn-sm" style="background:var(--danger); color:white; border:none;" onclick="adminDeleteUser('${phone}')">Xóa</button>`;
+        let promoteBtn = '';
+        let delBtn = '';
+        
+        // Cấp/hạ quyền và Xóa: Chỉ hiện khi người đang đăng nhập là Root Admin (0839578432)
+        if (activeUserPhone === '0839578432' && !isRoot) {
+            promoteBtn = `<button class="btn-sm" style="background:${role==='admin'?'#555':'var(--success)'}; color:white; border:none;" onclick="adminToggleRole('${phone}')">${role==='admin'?'Hạ Quyền':'Cấp Admin'}</button>`;
+            delBtn = `<button class="btn-sm" style="background:var(--danger); color:white; border:none;" onclick="adminDeleteUser('${phone}')">Xóa</button>`;
+        }
+        
+        // Không cho phép chỉnh sửa Root Admin
+        if (isRoot) {
+             promoteBtn = ''; delBtn = '';
+        }
         
         tbody.innerHTML += `
         <tr ${rowStyle}>
@@ -1033,6 +1032,9 @@ function adminConfirmChangePass() {
 }
 
 function adminToggleRole(phone) {
+    if(activeUserPhone !== '0839578432') {
+        alert("Bạn không có quyền thực hiện thao tác này!"); return;
+    }
     if(phone === '0839578432') return;
     let currentRole = systemDB[phone].role;
     if(confirm(`Bạn có chắc chắn muốn ${currentRole === 'admin' ? 'HẠ QUYỀN user này xuống thường' : 'CẤP QUYỀN Admin phụ cho user này'}?`)) {
@@ -1043,6 +1045,9 @@ function adminToggleRole(phone) {
 }
 
 function adminDeleteUser(phone) {
+    if(activeUserPhone !== '0839578432') {
+        alert("Bạn không có quyền xóa người dùng!"); return;
+    }
     if(phone === '0839578432') return;
     if(confirm("Bạn có chắc chắn muốn XÓA VĨNH VIỄN người dùng này khỏi hệ thống? Dữ liệu của họ sẽ mất toàn bộ!")) {
         delete systemDB[phone];
@@ -1851,3 +1856,6 @@ function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạ
 </script>
 </body>
 </html>
+Mục đổi mật khẩu của admin không có chỗ nhập lại mật khẩu mới
+Nên khi nhập không có chỗ kiểm tra lại nên dễ bị sai mk
+Tôi muốn thêm phần "Nhập lại mật khẩu" vào trong Đổi MK Admin nhé
