@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AssetPro Luxury - Tài Chính Cá Nhân</title>
+<title>PHẦN MỀM KIỂM TOÁN</title>
 <style>
 :root {
 --primary: #1a1a1a;
@@ -291,14 +291,14 @@ box-sizing: border-box;
 <div id="sheet-tm" class="page active">
 <h2>Biên Bản Kiểm Kê Tiền Mặt</h2>
 <table class="data-table"><thead><tr><th style="text-align: left;">Mệnh giá</th><th style="width:120px">Số lượng</th><th style="text-align:right">Thành tiền</th></tr></thead><tbody id="body-tm"></tbody></table>
-<div class="sub-total-box">TỔNG CỘNG TIỀN MẶT: <br><span id="val-tm" style="font-size:32px; color:var(--primary)">0</span> đ</div>
+<div class="sub-total-box">TỔNG TIỀN MẶT: <br><span id="val-tm" style="font-size:32px; color:var(--primary)">0</span> đ</div>
 </div>
 
 <div id="sheet-nh" class="page">
 <h2>Biên bản kiểm kê Tài Khoản Ngân Hàng</h2>
 <p style="font-size: 14px; color: #666; font-style: italic; text-align: center; margin-bottom: 20px;">* Cập nhật danh sách Ngân hàng trong mục Cài Đặt.</p>
 <table class="data-table"><thead><tr><th style="text-align:left">Ngân Hàng</th><th style="width:250px">Số Dư Hiện Tại (VNĐ)</th></tr></thead><tbody id="body-nh"></tbody></table>
-<div class="sub-total-box">TỔNG DƯ NỢ NGÂN HÀNG: <br><span id="val-nh" style="font-size:32px; color:var(--primary)">0</span> đ</div>
+<div class="sub-total-box">LƯỢNG TIỀN TRONG NGÂN HÀNG: <br><span id="val-nh" style="font-size:32px; color:var(--primary)">0</span> đ</div>
 </div>
 
 <div id="sheet-stk-quy" class="page">
@@ -333,10 +333,10 @@ box-sizing: border-box;
 </div>
 
 <div id="sheet-print" class="page">
-<h2>Quản Lý In Ấn Báo Cáo</h2>
+<h2>In Báo Cáo</h2>
 <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
 <div class="form-group" style="margin-bottom:0;">
-<label>Chọn ngày quyết toán muốn in</label>
+<label>Chọn ngày muốn in</label>
 <div style="display:flex; gap:15px;">
 <input type="date" id="in-print-date" style="flex:2">
 <button class="btn-main" style="margin-top:0; flex:1; background:var(--info); color:white; border:none;" onclick="openPrintSetup()">TẠO BẢN IN</button>
@@ -344,9 +344,9 @@ box-sizing: border-box;
 </div>
 </div>
 
-<h3 style="text-align:left; border-bottom:2px solid var(--primary); padding-bottom:10px;">Lịch Sử In Ấn</h3>
+<h3 style="text-align:left; border-bottom:2px solid var(--primary); padding-bottom:10px;">Lịch Sử In</h3>
 <table class="data-table">
-<thead><tr><th style="width:60px">STT</th><th style="text-align:left">Thời Gian In</th><th>Mã Đối Soát (ASCII)</th><th style="width:100px">Hành Động</th></tr></thead>
+<thead><tr><th style="width:60px">STT</th><th style="text-align:left">Thời Gian In</th><th>Mã Đối Soát</th><th style="width:100px">Hành Động</th></tr></thead>
 <tbody id="body-print-history"></tbody>
 </table>
 </div>
@@ -360,9 +360,9 @@ box-sizing: border-box;
 <div id="content-set-acc">
     <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
         <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Thông Tin Cá Nhân</h3>
-        <div class="form-group"><label>Họ và tên hiển thị</label><input type="text" id="set-user-name"></div>
+        <div class="form-group"><label>Họ và tên tài khoản</label><input type="text" id="set-user-name"></div>
         <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
-        <div class="form-group"><label>Số điện thoại (Cố định)</label><input type="tel" id="set-user-phone" readonly></div>
+        <div class="form-group"><label>Số điện thoại</label><input type="tel" id="set-user-phone" readonly></div>
         
         <div style="display:flex; gap:15px; margin-top:20px; flex-wrap:wrap;">
             <button class="btn-main" style="background:var(--info); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="openUserChangePass()">ĐỔI MẬT KHẨU</button>
@@ -375,7 +375,7 @@ box-sizing: border-box;
 <div id="content-set-bank" style="display:none;">
     <div style="background:white; padding:30px; border:1px solid #000">
         <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Danh Mục Ngân Hàng Hệ Thống</h3>
-        <table class="data-table"><thead><tr><th style="width:60px">STT</th><th style="text-align:left">Tên Ngân Hàng Đầy Đủ</th><th style="width:180px">Tên Viết Tắt</th><th style="width:60px">Xóa</th></tr></thead><tbody id="body-settings-bank"></tbody></table>
+        <table class="data-table"><thead><tr><th style="width:60px">STT</th><th style="text-align:left">Tên Ngân Hàng/ Ví điện tử</th><th style="width:180px">Tên Viết Tắt</th><th style="width:60px">Xóa</th></tr></thead><tbody id="body-settings-bank"></tbody></table>
         <button class="btn-main" style="background:#000; color:var(--accent)" onclick="openModal('modal-bank-add-settings')">+ THÊM NGÂN HÀNG HỆ THỐNG</button>
     </div>
 </div>
@@ -424,8 +424,8 @@ box-sizing: border-box;
 <div class="p-wrap">
 <div class="p-header">
 <div>
-<h2 style="margin:0; font-size:18px;">ASSET PRO LUXURY</h2>
-<div style="margin-top:5px;">Hệ Thống Quản Lý Tài Sản Cá Nhân</div>
+<h2 style="margin:0; font-size:18px;">TỔNG CỤC QUẢN LÝ KINH TẾ</h2>
+<div style="margin-top:5px;">HỆ THỐNG KIỂM TOÁN</div>
 </div>
 <div style="text-align:right;">
 <div>Phiếu số: <span id="p-phieu" style="font-weight:bold;"></span> | Tuần: <span id="p-tuan" style="font-weight:bold;"></span></div>
@@ -437,8 +437,8 @@ box-sizing: border-box;
 
 <div class="p-info">
 <div><span>Người kiểm toán:</span> <span id="p-auditor" style="font-weight:bold;"></span></div>
-<div><span>Địa chỉ thống kê:</span> <span id="p-address"></span></div>
-<div><span>Thời điểm in ấn:</span> <span id="p-time"></span></div>
+<div><span>Địa chỉ kiểm toán:</span> <span id="p-address"></span></div>
+<div><span>Thời điểm in:</span> <span id="p-time"></span></div>
 </div>
 
 <div class="p-section-title">I. KIỂM KÊ TIỀN MẶT</div>
@@ -521,7 +521,7 @@ box-sizing: border-box;
 <input type="text" id="in-auditor-name" readonly style="background-color:#e9ecef; cursor:not-allowed;" title="Sửa tên ở mục Cài Đặt">
 </div>
 <div class="form-group">
-<label>Địa chỉ kiểm kê (Tự động lấy vị trí)</label>
+<label>Địa chỉ kiểm kê</label>
 <div style="display:flex; gap:10px;">
 <input type="text" id="in-print-address" placeholder="Đang xác định vị trí...">
 <button class="btn-sm" onclick="getLocation()" style="background:#000; color:#fff;">Lấy lại</button>
