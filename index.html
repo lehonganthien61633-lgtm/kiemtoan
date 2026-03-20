@@ -52,18 +52,6 @@ display: none; /* Ẩn đi khi chưa đăng nhập */
 flex-direction: column; position: relative;
 }
 
-/* HEADER - FIXED TO TOP */
-.header-main {
-display: flex; align-items: center; justify-content: space-between;
-background-color: var(--primary); padding: 15px 25px; color: white;
-position: sticky; top: 0; z-index: 50;
-border-bottom: 3px solid var(--accent);
-}
-.header-left { display: flex; align-items: center; gap: 15px; }
-.hamburger-btn { font-size: 26px; cursor: pointer; color: var(--accent); }
-.header-title { font-size: 20px; font-weight: bold; letter-spacing: 1px; font-variant: small-caps; }
-#header-date-picker { background: #fff; border: 1px solid var(--accent); padding: 8px 12px; font-family: "Times New Roman"; font-weight: bold; border-radius: 4px; font-size: 16px; cursor: pointer; }
-
 /* SIDEBAR */
 .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 150; backdrop-filter: blur(5px); }
 .sidebar-overlay.active { display: block; }
@@ -73,8 +61,37 @@ border-bottom: 3px solid var(--accent);
 .nav-item:hover { color: var(--accent); padding-left: 30px; }
 .nav-item.active { background-color: var(--primary); color: var(--accent); }
 
-/* CONTENT */
-.main-wrapper { flex: 1; overflow-y: auto; width: 100%; padding: 25px 20px; }
+/* FIX LẠI CẤU TRÚC CUỘN VÀ HEADER */
+.main-wrapper { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    width: 100%;
+    /* Không dùng overflow ở đây nữa để nhường cho .app-content cuộn */
+    height: 100vh; 
+}
+
+/* HEADER - FIXED TO TOP */
+.header-main {
+    display: flex; align-items: center; justify-content: space-between;
+    background-color: var(--primary); padding: 15px 25px; color: white;
+    border-bottom: 3px solid var(--accent);
+    /* Loại bỏ position: sticky, chuyển quyền quản lý layout cho Flexbox */
+    flex-shrink: 0;
+}
+
+.header-left { display: flex; align-items: center; gap: 15px; }
+.hamburger-btn { font-size: 26px; cursor: pointer; color: var(--accent); }
+.header-title { font-size: 20px; font-weight: bold; letter-spacing: 1px; font-variant: small-caps; }
+#header-date-picker { background: #fff; border: 1px solid var(--accent); padding: 8px 12px; font-family: "Times New Roman"; font-weight: bold; border-radius: 4px; font-size: 16px; cursor: pointer; }
+
+/* CONTENT CUỘN */
+.app-content {
+    flex: 1;
+    overflow-y: auto; /* Khu vực bên dưới header sẽ tự cuộn */
+    padding: 25px 20px;
+}
+
 .page { display: none; max-width: 850px; margin: 0 auto; }
 .page.active { display: block; animation: fadeIn 0.4s; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -140,7 +157,9 @@ body { padding: 40px; }
 .app-container { flex-direction: row; max-width: 1200px; height: 90vh; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); display: none; }
 .sidebar { position: static; left: 0; width: 280px; height: 100%; border-right: 1px solid var(--primary); }
 .hamburger-btn { display: none; }
-.main-wrapper { padding: 50px; }
+/* Chỉnh lại chiều cao và padding để giữ Header ở trên cùng trên Desktop */
+.main-wrapper { height: 100%; } 
+.app-content { padding: 50px; } 
 .sidebar-overlay { display: none !important; }
 }
 
@@ -1091,7 +1110,6 @@ let total = Math.max(1, Math.floor((dE - new Date(s.start).getTime())/86400000))
 let per = Math.min(100, Math.max(0, (Math.floor((dToday - new Date(s.start).getTime())/86400000) / total) * 100));
 let laiSum = s.history.reduce((a, h) => a + (h.v > 0 ? calcH(h, s.end).lai : 0), 0);
 
-// FIX CHỈ HIỆN NÚT RÚT TIỀN VỚI SỔ KỲ HẠN
 cont.innerHTML += `
 <div class="stk-card ${s.type}">
 <button class="btn-i-detail" onclick="openDetail(${s.id})">i</button>
@@ -1470,3 +1488,4 @@ function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạ
 </script>
 </body>
 </html>
+Vẫn bị chạy theo
