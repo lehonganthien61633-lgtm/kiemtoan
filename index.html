@@ -27,7 +27,7 @@ display: flex;
 justify-content: center;
 }
 
-/* === CSS THÊM MỚI CHO HỆ THỐNG AUTH (ĐĂNG NHẬP/ĐĂNG KÝ/ADMIN) === */
+/* === CSS THÊM MỚI CHO HỆ THỐNG AUTH === */
 .auth-wrapper {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: url('https://images.unsplash.com/photo-1616075133610-8dc0388cdce8?q=80&w=2000&auto=format&fit=crop') center/cover;
@@ -106,7 +106,7 @@ input:read-only { background-color: #f9f9f9; color: #888; cursor: not-allowed; }
 /* BUTTONS */
 .btn-main { background: var(--primary); color: var(--accent); padding: 15px; border: 1px solid var(--accent); font-family: "Times New Roman"; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-top: 15px; transition: 0.2s; border-radius: 4px; text-transform: uppercase; }
 .btn-main:hover { filter: brightness(1.2); }
-.btn-sm { padding: 8px 16px; border: 1px solid #000; font-family: "Times New Roman"; font-weight: bold; cursor: pointer; background: #fff; border-radius: 4px; font-size: 13px; margin-left: 5px; margin-top: 5px; }
+.btn-sm { padding: 8px 16px; border: 1px solid #000; font-family: "Times New Roman"; font-weight: bold; cursor: pointer; background: #fff; border-radius: 4px; font-size: 13px; margin: 0; }
 
 /* MODALS */
 .modal-overlay {
@@ -891,6 +891,7 @@ let totalAmt = getQuyTotalAmt(q);
 let storageNames = (q.storages || []).map(s => s.name).join(', ');
 if(storageNames.length > 30) storageNames = storageNames.substring(0, 27) + '...';
 
+// FIX GIAO DIỆN NÚT CHIA ĐỀU BẰNG FLEXBOX
 htmlContent += `
 <div class="quy-card">
 <button class="btn-i-detail" onclick="openDetailQuy(${q.id})" style="background:var(--accent); color:#fff; border:none;">i</button>
@@ -898,11 +899,11 @@ htmlContent += `
 <div style="font-weight:bold; font-size:18px; margin-bottom:5px;">${q.name}</div>
 <div class="quy-date">Ngày lập: ${vnDate(q.date)}</div>
 <div class="quy-amount">${formatTien(totalAmt)} đ</div>
-<div class="btn-actions">
-<button class="btn-sm" style="color:var(--info); border-color:var(--info);" onclick="openEditQuyStorage(${q.id})">Phân bổ lưu trữ</button>
-<button class="btn-sm" style="color:var(--primary); border-color:var(--primary);" onclick="openNopQuy(${q.id})">Nộp thêm</button>
-<button class="btn-sm" style="color:white; background:var(--danger); border-color:var(--danger);" onclick="openRutQuy(${q.id})">Rút tiền</button>
-<button class="btn-sm" style="color:red; border-color:red;" onclick="deleteQuy(${q.id})">Xóa Quỹ</button>
+<div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:15px;">
+<button class="btn-sm" style="color:var(--info); border-color:var(--info); flex:1; min-width:90px;" onclick="openEditQuyStorage(${q.id})">Phân bổ kho</button>
+<button class="btn-sm" style="color:var(--primary); border-color:var(--primary); flex:1; min-width:80px;" onclick="openNopQuy(${q.id})">Nộp thêm</button>
+<button class="btn-sm" style="color:white; background:var(--danger); border-color:var(--danger); flex:1; min-width:80px;" onclick="openRutQuy(${q.id})">Rút tiền</button>
+<button class="btn-sm" style="color:red; border-color:red; flex:1; min-width:80px;" onclick="deleteQuy(${q.id})">Xóa Quỹ</button>
 </div>
 </div>`;
 });
@@ -1086,6 +1087,7 @@ let total = Math.max(1, Math.floor((dE - new Date(s.start).getTime())/86400000))
 let per = Math.min(100, Math.max(0, (Math.floor((dToday - new Date(s.start).getTime())/86400000) / total) * 100));
 let laiSum = s.history.reduce((a, h) => a + (h.v > 0 ? calcH(h, s.end).lai : 0), 0);
 
+// FIX GIAO DIỆN NÚT CHIA ĐỀU BẰNG FLEXBOX
 cont.innerHTML += `
 <div class="stk-card ${s.type}">
 <button class="btn-i-detail" onclick="openDetail(${s.id})">i</button>
@@ -1095,11 +1097,11 @@ cont.innerHTML += `
 <div class="stk-lai-dk">Tổng lãi ước tính: +${formatTien(laiSum)} đ</div>
 <div style="font-size:13px; margin-top:15px; font-weight:bold;">Tình trạng: ${remain > 0 ? 'Còn ' + remain + ' ngày nữa đáo hạn' : '<span style="color:var(--danger)">SỔ ĐÃ ĐẾN HẠN</span>'}</div>
 <div class="progress-bg"><div class="progress-bar" style="width:${per}%"></div></div>
-<div class="btn-actions">
-${remain <= 0 ? `<button class="btn-sm" style="background:var(--primary); color:var(--accent); font-size:14px; padding:10px 15px;" onclick="openDH(${s.id})">XỬ LÝ ĐÁO HẠN</button>` : ''}
-${s.type==='tich-luy'?`<button class="btn-sm" style="background:var(--success); color:white;" onclick="openNop(${s.id})">NỘP THÊM</button>`:''}
-<button class="btn-sm" style="background:var(--danger); color:white;" onclick="openRut(${s.id}, '${s.type}')">RÚT TIỀN</button>
-<button class="btn-sm" style="color:red; border-color:red" onclick="deleteSTK(${s.id})">Xóa sổ 0%</button>
+<div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:15px;">
+${remain <= 0 ? `<button class="btn-sm" style="background:var(--primary); color:var(--accent); font-size:14px; padding:10px 15px; width:100%" onclick="openDH(${s.id})">XỬ LÝ ĐÁO HẠN</button>` : ''}
+${s.type==='tich-luy'?`<button class="btn-sm" style="background:var(--success); color:white; flex:1; min-width:80px;" onclick="openNop(${s.id})">NỘP THÊM</button>`:''}
+<button class="btn-sm" style="background:var(--danger); color:white; flex:1; min-width:80px;" onclick="openRut(${s.id}, '${s.type}')">RÚT TIỀN</button>
+<button class="btn-sm" style="color:red; border-color:red; flex:1; min-width:80px;" onclick="deleteSTK(${s.id})">XÓA SỔ</button>
 </div>
 </div>`;
 });
