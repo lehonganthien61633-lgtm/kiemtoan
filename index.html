@@ -23,11 +23,12 @@ background-color: #f0f0f0;
 color: #222;
 margin: 0;
 min-height: 100vh;
+overflow: hidden; /* NGĂN CUỘN TOÀN TRANG, CHỈ CUỘN VÙNG CONTENT */
 display: flex;
 justify-content: center;
 }
 
-/* === CSS THÊM MỚI CHO HỆ THỐNG AUTH === */
+/* === CSS HỆ THỐNG AUTH === */
 .auth-wrapper {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: url('https://images.unsplash.com/photo-1616075133610-8dc0388cdce8?q=80&w=2000&auto=format&fit=crop') center/cover;
@@ -47,37 +48,38 @@ justify-content: center;
 .badge-notif { background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 12px; margin-left: 5px; font-weight: bold; display: inline-block; animation: pulse 1.5s infinite; }
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-/* Các style gốc giữ nguyên */
+/* Cấu trúc Layout Chính */
 .app-container {
-width: 100%; background-color: var(--ivory); min-height: 100vh;
-display: none; /* Ẩn đi khi chưa đăng nhập */
-flex-direction: column; position: relative;
+    width: 100%; background-color: var(--ivory); height: 100vh;
+    display: none; flex-direction: column; position: relative; overflow: hidden;
 }
 
 /* SIDEBAR */
 .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 150; backdrop-filter: blur(5px); }
 .sidebar-overlay.active { display: block; }
-.sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background-color: var(--ivory); z-index: 200; transition: transform 0.4s ease; border-right: 5px solid var(--primary); }
+.sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background-color: var(--ivory); z-index: 200; transition: transform 0.4s ease; border-right: 5px solid var(--primary); display: flex; flex-direction: column;}
 .sidebar.open { transform: translateX(280px); }
+.sidebar-menu-items { flex: 1; overflow-y: auto; padding-bottom: 20px; }
 .nav-item { padding: 18px 25px; font-size: 16px; font-weight: bold; cursor: pointer; border-bottom: 1px solid #eee; transition: 0.3s; }
 .nav-item:hover { color: var(--accent); padding-left: 30px; }
 .nav-item.active { background-color: var(--primary); color: var(--accent); }
 
-/* FIX LẠI CẤU TRÚC CUỘN VÀ HEADER */
+/* VÙNG NỘI DUNG CHÍNH (BÊN PHẢI) */
 .main-wrapper { 
     flex: 1; 
     display: flex; 
     flex-direction: column; 
     width: 100%;
     height: 100vh; 
+    overflow: hidden; /* CẮT NGANG ĐỂ HEADER KHÔNG CHẠY */
 }
 
-/* HEADER - FIXED TO TOP */
+/* HEADER - GẮN CỐ ĐỊNH TRÊN CÙNG */
 .header-main {
     display: flex; align-items: center; justify-content: space-between;
     background-color: var(--primary); padding: 15px 25px; color: white;
     border-bottom: 3px solid var(--accent);
-    flex-shrink: 0;
+    flex-shrink: 0; z-index: 50; width: 100%;
 }
 
 .header-left { display: flex; align-items: center; gap: 15px; }
@@ -85,20 +87,21 @@ flex-direction: column; position: relative;
 .header-title { font-size: 20px; font-weight: bold; letter-spacing: 1px; font-variant: small-caps; }
 #header-date-picker { background: #fff; border: 1px solid var(--accent); padding: 8px 12px; font-family: "Times New Roman"; font-weight: bold; border-radius: 4px; font-size: 16px; cursor: pointer; }
 
-/* CONTENT CUỘN */
+/* NỘI DUNG CUỘN (BÊN DƯỚI HEADER) */
 .app-content {
     flex: 1;
-    overflow-y: auto; /* Khu vực bên dưới header sẽ tự cuộn */
+    overflow-y: auto; /* CHỈ CUỘN Ở ĐÂY */
     padding: 25px 20px;
+    background-color: var(--ivory);
 }
 
-.page { display: none; max-width: 850px; margin: 0 auto; }
+.page { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 40px;}
 .page.active { display: block; animation: fadeIn 0.4s; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 h2 { font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 30px; text-transform: uppercase; border-bottom: 1px solid var(--accent); padding-bottom: 15px; }
 
-/* TABLES */
+/* TABLES & COMPONENTS */
 .data-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 .data-table th { background: #f4f4f4; border: 1px solid #ddd; padding: 15px 10px; font-size: 14px; text-align: center; text-transform: uppercase; }
 .data-table td { border: 1px solid #eee; padding: 12px 10px; }
@@ -106,7 +109,6 @@ input, select { border: 1px solid #ccc; padding: 10px; font-family: "Times New R
 input:focus, select:focus { border-color: var(--accent); outline: none; background: #fffdf9; }
 input:read-only { background-color: #e9ecef; color: #555; cursor: not-allowed; }
 
-/* CARDS */
 .stk-card, .quy-card { background: #fff; border: 1px solid var(--border); padding: 25px; margin-bottom: 25px; position: relative; border-top: 6px solid var(--primary); box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: 0.3s; }
 .stk-card:hover, .quy-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
 .btn-i-detail { position: absolute; top: 15px; right: 15px; border: 1px solid #000; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; background: #eee; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 10; }
@@ -120,93 +122,67 @@ input:read-only { background-color: #e9ecef; color: #555; cursor: not-allowed; }
 .progress-bg { background: #eee; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0; }
 .progress-bar { background: linear-gradient(90deg, var(--primary), var(--accent)); height: 100%; transition: width 1s; }
 
-/* BUTTONS */
 .btn-main { background: var(--primary); color: var(--accent); padding: 15px; border: 1px solid var(--accent); font-family: "Times New Roman"; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-top: 15px; transition: 0.2s; border-radius: 4px; text-transform: uppercase; }
 .btn-main:hover { filter: brightness(1.2); }
 .btn-sm { padding: 8px 16px; border: 1px solid #000; font-family: "Times New Roman"; font-weight: bold; cursor: pointer; background: #fff; border-radius: 4px; font-size: 13px; margin: 0; }
 
-/* MODALS */
-.modal-overlay {
-display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-background: rgba(0,0,0,0.85); z-index: 99999;
-justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px);
-}
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 99999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
 .modal-overlay.active { display: flex; }
-.modal-content {
-background: #fff; width: 100%; max-width: 550px;
-border: 2px solid var(--accent); padding: 35px;
-position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 60px rgba(0,0,0,0.6); border-radius: 8px;
-}
+.modal-content { background: #fff; width: 100%; max-width: 550px; border: 2px solid var(--accent); padding: 35px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 60px rgba(0,0,0,0.6); border-radius: 8px; }
 .modal-title { font-size: 22px; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 25px; border-bottom: 1px solid #ccc; padding-bottom: 15px; }
 .form-group { margin-bottom: 20px; }
 .form-group label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #333; text-transform: uppercase; }
 .sub-total-box { border: 2px double var(--primary); padding: 20px; text-align: center; margin-top: 30px; font-weight: bold; background: #fffaf0; }
 
-/* TAB UI */
 .tab-btn { flex: 1; padding: 15px; cursor: pointer; font-family: "Times New Roman"; font-weight: bold; border: 1px solid #000; background: #fff; text-transform: uppercase; }
 .tab-btn.active { background: var(--primary); color: var(--accent); }
 body.modal-open { overflow: hidden; }
 
-/* RESPONSIVE & MOBILE HIDING */
 @media (max-width: 849px) {
     .hide-on-mobile { display: none !important; }
 }
 
+/* RESPONSIVE LAYOUT CHO DESKTOP */
 @media (min-width: 850px) {
-body { padding: 40px; }
-.app-container { flex-direction: row; max-width: 1200px; height: 90vh; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); display: none; }
+body { padding: 40px; background-color: #e0e0e0;}
+.app-container { flex-direction: row; max-width: 1200px; height: calc(100vh - 80px); border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); display: none; }
 .sidebar { position: static; left: 0; width: 280px; height: 100%; border-right: 1px solid var(--primary); }
 .hamburger-btn { display: none; }
-/* Chỉnh lại chiều cao và padding để giữ Header ở trên cùng trên Desktop */
-.main-wrapper { height: 100%; } 
-.app-content { padding: 50px; } 
 .sidebar-overlay { display: none !important; }
+.main-wrapper { height: 100%; border-radius: 0 8px 8px 0; }
+.app-content { padding: 40px 50px; }
 }
 
 /* KHU VỰC IN ẤN ĐẶC BIỆT (PRINT CSS) */
 #print-area { display: none; }
 @media print {
-body { background: #fff; padding: 0; margin: 0; }
+body { background: #fff; padding: 0; margin: 0; overflow: auto; }
 body * { visibility: hidden; }
 #print-area, #print-area * { visibility: visible; }
-
-#print-area {
-display: block; position: absolute; left: 0; top: 0; width: 100%;
-font-family: "Times New Roman", Times, serif; font-size: 13px; color: #000;
-box-sizing: border-box;
-}
-
+#print-area { display: block; position: absolute; left: 0; top: 0; width: 100%; font-family: "Times New Roman", Times, serif; font-size: 13px; color: #000; box-sizing: border-box; }
 .p-wrap { border: 2px solid #000; padding: 20px; min-height: 95vh; display: flex; flex-direction: column;}
-
 .p-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px;}
 .p-title { text-align: center; text-transform: uppercase; font-weight: bold; font-size: 20px; margin: 15px 0 20px 0; }
-
 .p-info { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; font-size: 14px;}
 .p-info div { display: flex; }
 .p-info div span:first-child { width: 140px; font-weight: bold; }
-
 .p-section-title { font-weight: bold; text-transform: uppercase; margin: 15px 0 5px 0; font-size: 15px; border-bottom: 1px dashed #ccc; display: inline-block;}
-
 .p-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 13px; }
 .p-table th, .p-table td { border: 1px solid #000; padding: 6px; }
 .p-table th { text-align: center; background: #f0f0f0 !important; -webkit-print-color-adjust: exact; color: #000; }
-
 .p-tm-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 15px;}
 .p-tm-table th, .p-tm-table td { border: 1px solid #000; padding: 4px 6px; text-align: right;}
 .p-tm-table th { text-align: center; background: #f0f0f0 !important; -webkit-print-color-adjust: exact; color: #000; }
 .p-tm-table .tm-val { font-weight: bold; }
 .p-tm-table .tm-sl { text-align: center; }
 .p-tm-table .tm-empty { background: #e0e0e0 !important; -webkit-print-color-adjust: exact; }
-
 .p-split { display: flex; gap: 20px; margin-bottom: 15px; align-items: flex-start; }
 .p-split > div { flex: 1; }
-
 .p-footer { margin-top: auto; border: 2px solid #000; page-break-inside: avoid;}
 .p-sign { display: flex; border-bottom: 1px solid #000; }
 .p-sign > div { flex: 1; text-align: center; padding: 10px; height: 120px; position: relative; }
 .p-sign > div:first-child { border-right: 1px solid #000; }
 .p-sign-name { position: absolute; bottom: 10px; width: 100%; text-align: center; left: 0; font-weight: bold;}
-
 .p-absolute-footer { text-align: center; padding: 10px; font-size: 12px; }
 }
 </style>
@@ -265,135 +241,137 @@ box-sizing: border-box;
 <div class="app-container" id="main-app">
 <div class="sidebar-overlay" onclick="toggleMenu()"></div>
 <div class="sidebar" id="sidebarMenu">
-<div class="sidebar-header" style="background:var(--primary); color:var(--accent); padding:20px; text-align:center; font-weight:bold; font-size:18px; border-bottom:1px solid #444;">
-    HỆ THỐNG KIỂM TOÁN<br>
-    <span id="display-user-phone" style="font-size:13px; font-weight:normal; color:#fff; display:block; margin-top:5px;"></span>
-</div>
-<div class="nav-item active" onclick="showSheet('sheet-tm', this)">1. Tiền Mặt</div>
-<div class="nav-item" onclick="showSheet('sheet-nh', this)">2. Ngân Hàng</div>
-<div class="nav-item" onclick="showSheet('sheet-stk-quy', this)">3. Tiết Kiệm & Quỹ</div>
-<div class="nav-item" onclick="showSheet('sheet-tk', this)" style="color:var(--success)">4. Tổng Kết</div>
-<div class="nav-item hide-on-mobile" onclick="showSheet('sheet-print', this)" style="color:var(--info); border-top: 2px solid #eee;">🖨️ In Báo Cáo</div>
-<div class="nav-item" onclick="showSheet('sheet-settings', this)" style="color:var(--accent);">⚙️ Cài Đặt</div>
-<div class="nav-item" id="nav-admin" onclick="showSheet('sheet-admin', this)" style="display:none; color:var(--danger); border-top: 2px solid #eee;">
-    🛡️ Quản Lý Người Dùng <span id="admin-notif-badge" class="badge-notif" style="display:none;">!</span>
-</div>
-<div class="nav-item" onclick="handleLogout()" style="color:#666;">🚪 Đăng Xuất</div>
+    <div class="sidebar-header" style="background:var(--primary); color:var(--accent); padding:20px; text-align:center; font-weight:bold; font-size:18px; border-bottom:1px solid #444;">
+        HỆ THỐNG KIỂM TOÁN<br>
+        <span id="display-user-phone" style="font-size:13px; font-weight:normal; color:#fff; display:block; margin-top:5px;"></span>
+    </div>
+    <div class="sidebar-menu-items">
+        <div class="nav-item active" onclick="showSheet('sheet-tm', this)">1. Tiền Mặt</div>
+        <div class="nav-item" onclick="showSheet('sheet-nh', this)">2. Ngân Hàng</div>
+        <div class="nav-item" onclick="showSheet('sheet-stk-quy', this)">3. Tiết Kiệm & Quỹ</div>
+        <div class="nav-item" onclick="showSheet('sheet-tk', this)" style="color:var(--success)">4. Tổng Kết</div>
+        <div class="nav-item hide-on-mobile" onclick="showSheet('sheet-print', this)" style="color:var(--info); border-top: 2px solid #eee;">🖨️ In Báo Cáo</div>
+        <div class="nav-item" onclick="showSheet('sheet-settings', this)" style="color:var(--accent);">⚙️ Cài Đặt</div>
+        <div class="nav-item" id="nav-admin" onclick="showSheet('sheet-admin', this)" style="display:none; color:var(--danger); border-top: 2px solid #eee;">
+            🛡️ Quản Lý Người Dùng <span id="admin-notif-badge" class="badge-notif" style="display:none;">!</span>
+        </div>
+        <div class="nav-item" onclick="handleLogout()" style="color:#666;">🚪 Đăng Xuất</div>
+    </div>
 </div>
 
 <div class="main-wrapper">
-<div class="header-main">
-<div class="header-left"><div class="hamburger-btn" onclick="toggleMenu()">☰</div><div class="header-title" id="current-title">Tiền Mặt</div></div>
-<div class="header-right"><input type="date" id="header-date-picker" onchange="changeDate()"></div>
-</div>
+    <div class="header-main">
+        <div class="header-left"><div class="hamburger-btn" onclick="toggleMenu()">☰</div><div class="header-title" id="current-title">Tiền Mặt</div></div>
+        <div class="header-right"><input type="date" id="header-date-picker" onchange="changeDate()"></div>
+    </div>
 
-<div class="app-content">
-<div id="sheet-tm" class="page active">
-<h2>Biên Bản Kiểm Kê Tiền Mặt</h2>
-<table class="data-table"><thead><tr><th style="text-align: left;">Mệnh giá</th><th style="width:120px">Số lượng</th><th style="text-align:right">Thành tiền</th></tr></thead><tbody id="body-tm"></tbody></table>
-<div class="sub-total-box">TỔNG TIỀN MẶT: <br><span id="val-tm" style="font-size:32px; color:var(--primary)">0</span> đ</div>
-</div>
-
-<div id="sheet-nh" class="page">
-<h2>Biên bản kiểm kê Tài Khoản Ngân Hàng</h2>
-<p style="font-size: 14px; color: #666; font-style: italic; text-align: center; margin-bottom: 20px;">* Cập nhật danh sách Ngân hàng trong mục Cài Đặt.</p>
-<table class="data-table"><thead><tr><th style="text-align:left">Ngân Hàng</th><th style="width:250px">Số Dư Hiện Tại (VNĐ)</th></tr></thead><tbody id="body-nh"></tbody></table>
-<div class="sub-total-box">LƯỢNG TIỀN TRONG NGÂN HÀNG: <br><span id="val-nh" style="font-size:32px; color:var(--primary)">0</span> đ</div>
-</div>
-
-<div id="sheet-stk-quy" class="page">
-<div style="display:flex; margin-bottom:25px; border:1px solid #000">
-<button class="tab-btn active" id="btn-tab-stk" onclick="switchInternalTab('stk')">DANH SÁCH SỔ TIẾT KIỆM</button>
-<button class="tab-btn" id="btn-tab-quy" onclick="switchInternalTab('quy')">QUẢN LÝ CÁC QUỸ</button>
-</div>
-
-<div id="content-stk">
-<div id="stk-container"></div>
-<button class="btn-main" style="background:var(--success); color:white; border:none" onclick="openModal('modal-stk-add')">LẬP SỔ TIẾT KIỆM MỚI</button>
-<div class="sub-total-box" style="border-color:var(--success); background:#f4f9f4;">TỔNG TIẾT KIỆM: <span id="val-stk" style="font-size:26px; color:var(--success)">0</span> đ</div>
-</div>
-
-<div id="content-quy" style="display:none;">
-<div id="quy-container"></div>
-<button class="btn-main" style="background:var(--accent); color:white; border:none" onclick="openModal('modal-quy-add')">+ THIẾT LẬP QUỸ MỚI</button>
-<div class="sub-total-box" style="border-color:var(--accent); background:#fffdf5;">TỔNG CÁC QUỸ: <span id="val-quy" style="font-size:26px; color:var(--accent)">0</span> đ</div>
-</div>
-</div>
-
-<div id="sheet-tk" class="page">
-<h2>Báo Cáo Tổng Hợp</h2>
-<div style="background:white; border:2px solid #000; padding:40px; font-size: 18px;">
-<div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>1. Tiền mặt:</span><strong><span id="fin-tm">0</span> đ</strong></div>
-<div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>2. Ngân hàng:</span><strong><span id="fin-nh">0</span> đ</strong></div>
-<div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>3. Các loại quỹ:</span><strong><span id="fin-quy">0</span> đ</strong></div>
-<div style="display:flex; justify-content:space-between; margin-bottom:25px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>4. Tiết kiệm:</span><strong><span id="fin-stk">0</span> đ</strong></div>
-<div style="display:flex; justify-content:space-between; font-size:28px; border-top:4px double #000; padding-top:20px; color:var(--success)"><span>TỔNG GIÁ TRỊ:</span><strong><span id="fin-total">0</span> đ</strong></div>
-</div>
-<button class="btn-main" style="background:#eee; color:#000; margin-top:30px; border-color:#ccc" onclick="clearDayData()">XOÁ TOÀN BỘ DỮ LIỆU NGÀY NÀY</button>
-</div>
-
-<div id="sheet-print" class="page">
-<h2>In Báo Cáo</h2>
-<div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
-<div class="form-group" style="margin-bottom:0;">
-<label>Chọn ngày muốn in</label>
-<div style="display:flex; gap:15px;">
-<input type="date" id="in-print-date" style="flex:2">
-<button class="btn-main" style="margin-top:0; flex:1; background:var(--info); color:white; border:none;" onclick="openPrintSetup()">TẠO BẢN IN</button>
-</div>
-</div>
-</div>
-
-<h3 style="text-align:left; border-bottom:2px solid var(--primary); padding-bottom:10px;">Lịch Sử In</h3>
-<table class="data-table">
-<thead><tr><th style="width:60px">STT</th><th style="text-align:left">Thời Gian In</th><th>Mã Đối Soát</th><th style="width:100px">Hành Động</th></tr></thead>
-<tbody id="body-print-history"></tbody>
-</table>
-</div>
-
-<div id="sheet-settings" class="page">
-<div style="display:flex; margin-bottom:25px; border:1px solid #000">
-    <button class="tab-btn active" id="btn-tab-set-acc" onclick="switchSettingsTab('acc')">CÀI ĐẶT TÀI KHOẢN</button>
-    <button class="tab-btn" id="btn-tab-set-bank" onclick="switchSettingsTab('bank')">DANH SÁCH NGÂN HÀNG</button>
-</div>
-
-<div id="content-set-acc">
-    <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
-        <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Thông Tin Cá Nhân</h3>
-        <div class="form-group"><label>Họ và tên tài khoản</label><input type="text" id="set-user-name"></div>
-        <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
-        <div class="form-group"><label>Số điện thoại</label><input type="tel" id="set-user-phone" readonly></div>
-        
-        <div style="display:flex; gap:15px; margin-top:20px; flex-wrap:wrap;">
-            <button class="btn-main" style="background:var(--info); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="openUserChangePass()">ĐỔI MẬT KHẨU</button>
-            <button class="btn-main" style="background:var(--success); color:white; border:none; margin-top:0; flex:1.5; min-width:160px;" onclick="saveUserInfo()">CẬP NHẬT THÔNG TIN</button>
-            <button class="btn-main" style="background:var(--danger); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="deleteMyAccount()">XÓA TÀI KHOẢN</button>
+    <div class="app-content">
+        <div id="sheet-tm" class="page active">
+        <h2>Biên Bản Kiểm Kê Tiền Mặt</h2>
+        <table class="data-table"><thead><tr><th style="text-align: left;">Mệnh giá</th><th style="width:120px">Số lượng</th><th style="text-align:right">Thành tiền</th></tr></thead><tbody id="body-tm"></tbody></table>
+        <div class="sub-total-box">TỔNG TIỀN MẶT: <br><span id="val-tm" style="font-size:32px; color:var(--primary)">0</span> đ</div>
         </div>
+
+        <div id="sheet-nh" class="page">
+        <h2>Biên bản kiểm kê Tài Khoản Ngân Hàng</h2>
+        <p style="font-size: 14px; color: #666; font-style: italic; text-align: center; margin-bottom: 20px;">* Cập nhật danh sách Ngân hàng trong mục Cài Đặt.</p>
+        <table class="data-table"><thead><tr><th style="text-align:left">Ngân Hàng</th><th style="width:250px">Số Dư Hiện Tại (VNĐ)</th></tr></thead><tbody id="body-nh"></tbody></table>
+        <div class="sub-total-box">LƯỢNG TIỀN TRONG NGÂN HÀNG: <br><span id="val-nh" style="font-size:32px; color:var(--primary)">0</span> đ</div>
+        </div>
+
+        <div id="sheet-stk-quy" class="page">
+        <div style="display:flex; margin-bottom:25px; border:1px solid #000">
+        <button class="tab-btn active" id="btn-tab-stk" onclick="switchInternalTab('stk')">DANH SÁCH SỔ TIẾT KIỆM</button>
+        <button class="tab-btn" id="btn-tab-quy" onclick="switchInternalTab('quy')">QUẢN LÝ CÁC QUỸ</button>
+        </div>
+
+        <div id="content-stk">
+        <div id="stk-container"></div>
+        <button class="btn-main" style="background:var(--success); color:white; border:none" onclick="openModal('modal-stk-add')">LẬP SỔ TIẾT KIỆM MỚI</button>
+        <div class="sub-total-box" style="border-color:var(--success); background:#f4f9f4;">TỔNG TIẾT KIỆM: <span id="val-stk" style="font-size:26px; color:var(--success)">0</span> đ</div>
+        </div>
+
+        <div id="content-quy" style="display:none;">
+        <div id="quy-container"></div>
+        <button class="btn-main" style="background:var(--accent); color:white; border:none" onclick="openModal('modal-quy-add')">+ THIẾT LẬP QUỸ MỚI</button>
+        <div class="sub-total-box" style="border-color:var(--accent); background:#fffdf5;">TỔNG CÁC QUỸ: <span id="val-quy" style="font-size:26px; color:var(--accent)">0</span> đ</div>
+        </div>
+        </div>
+
+        <div id="sheet-tk" class="page">
+        <h2>Báo Cáo Tổng Hợp</h2>
+        <div style="background:white; border:2px solid #000; padding:40px; font-size: 18px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>1. Tiền mặt:</span><strong><span id="fin-tm">0</span> đ</strong></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>2. Ngân hàng:</span><strong><span id="fin-nh">0</span> đ</strong></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>3. Các loại quỹ:</span><strong><span id="fin-quy">0</span> đ</strong></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:25px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>4. Tiết kiệm:</span><strong><span id="fin-stk">0</span> đ</strong></div>
+        <div style="display:flex; justify-content:space-between; font-size:28px; border-top:4px double #000; padding-top:20px; color:var(--success)"><span>TỔNG GIÁ TRỊ:</span><strong><span id="fin-total">0</span> đ</strong></div>
+        </div>
+        <button class="btn-main" style="background:#eee; color:#000; margin-top:30px; border-color:#ccc" onclick="clearDayData()">XOÁ TOÀN BỘ DỮ LIỆU NGÀY NÀY</button>
+        </div>
+
+        <div id="sheet-print" class="page">
+        <h2>In Báo Cáo</h2>
+        <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
+        <div class="form-group" style="margin-bottom:0;">
+        <label>Chọn ngày muốn in</label>
+        <div style="display:flex; gap:15px;">
+        <input type="date" id="in-print-date" style="flex:2">
+        <button class="btn-main" style="margin-top:0; flex:1; background:var(--info); color:white; border:none;" onclick="openPrintSetup()">TẠO BẢN IN</button>
+        </div>
+        </div>
+        </div>
+
+        <h3 style="text-align:left; border-bottom:2px solid var(--primary); padding-bottom:10px;">Lịch Sử In</h3>
+        <table class="data-table">
+        <thead><tr><th style="width:60px">STT</th><th style="text-align:left">Thời Gian In</th><th>Mã Đối Soát</th><th style="width:100px">Hành Động</th></tr></thead>
+        <tbody id="body-print-history"></tbody>
+        </table>
+        </div>
+
+        <div id="sheet-settings" class="page">
+        <div style="display:flex; margin-bottom:25px; border:1px solid #000">
+            <button class="tab-btn active" id="btn-tab-set-acc" onclick="switchSettingsTab('acc')">CÀI ĐẶT TÀI KHOẢN</button>
+            <button class="tab-btn" id="btn-tab-set-bank" onclick="switchSettingsTab('bank')">DANH SÁCH NGÂN HÀNG</button>
+        </div>
+
+        <div id="content-set-acc">
+            <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
+                <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Thông Tin Cá Nhân</h3>
+                <div class="form-group"><label>Họ và tên tài khoản</label><input type="text" id="set-user-name"></div>
+                <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
+                <div class="form-group"><label>Số điện thoại</label><input type="tel" id="set-user-phone" readonly></div>
+                
+                <div style="display:flex; gap:15px; margin-top:20px; flex-wrap:wrap;">
+                    <button class="btn-main" style="background:var(--info); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="openUserChangePass()">ĐỔI MẬT KHẨU</button>
+                    <button class="btn-main" style="background:var(--success); color:white; border:none; margin-top:0; flex:1.5; min-width:160px;" onclick="saveUserInfo()">CẬP NHẬT THÔNG TIN</button>
+                    <button class="btn-main" style="background:var(--danger); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="deleteMyAccount()">XÓA TÀI KHOẢN</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-set-bank" style="display:none;">
+            <div style="background:white; padding:30px; border:1px solid #000">
+                <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Danh Mục Ngân Hàng Hệ Thống</h3>
+                <table class="data-table"><thead><tr><th style="width:60px">STT</th><th style="text-align:left">Tên Ngân Hàng/ Ví điện tử</th><th style="width:180px">Tên Viết Tắt</th><th style="width:60px">Xóa</th></tr></thead><tbody id="body-settings-bank"></tbody></table>
+                <button class="btn-main" style="background:#000; color:var(--accent)" onclick="openModal('modal-bank-add-settings')">+ THÊM NGÂN HÀNG HỆ THỐNG</button>
+            </div>
+        </div>
+
+        </div>
+
+        <div id="sheet-admin" class="page">
+        <h2>Bảng Điều Khiển Quản Trị Hệ Thống <span id="admin-bell" style="display:none;">🔔</span></h2>
+        <div style="background:white; padding:30px; border:2px solid var(--danger); overflow-x: auto;">
+            <h3 style="margin-top:0; color:var(--danger)">Danh sách tài khoản</h3>
+            <table class="data-table" style="min-width: 750px;">
+                <thead><tr><th style="width:40px">STT</th><th style="text-align:left">Họ Tên</th><th style="text-align:left">Số Điện Thoại</th><th style="width:80px">Quyền</th><th style="width:250px">Hành Động</th></tr></thead>
+                <tbody id="body-admin-users"></tbody>
+            </table>
+        </div>
+        </div>
+
     </div>
-</div>
-
-<div id="content-set-bank" style="display:none;">
-    <div style="background:white; padding:30px; border:1px solid #000">
-        <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Danh Mục Ngân Hàng Hệ Thống</h3>
-        <table class="data-table"><thead><tr><th style="width:60px">STT</th><th style="text-align:left">Tên Ngân Hàng/ Ví điện tử</th><th style="width:180px">Tên Viết Tắt</th><th style="width:60px">Xóa</th></tr></thead><tbody id="body-settings-bank"></tbody></table>
-        <button class="btn-main" style="background:#000; color:var(--accent)" onclick="openModal('modal-bank-add-settings')">+ THÊM NGÂN HÀNG HỆ THỐNG</button>
-    </div>
-</div>
-
-</div>
-
-<div id="sheet-admin" class="page">
-<h2>Bảng Điều Khiển Quản Trị Hệ Thống <span id="admin-bell" style="display:none;">🔔</span></h2>
-<div style="background:white; padding:30px; border:2px solid var(--danger); overflow-x: auto;">
-    <h3 style="margin-top:0; color:var(--danger)">Danh sách tài khoản</h3>
-    <table class="data-table" style="min-width: 750px;">
-        <thead><tr><th style="width:40px">STT</th><th style="text-align:left">Họ Tên</th><th style="text-align:left">Số Điện Thoại</th><th style="width:80px">Quyền</th><th style="width:250px">Hành Động</th></tr></thead>
-        <tbody id="body-admin-users"></tbody>
-    </table>
-</div>
-</div>
-
-</div>
 </div>
 </div>
 
@@ -543,7 +521,7 @@ box-sizing: border-box;
 <input type="text" id="in-auditor-name" readonly style="background-color:#e9ecef; cursor:not-allowed;" title="Sửa tên ở mục Cài Đặt">
 </div>
 <div class="form-group">
-<label>Địa chỉ kiểm kê (Tự động lấy vị trí)</label>
+<label>Địa chỉ kiểm kê</label>
 <div style="display:flex; gap:10px;">
 <input type="text" id="in-print-address" placeholder="Đang xác định vị trí...">
 <button class="btn-sm" onclick="getLocation()" style="background:#000; color:#fff;">Lấy lại</button>
@@ -805,6 +783,7 @@ function handleLogin() {
         document.getElementById('nav-admin').style.display = 'none';
     }
 
+    // Nạp lại dữ liệu cho từng ngày để đảm bảo Tiền Mặt luôn trống trừ khi đã lưu ở ngày đó
     initializeApp();
 }
 
@@ -1048,7 +1027,7 @@ function adminConfirmChangePass() {
     }
     
     let newPass = document.getElementById('admin-new-pass').value;
-    let confirmPass = document.getElementById('admin-confirm-new-pass').value;
+    let confirmPass = document.getElementById('admin-confirm-new-pass').value; // Lấy giá trị xác nhận
     
     if(!newPass || !confirmPass) { alert("Không được để trống mật khẩu!"); return; }
     if(newPass !== confirmPass) { alert("Mật khẩu mới và phần Nhập lại không khớp nhau!"); return; }
@@ -1092,6 +1071,7 @@ function adminDeleteUser(phone) {
 // KHỞI CHẠY APP SAU KHI ĐĂNG NHẬP
 // =====================================
 function initializeApp() {
+    // Chỉ set ngày mặc định khi mới mở web
     document.getElementById('header-date-picker').value = currentDay;
     document.getElementById('in-quy-date').value = currentDay;
     document.getElementById('in-print-date').value = currentDay;
@@ -1105,10 +1085,14 @@ function initializeApp() {
     if(!masterData.quyReasons) masterData.quyReasons = [];
     if(!masterData.printHistory) masterData.printHistory = [];
 
-    initTM();
+    initTM(); // Vẽ khung Tiền Mặt
     refreshBankSettings();
     toggleCalcType();
     renderPrintHistory();
+    
+    // Ép hệ thống đọc lại dữ liệu theo biến currentDay
+    loadDay();
+    
     showSheet('sheet-tm', document.querySelector('.nav-item.active'));
     
     if (systemDB[activeUserPhone].role === 'admin') { 
@@ -1139,20 +1123,20 @@ let quyStorageHtml = `<option value="Tiền mặt">Tiền mặt / Két sắt</op
 document.getElementById('sel-quy-storage').innerHTML = quyStorageHtml;
 document.getElementById('sel-quy-edit-storage').innerHTML = quyStorageHtml;
 
-loadDay();
+// LoadDay() sẽ cập nhật các select options xong mới điền số liệu ngân hàng
 }
 
 function saveBankToSystem() {
 let f = document.getElementById('set-bnk-full').value.trim(), s = document.getElementById('set-bnk-short').value.trim() || f;
 if(!f) { alert("Tên ngân hàng không được để trống!"); return; }
 masterData.banks.push({full: f, short: s});
-saveMaster(); refreshBankSettings(); closeModal('modal-bank-add-settings');
+saveMaster(); refreshBankSettings(); loadDay(); closeModal('modal-bank-add-settings');
 document.getElementById('set-bnk-full').value = ""; document.getElementById('set-bnk-short').value = "";
 }
 
 function removeBank(index) {
 if(confirm("Bạn có chắc chắn muốn xóa ngân hàng này khỏi hệ thống?")) {
-masterData.banks.splice(index, 1); saveMaster(); refreshBankSettings();
+masterData.banks.splice(index, 1); saveMaster(); refreshBankSettings(); loadDay();
 }
 }
 
@@ -1175,32 +1159,37 @@ document.getElementById('in-stk-end').value = d.toISOString().split('T')[0];
 function loadDay() {
 if(isPrinting) return;
 
-if (!masterData[currentDay]) masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
+// Tạo dữ liệu rỗng cho ngày mới nếu chưa có
+if (!masterData[currentDay]) {
+    masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
+}
 let data = masterData[currentDay];
 
+// Điền số lượng Tiền Mặt của ngày hiện tại (nếu là mảng trống sẽ điền giá trị rỗng)
 document.querySelectorAll('.in-tm-val').forEach((inp, i) => inp.value = data.tm[i] || "");
 
+// Hiển thị lại số dư Ngân hàng
 const bodyNH = document.getElementById('body-nh'); bodyNH.innerHTML = "";
 masterData.banks.forEach((bank) => {
 let savedVal = (data.nh || []).find(x => x.n === bank.short)?.v || "";
 bodyNH.innerHTML += `<tr><td style="font-weight:bold">${bank.short}</td><td><input type="text" inputmode="numeric" class="in-nh-val" data-name="${bank.short}" value="${savedVal?formatTien(cleanTien(savedVal)):''}" oninput="formatInput(this); syncData_NoLoad();" style="text-align:right; border:none; background:transparent; font-weight:bold; width:100%; color:var(--primary);"></td></tr>`;
 });
 
+// Logic copy tồn Quỹ và Sổ Tiết kiệm từ ngày gần nhất nếu ngày hiện tại trống
 if (!data.quy || data.quy.length === 0) {
-let prevDate = Object.keys(masterData).sort().reverse().find(d => d < currentDay && !['banks', 'quyReasons', 'printHistory'].includes(d) && masterData[d].quy && masterData[d].quy.length > 0);
-if (prevDate) data.quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
-else data.quy = [];
+    let prevDate = Object.keys(masterData).sort().reverse().find(d => d < currentDay && !['banks', 'quyReasons', 'printHistory'].includes(d) && masterData[d].quy && masterData[d].quy.length > 0);
+    if (prevDate) data.quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
+    else data.quy = [];
 }
 renderQuy(data.quy);
 
 if (!data.stk || data.stk.length === 0) {
-let prevDate = Object.keys(masterData).sort().reverse().find(d => d < currentDay && !['banks', 'quyReasons', 'printHistory'].includes(d) && masterData[d].stk && masterData[d].stk.length > 0);
-if (prevDate) data.stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
-else data.stk = [];
+    let prevDate = Object.keys(masterData).sort().reverse().find(d => d < currentDay && !['banks', 'quyReasons', 'printHistory'].includes(d) && masterData[d].stk && masterData[d].stk.length > 0);
+    if (prevDate) data.stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
+    else data.stk = [];
 }
 renderSTK(data.stk);
 
-saveMaster();
 calcTotal();
 }
 
@@ -1864,14 +1853,22 @@ if(id === 'sheet-print') renderPrintHistory();
 }
 
 function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('active'); }
-function switchInternalTab(tab) { document.getElementById('content-stk').style.display = (tab === 'stk' ? 'block' : 'none'); document.getElementById('content-quy').style.display = (tab === 'quy' ? 'block' : 'none'); document.getElementById('btn-tab-stk').classList.toggle('active', tab === 'stk'); document.getElementById('btn-tab-quy').classList.toggle('active', tab === 'quy'); }
 
-// THÊM HÀM CHUYỂN TAB CÀI ĐẶT
+// THAY ĐỔI: Hàm switch tab có thêm reset màu để tránh lỗi dính CSS
+function switchInternalTab(tab) { 
+    document.getElementById('content-stk').style.display = (tab === 'stk' ? 'block' : 'none'); 
+    document.getElementById('content-quy').style.display = (tab === 'quy' ? 'block' : 'none'); 
+    document.getElementById('btn-tab-stk').classList.remove('active');
+    document.getElementById('btn-tab-quy').classList.remove('active');
+    document.getElementById('btn-tab-' + tab).classList.add('active'); 
+}
+
 function switchSettingsTab(tab) { 
     document.getElementById('content-set-acc').style.display = (tab === 'acc' ? 'block' : 'none'); 
     document.getElementById('content-set-bank').style.display = (tab === 'bank' ? 'block' : 'none'); 
-    document.getElementById('btn-tab-set-acc').classList.toggle('active', tab === 'acc'); 
-    document.getElementById('btn-tab-set-bank').classList.toggle('active', tab === 'bank'); 
+    document.getElementById('btn-tab-set-acc').classList.remove('active');
+    document.getElementById('btn-tab-set-bank').classList.remove('active');
+    document.getElementById('btn-tab-set-' + tab).classList.add('active'); 
 }
 
 function deleteSTK(id) { if(confirm("Xóa bỏ hoàn toàn sổ tiết kiệm này?")) { syncData(true); masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id); saveMaster(); renderSTK(masterData[currentDay].stk); calcTotal(); } }
@@ -1883,7 +1880,13 @@ function cleanTien(s) { return s ? parseInt(s.toString().replace(/\D/g, '')) || 
 function formatInput(i) { let v = i.value.replace(/\D/g, ''); i.value = v ? formatTien(v) : ""; }
 function formatSoLuong(i) { i.value = i.value.replace(/\D/g, ''); }
 function vnDate(s) { if(!s) return "--"; let p = s.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
-function changeDate() { currentDay = document.getElementById('header-date-picker').value; loadDay(); }
+
+// THAY ĐỔI: Hàm changeDate gọi loadDay thay vì reload lại toàn bộ
+function changeDate() { 
+    currentDay = document.getElementById('header-date-picker').value; 
+    loadDay(); 
+}
+
 function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạch dữ liệu Tiền mặt, Ngân hàng, Quỹ và Sổ tiết kiệm của ngày hiển thị. Bạn chắc chắn?")) { delete masterData[currentDay]; saveMaster(); loadDay(); } }
 </script>
 </body>
