@@ -592,37 +592,59 @@ box-sizing: border-box;
 
 <script>
 // =====================================
-// HỆ THỐNG XÁC THỰC & CƠ SỞ DỮ LIỆU MÔ PHỎNG
+// HỆ THỐNG XÁC THỰC & CƠ SỞ DỮ LIỆU ĐÁM MÂY
 // =====================================
 
-// Khởi tạo Database giả lập trên LocalStorage nếu chưa có
-let systemDB = JSON.parse(localStorage.getItem('assetPro_ServerDB')) || {};
+const FIREBASE_URL = 'https://kiemdem-b7042-default-rtdb.asia-southeast1.firebasedatabase.app/systemDB.json';
 
-// Tạo mặc định tài khoản Admin nếu DB trống
-if (!systemDB['0839578432']) {
-    systemDB['0839578432'] = {
-        password: '123',
-        role: 'admin',
-        data: {
-            banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}],
-            quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"],
-            printHistory: []
-        }
-    };
-    saveSystemDB();
-}
-
+let systemDB = {};
 let activeUserPhone = null;
-let masterData = {}; // Dữ liệu của user đang đăng nhập
+let masterData = {}; 
 let currentDay = new Date().toISOString().split('T')[0];
 let isPrinting = false;
 const denoms = [500000, 200000, 100000, 50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100];
 
-function saveSystemDB() {
-    localStorage.setItem('assetPro_ServerDB', JSON.stringify(systemDB));
+// Hàm tải dữ liệu từ Server Firebase về
+async function loadServerDB() {
+    try {
+        let response = await fetch(FIREBASE_URL);
+        let data = await response.json();
+        if (data) {
+            systemDB = data;
+        }
+        
+        // Tạo mặc định tài khoản Admin nếu Server hoàn toàn trống
+        if (!systemDB['0839578432']) {
+            systemDB['0839578432'] = {
+                password: '123',
+                role: 'admin',
+                data: {
+                    banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}],
+                    quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"],
+                    printHistory: []
+                }
+            };
+            saveSystemDB(); 
+        }
+    } catch (error) {
+        console.error("Không thể kết nối với máy chủ database:", error);
+        alert("Lỗi tải dữ liệu từ máy chủ. Vui lòng kiểm tra kết nối mạng!");
+    }
 }
 
-// Override hàm saveMaster cũ để lưu vào database phân vùng của user
+// Gọi hàm lấy dữ liệu ngay lập tức khi mở web
+loadServerDB();
+
+// Hàm đẩy toàn bộ dữ liệu hệ thống lên Firebase
+function saveSystemDB() {
+    fetch(FIREBASE_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(systemDB)
+    });
+}
+
+// Ghi đè hàm saveMaster cũ để đồng bộ dữ liệu của user đang đăng nhập lên Firebase
 function saveMaster() { 
     if(activeUserPhone) {
         systemDB[activeUserPhone].data = masterData;
@@ -640,7 +662,7 @@ function handleLogin() {
     let phone = document.getElementById('login-phone').value.trim();
     let pass = document.getElementById('login-pass').value;
 
-    if (!systemDB[phone]) { alert("Tài khoản không tồn tại!"); return; }
+    if (!systemDB[phone]) { alert("Tài khoản không tồn tại hoặc dữ liệu đang tải, vui lòng thử lại sau vài giây!"); return; }
     if (systemDB[phone].password !== pass) { alert("Sai mật khẩu!"); return; }
 
     // Đăng nhập thành công
@@ -651,14 +673,13 @@ function handleLogin() {
     document.getElementById('main-app').style.display = 'flex';
     document.getElementById('display-user-phone').innerText = 'User: ' + phone;
 
-    // Check Role Admin
+    // Phân quyền hiển thị Menu Admin
     if (systemDB[phone].role === 'admin') {
         document.getElementById('nav-admin').style.display = 'block';
     } else {
         document.getElementById('nav-admin').style.display = 'none';
     }
 
-    // Khởi chạy App
     initializeApp();
 }
 
@@ -669,7 +690,7 @@ function handleRegister() {
     if (!phone || !pass) { alert("Vui lòng điền đủ thông tin!"); return; }
     if (systemDB[phone]) { alert("Số điện thoại này đã được đăng ký!"); return; }
 
-    // Tạo user mới kèm Data trắng
+    // Tạo user mới kèm Dữ liệu trắng mặc định
     systemDB[phone] = {
         password: pass,
         role: 'user',
@@ -679,7 +700,7 @@ function handleRegister() {
             printHistory: []
         }
     };
-    saveSystemDB();
+    saveSystemDB(); // Đẩy lên máy chủ
     alert("Đăng ký thành công! Vui lòng đăng nhập.");
     switchAuth('login');
     document.getElementById('login-phone').value = phone;
@@ -731,16 +752,14 @@ function adminConfirmChangePass() {
     }
 }
 
-
 // =====================================
-// KHỞI CHẠY APP SAU KHI LOGG IN
+// KHỞI CHẠY APP SAU KHI ĐĂNG NHẬP
 // =====================================
 function initializeApp() {
     document.getElementById('header-date-picker').value = currentDay;
     document.getElementById('in-quy-date').value = currentDay;
     document.getElementById('in-print-date').value = currentDay;
     
-    // Đảm bảo dữ liệu cơ bản luôn tồn tại
     if(!masterData.banks) masterData.banks = [];
     if(!masterData.quyReasons) masterData.quyReasons = [];
     if(!masterData.printHistory) masterData.printHistory = [];
@@ -751,7 +770,6 @@ function initializeApp() {
     renderPrintHistory();
     showSheet('sheet-tm', document.querySelector('.nav-item.active'));
     
-    // Nếu là admin, render thêm panel admin
     if (systemDB[activeUserPhone].role === 'admin') { renderAdminPanel(); }
 }
 
