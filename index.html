@@ -223,12 +223,19 @@ box-sizing: border-box;
             <label>Mật khẩu</label>
             <input type="password" id="login-pass" placeholder="Nhập mật khẩu...">
         </div>
+        <div style="text-align:right; margin-top:-10px; margin-bottom:15px;">
+            <span style="font-size:13px; color:var(--danger); cursor:pointer; font-style:italic;" onclick="forgotPassword()">Quên mật khẩu?</span>
+        </div>
         <button class="btn-main" onclick="handleLogin()">VÀO HỆ THỐNG</button>
         <div class="auth-switch" onclick="switchAuth('register')">Chưa có tài khoản? Tạo mới ngay.</div>
     </div>
 
     <div class="auth-box" id="register-box" style="display:none;">
         <div class="auth-title">TẠO TÀI KHOẢN MỚI</div>
+        <div class="form-group">
+            <label>Họ và tên</label>
+            <input type="text" id="reg-name" placeholder="Họ và tên người sử dụng...">
+        </div>
         <div class="form-group">
             <label>Số điện thoại</label>
             <input type="tel" id="reg-phone" placeholder="Số điện thoại của bạn...">
@@ -247,7 +254,7 @@ box-sizing: border-box;
 <div class="sidebar" id="sidebarMenu">
 <div class="sidebar-header" style="background:var(--primary); color:var(--accent); padding:20px; text-align:center; font-weight:bold; font-size:18px; border-bottom:1px solid #444;">
     ASSET PRO LUXURY<br>
-    <span id="display-user-phone" style="font-size:12px; font-weight:normal; color:#ccc;"></span>
+    <span id="display-user-phone" style="font-size:13px; font-weight:normal; color:#fff; display:block; margin-top:5px;"></span>
 </div>
 <div class="nav-item active" onclick="showSheet('sheet-tm', this)">1. Tiền Mặt</div>
 <div class="nav-item" onclick="showSheet('sheet-nh', this)">2. Ngân Hàng</div>
@@ -339,10 +346,10 @@ box-sizing: border-box;
 
 <div id="sheet-admin" class="page">
 <h2>Bảng Điều Khiển Quản Trị Hệ Thống</h2>
-<div style="background:white; padding:30px; border:2px solid var(--danger)">
+<div style="background:white; padding:30px; border:2px solid var(--danger); overflow-x: auto;">
     <h3 style="margin-top:0; color:var(--danger)">Danh sách tài khoản</h3>
-    <table class="data-table">
-        <thead><tr><th style="width:50px">STT</th><th style="text-align:left">Số Điện Thoại</th><th>Vai Trò</th><th style="width:150px">Đổi Mật Khẩu</th></tr></thead>
+    <table class="data-table" style="min-width: 600px;">
+        <thead><tr><th style="width:40px">STT</th><th style="text-align:left">Họ Tên</th><th style="text-align:left">Số Điện Thoại</th><th style="width:80px">Vai Trò</th><th style="width:180px">Hành Động</th></tr></thead>
         <tbody id="body-admin-users"></tbody>
     </table>
 </div>
@@ -605,6 +612,24 @@ box-sizing: border-box;
 <div class="modal-overlay" id="modal-stk-dh"><div class="modal-content" style="max-width:450px;"><div class="modal-title">ĐÁO HẠN VÀ TÁI TỤC</div><div class="form-group"><label>LÃI THỰC NHẬN ĐỢT NÀY</label><input type="text" id="in-dh-lai" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div><div style="display:flex; gap:15px; background:#f4f4f4; padding:15px; border:1px solid #ccc;"><div class="form-group" style="margin-bottom:0; flex:1"><label>LÃI SUẤT VÒNG TỚI</label><input type="number" id="in-dh-ls" step="any"></div><div class="form-group" style="margin-bottom:0; flex:1"><label>KỲ HẠN TỚI (THÁNG)</label><input type="number" id="in-dh-mo" placeholder="Trống = Kế thừa cũ"></div></div><input type="hidden" id="hid-dh-id"><div style="display:flex; gap:15px; margin-top:30px;"><button class="btn-main" style="background:var(--danger); color:white; border:color:var(--danger); flex:1" onclick="confirmDH(false)">TẤT TOÁN SỔ</button><button class="btn-main" style="background:var(--primary); color:var(--accent); flex:2" onclick="confirmDH(true)">XÁC NHẬN TÁI TỤC</button></div></div></div>
 <div class="modal-overlay" id="modal-stk-detail"><div class="modal-content" style="max-width:750px;"><div class="modal-title">BIÊN BẢN GIAO DỊCH SỔ</div><div id="detail-summary" style="background:#f4f9f4; padding:20px; border:1px solid var(--success); margin-bottom:20px; font-size:15px; line-height:1.6;"></div><div style="overflow-x:auto;"><table class="data-table"><thead><tr style="background:#e9ecef"><th>Ngày GD</th><th>Nội Dung</th><th>Lãi Suất</th><th>Số Ngày Gửi</th><th>Lãi Ước Tính</th><th>Biến Động Nợ</th></tr></thead><tbody id="detail-tbody"></tbody></table></div><button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-stk-detail')">ĐÓNG BIÊN BẢN</button></div></div>
 
+<div class="modal-overlay" id="modal-admin-name">
+<div class="modal-content" style="max-width:400px;">
+<div class="modal-title">ĐỔI TÊN NGƯỜI DÙNG</div>
+<div class="form-group">
+    <label>Tài khoản (SĐT)</label>
+    <input type="text" id="admin-target-user-name" readonly>
+</div>
+<div class="form-group">
+    <label>Tên hiển thị mới</label>
+    <input type="text" id="admin-new-name" placeholder="Nhập họ và tên mới...">
+</div>
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-admin-name')">HỦY BỎ</button>
+<button class="btn-main" style="background:var(--info); color:#fff; border-color:var(--info); flex:2" onclick="adminConfirmChangeName()">CẬP NHẬT</button>
+</div>
+</div>
+</div>
+
 <div class="modal-overlay" id="modal-admin-pass">
 <div class="modal-content" style="max-width:400px;">
 <div class="modal-title">ĐỔI MẬT KHẨU USER</div>
@@ -649,6 +674,7 @@ async function loadServerDB() {
         // Tạo mặc định tài khoản Admin nếu Server hoàn toàn trống
         if (!systemDB['0839578432']) {
             systemDB['0839578432'] = {
+                name: 'Administrator',
                 password: '123',
                 role: 'admin',
                 data: {
@@ -691,6 +717,10 @@ function switchAuth(type) {
     document.getElementById('register-box').style.display = type === 'register' ? 'block' : 'none';
 }
 
+function forgotPassword() {
+    alert("Vui lòng liên hệ Admin (SĐT: 0839578432) để được hỗ trợ cấp lại mật khẩu!");
+}
+
 function handleLogin() {
     let phone = document.getElementById('login-phone').value.trim();
     let pass = document.getElementById('login-pass').value;
@@ -704,7 +734,10 @@ function handleLogin() {
 
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'flex';
-    document.getElementById('display-user-phone').innerText = 'User: ' + phone;
+    
+    // Hiển thị tên người dùng và SĐT
+    let userName = systemDB[phone].name || "Thành viên";
+    document.getElementById('display-user-phone').innerText = 'Xin chào, ' + userName + ' (' + phone + ')';
 
     // Phân quyền hiển thị Menu Admin
     if (systemDB[phone].role === 'admin') {
@@ -717,14 +750,16 @@ function handleLogin() {
 }
 
 function handleRegister() {
+    let name = document.getElementById('reg-name').value.trim();
     let phone = document.getElementById('reg-phone').value.trim();
     let pass = document.getElementById('reg-pass').value;
 
-    if (!phone || !pass) { alert("Vui lòng điền đủ thông tin!"); return; }
+    if (!name || !phone || !pass) { alert("Vui lòng điền đủ Họ tên, Số điện thoại và Mật khẩu!"); return; }
     if (systemDB[phone]) { alert("Số điện thoại này đã được đăng ký!"); return; }
 
     // Tạo user mới kèm Dữ liệu trắng mặc định
     systemDB[phone] = {
+        name: name,
         password: pass,
         role: 'user',
         data: {
@@ -756,13 +791,40 @@ function renderAdminPanel() {
     let stt = 1;
     for (const phone in systemDB) {
         let roleHtml = systemDB[phone].role === 'admin' ? '<span class="admin-badge">ADMIN</span>' : 'USER';
+        let displayName = systemDB[phone].name || 'Chưa cập nhật';
         tbody.innerHTML += `
         <tr>
             <td align="center">${stt++}</td>
+            <td style="font-weight:bold">${displayName}</td>
             <td style="font-weight:bold">${phone}</td>
             <td align="center">${roleHtml}</td>
-            <td align="center"><button class="btn-sm" style="background:var(--primary); color:white;" onclick="adminOpenChangePass('${phone}')">Đổi Pass</button></td>
+            <td align="center">
+                <div style="display:flex; gap:5px; justify-content:center;">
+                    <button class="btn-sm" style="background:var(--info); color:white; border-color:var(--info);" onclick="adminOpenChangeName('${phone}', '${displayName}')">Đổi Tên</button>
+                    <button class="btn-sm" style="background:var(--primary); color:white;" onclick="adminOpenChangePass('${phone}')">Đổi Pass</button>
+                </div>
+            </td>
         </tr>`;
+    }
+}
+
+function adminOpenChangeName(phone, currentName) {
+    document.getElementById('admin-target-user-name').value = phone;
+    document.getElementById('admin-new-name').value = currentName === 'Chưa cập nhật' ? '' : currentName;
+    openModal('modal-admin-name');
+}
+
+function adminConfirmChangeName() {
+    let phone = document.getElementById('admin-target-user-name').value;
+    let newName = document.getElementById('admin-new-name').value.trim();
+    if(!newName) { alert("Không được để trống tên!"); return; }
+
+    if(systemDB[phone]) {
+        systemDB[phone].name = newName;
+        saveSystemDB();
+        alert("Đã đổi tên thành công cho tài khoản: " + phone);
+        closeModal('modal-admin-name');
+        renderAdminPanel();
     }
 }
 
@@ -1548,3 +1610,4 @@ function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạ
 </script>
 </body>
 </html>
+Vẫn bị chạy theo
