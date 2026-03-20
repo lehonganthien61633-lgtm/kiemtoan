@@ -104,7 +104,7 @@ h2 { font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 30px
 .data-table td { border: 1px solid #eee; padding: 12px 10px; }
 input, select { border: 1px solid #ccc; padding: 10px; font-family: "Times New Roman"; font-size: 16px; width: 100%; border-radius: 4px; box-sizing: border-box; }
 input:focus, select:focus { border-color: var(--accent); outline: none; background: #fffdf9; }
-input:read-only { background-color: #f9f9f9; color: #888; cursor: not-allowed; }
+input:read-only { background-color: #e9ecef; color: #555; cursor: not-allowed; }
 
 /* CARDS */
 .stk-card, .quy-card { background: #fff; border: 1px solid var(--border); padding: 25px; margin-bottom: 25px; position: relative; border-top: 6px solid var(--primary); box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: 0.3s; }
@@ -274,7 +274,7 @@ box-sizing: border-box;
 <div class="nav-item" onclick="showSheet('sheet-stk-quy', this)">3. Tiết Kiệm & Quỹ</div>
 <div class="nav-item" onclick="showSheet('sheet-tk', this)" style="color:var(--success)">4. Tổng Kết</div>
 <div class="nav-item hide-on-mobile" onclick="showSheet('sheet-print', this)" style="color:var(--info); border-top: 2px solid #eee;">🖨️ In Báo Cáo</div>
-<div class="nav-item" onclick="showSheet('sheet-settings', this)" style="color:var(--accent);">⚙️ Cài Đặt Tài Khoản</div>
+<div class="nav-item" onclick="showSheet('sheet-settings', this)" style="color:var(--accent);">⚙️ Cài Đặt</div>
 <div class="nav-item" id="nav-admin" onclick="showSheet('sheet-admin', this)" style="display:none; color:var(--danger); border-top: 2px solid #eee;">
     🛡️ Quản Lý Người Dùng <span id="admin-notif-badge" class="badge-notif" style="display:none;">!</span>
 </div>
@@ -352,25 +352,33 @@ box-sizing: border-box;
 </div>
 
 <div id="sheet-settings" class="page">
-<h2>Cài Đặt Tài Khoản & Hệ Thống</h2>
+<div style="display:flex; margin-bottom:25px; border:1px solid #000">
+    <button class="tab-btn active" id="btn-tab-set-acc" onclick="switchSettingsTab('acc')">CÀI ĐẶT TÀI KHOẢN</button>
+    <button class="tab-btn" id="btn-tab-set-bank" onclick="switchSettingsTab('bank')">DANH SÁCH NGÂN HÀNG</button>
+</div>
 
-<div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
-    <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Thông Tin Cá Nhân</h3>
-    <div class="form-group"><label>Họ và tên hiển thị</label><input type="text" id="set-user-name"></div>
-    <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
-    <div class="form-group"><label>Số điện thoại (Cố định)</label><input type="tel" id="set-user-phone" readonly style="background-color:#e9ecef; cursor:not-allowed;"></div>
-    
-    <div style="display:flex; gap:15px; margin-top:20px;">
-        <button class="btn-main" style="background:var(--success); color:white; border:none; margin-top:0; flex:2;" onclick="saveUserInfo()">CẬP NHẬT THÔNG TIN</button>
-        <button class="btn-main" style="background:var(--danger); color:white; border:none; margin-top:0; flex:1;" onclick="deleteMyAccount()">XÓA TÀI KHOẢN</button>
+<div id="content-set-acc">
+    <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
+        <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Thông Tin Cá Nhân</h3>
+        <div class="form-group"><label>Họ và tên hiển thị</label><input type="text" id="set-user-name"></div>
+        <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
+        <div class="form-group"><label>Số điện thoại (Cố định)</label><input type="tel" id="set-user-phone" readonly></div>
+        
+        <div style="display:flex; gap:15px; margin-top:20px;">
+            <button class="btn-main" style="background:var(--success); color:white; border:none; margin-top:0; flex:2;" onclick="saveUserInfo()">CẬP NHẬT THÔNG TIN</button>
+            <button class="btn-main" style="background:var(--danger); color:white; border:none; margin-top:0; flex:1;" onclick="deleteMyAccount()">XÓA TÀI KHOẢN</button>
+        </div>
     </div>
 </div>
 
-<div style="background:white; padding:30px; border:1px solid #000">
-    <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Danh Mục Ngân Hàng</h3>
-    <table class="data-table"><thead><tr><th style="width:60px">STT</th><th style="text-align:left">Tên Ngân Hàng Đầy Đủ</th><th style="width:180px">Tên Viết Tắt</th><th style="width:60px">Xóa</th></tr></thead><tbody id="body-settings-bank"></tbody></table>
-    <button class="btn-main" style="background:#000; color:var(--accent)" onclick="openModal('modal-bank-add-settings')">+ THÊM NGÂN HÀNG HỆ THỐNG</button>
+<div id="content-set-bank" style="display:none;">
+    <div style="background:white; padding:30px; border:1px solid #000">
+        <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Danh Mục Ngân Hàng Hệ Thống</h3>
+        <table class="data-table"><thead><tr><th style="width:60px">STT</th><th style="text-align:left">Tên Ngân Hàng Đầy Đủ</th><th style="width:180px">Tên Viết Tắt</th><th style="width:60px">Xóa</th></tr></thead><tbody id="body-settings-bank"></tbody></table>
+        <button class="btn-main" style="background:#000; color:var(--accent)" onclick="openModal('modal-bank-add-settings')">+ THÊM NGÂN HÀNG HỆ THỐNG</button>
+    </div>
 </div>
+
 </div>
 
 <div id="sheet-admin" class="page">
@@ -486,7 +494,7 @@ box-sizing: border-box;
 <h2 class="modal-title">CẤU HÌNH BẢN IN</h2>
 <div class="form-group">
 <label>Họ tên Người kiểm toán</label>
-<input type="text" id="in-auditor-name" placeholder="VD: Lê Hồng Ân Thiên">
+<input type="text" id="in-auditor-name" readonly style="background-color:#e9ecef; cursor:not-allowed;" title="Sửa tên ở mục Cài Đặt">
 </div>
 <div class="form-group">
 <label>Địa chỉ kiểm kê (Tự động lấy vị trí)</label>
@@ -588,7 +596,7 @@ box-sizing: border-box;
 </div>
 
 <div class="modal-overlay" id="modal-quy-rut">
-<div class="modal-content" style="max-width:450px">
+<div class="modal-content" style="max-width:450px;">
 <div class="modal-title">RÚT TIỀN TỪ QUỸ</div>
 <div class="form-group"><label>Số tiền rút (VNĐ)</label><input type="text" id="in-quy-rut-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)"></div>
 <div class="form-group"><label>Ngày rút</label><input type="date" id="in-quy-rut-date"></div>
@@ -1726,6 +1734,15 @@ if(id === 'sheet-print') renderPrintHistory();
 
 function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('active'); }
 function switchInternalTab(tab) { document.getElementById('content-stk').style.display = (tab === 'stk' ? 'block' : 'none'); document.getElementById('content-quy').style.display = (tab === 'quy' ? 'block' : 'none'); document.getElementById('btn-tab-stk').classList.toggle('active', tab === 'stk'); document.getElementById('btn-tab-quy').classList.toggle('active', tab === 'quy'); }
+
+// THÊM HÀM CHUYỂN TAB CÀI ĐẶT
+function switchSettingsTab(tab) { 
+    document.getElementById('content-set-acc').style.display = (tab === 'acc' ? 'block' : 'none'); 
+    document.getElementById('content-set-bank').style.display = (tab === 'bank' ? 'block' : 'none'); 
+    document.getElementById('btn-tab-set-acc').classList.toggle('active', tab === 'acc'); 
+    document.getElementById('btn-tab-set-bank').classList.toggle('active', tab === 'bank'); 
+}
+
 function deleteSTK(id) { if(confirm("Xóa bỏ hoàn toàn sổ tiết kiệm này?")) { syncData(true); masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id); saveMaster(); renderSTK(masterData[currentDay].stk); calcTotal(); } }
 
 function openModal(id) { document.getElementById(id).classList.add('active'); document.body.classList.add('modal-open'); }
@@ -1740,3 +1757,4 @@ function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạ
 </script>
 </body>
 </html>
+Vẫn bị di chuyển theo nếu dùng trên laptop
