@@ -644,7 +644,7 @@ box-sizing: border-box;
 </div>
 
 <div class="modal-overlay" id="modal-bank-add-settings">
-<div class="modal-content" style="max-width:450px">
+<div class="modal-content" style="max-width:450px;">
 <div class="modal-title">THÊM NGÂN HÀNG MỚI</div>
 <div class="form-group"><label>Tên Đầy Đủ Ngân Hàng</label><input type="text" id="set-bnk-full" placeholder="Ngân hàng TMCP Ngoại Thương Việt Nam"></div>
 <div class="form-group"><label>Tên Giao Dịch (Viết Tắt)</label><input type="text" id="set-bnk-short" placeholder="Vietcombank"></div>
@@ -959,6 +959,8 @@ function renderAdminPanel() {
         
         let promoteBtn = '';
         let delBtn = '';
+        let editNameBtn = `<button class="btn-sm" style="background:var(--info); color:white; border:none;" onclick="adminOpenChangeName('${phone}', '${displayName}')">Tên</button>`;
+        let editPassBtn = `<button class="btn-sm" style="background:var(--primary); color:white; border:none;" onclick="adminOpenChangePass('${phone}')">Pass</button>`;
         
         // Cấp/hạ quyền và Xóa: Chỉ hiện khi người đang đăng nhập là Root Admin (0839578432)
         if (activeUserPhone === '0839578432' && !isRoot) {
@@ -966,9 +968,15 @@ function renderAdminPanel() {
             delBtn = `<button class="btn-sm" style="background:var(--danger); color:white; border:none;" onclick="adminDeleteUser('${phone}')">Xóa</button>`;
         }
         
-        // Không cho phép chỉnh sửa Root Admin
-        if (isRoot) {
-             promoteBtn = ''; delBtn = '';
+        // Khóa hoàn toàn Admin phụ không cho sửa Admin chính
+        if (isRoot && activeUserPhone !== '0839578432') {
+             editNameBtn = ''; 
+             editPassBtn = '';
+        }
+        // Admin chính tự xem dòng của mình thì ko có nút Cấp quyền/Xóa
+        if (isRoot && activeUserPhone === '0839578432') {
+             promoteBtn = ''; 
+             delBtn = '';
         }
         
         tbody.innerHTML += `
@@ -979,8 +987,8 @@ function renderAdminPanel() {
             <td align="center">${roleHtml}</td>
             <td align="center">
                 <div style="display:flex; gap:5px; justify-content:center; flex-wrap:wrap;">
-                    <button class="btn-sm" style="background:var(--info); color:white; border:none;" onclick="adminOpenChangeName('${phone}', '${displayName}')">Tên</button>
-                    <button class="btn-sm" style="background:var(--primary); color:white; border:none;" onclick="adminOpenChangePass('${phone}')">Pass</button>
+                    ${editNameBtn}
+                    ${editPassBtn}
                     ${promoteBtn}
                     ${delBtn}
                 </div>
@@ -998,6 +1006,13 @@ function adminOpenChangeName(phone, currentName) {
 
 function adminConfirmChangeName() {
     let phone = document.getElementById('admin-target-user-name').value;
+    
+    // Bảo vệ ngầm
+    if(phone === '0839578432' && activeUserPhone !== '0839578432') {
+        alert("Bạn không có quyền chỉnh sửa Admin chính!");
+        return;
+    }
+    
     let newName = document.getElementById('admin-new-name').value.trim();
     if(!newName) { alert("Không được để trống tên!"); return; }
 
@@ -1013,13 +1028,27 @@ function adminConfirmChangeName() {
 function adminOpenChangePass(phone) {
     document.getElementById('admin-target-user').value = phone;
     document.getElementById('admin-new-pass').value = '';
+    // THÊM: Xóa trắng ô xác nhận mật khẩu
+    let confirmInput = document.getElementById('admin-confirm-new-pass');
+    if (confirmInput) confirmInput.value = '';
+    
     openModal('modal-admin-pass');
 }
 
 function adminConfirmChangePass() {
     let phone = document.getElementById('admin-target-user').value;
+    
+    // Bảo vệ ngầm
+    if(phone === '0839578432' && activeUserPhone !== '0839578432') {
+        alert("Bạn không có quyền chỉnh sửa Admin chính!");
+        return;
+    }
+    
     let newPass = document.getElementById('admin-new-pass').value;
-    if(!newPass) { alert("Không được để trống mật khẩu!"); return; }
+    let confirmPass = document.getElementById('admin-confirm-new-pass').value; // Lấy giá trị xác nhận
+    
+    if(!newPass || !confirmPass) { alert("Không được để trống mật khẩu!"); return; }
+    if(newPass !== confirmPass) { alert("Mật khẩu mới và phần Nhập lại không khớp nhau!"); return; }
 
     if(systemDB[phone]) {
         systemDB[phone].password = newPass;
@@ -1856,3 +1885,7 @@ function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạ
 </script>
 </body>
 </html>
+Ở phần in báo cáo
+Khi in thêm mục chữ ký giám đốc và có phần nhập tên giám đốc ở cài đặt in. Chỉ có Root Admin có quyền hiện cài đặt thay đổi được tên này.
+Chữ ký người bàn giao sẽ là của  các tài khoản còn chữ ký của người kiểm đếm sẽ bị trống để ký
+Họ và tên của người dùng ở cài đặt phải tự động viết hoa
