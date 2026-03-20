@@ -419,6 +419,28 @@ box-sizing: border-box;
 </div>
 </div>
 
+<div class="modal-overlay" id="modal-admin-pass">
+<div class="modal-content" style="max-width:400px;">
+<div class="modal-title">ĐỔI MẬT KHẨU USER</div>
+<div class="form-group">
+    <label>Tài khoản</label>
+    <input type="text" id="admin-target-user" readonly style="background:#eee;">
+</div>
+<div class="form-group">
+    <label>Mật khẩu mới</label>
+    <input type="password" id="admin-new-pass" placeholder="Nhập mật khẩu mới...">
+</div>
+<div class="form-group">
+    <label>Nhập lại mật khẩu mới</label>
+    <input type="password" id="admin-confirm-new-pass" placeholder="Xác nhận mật khẩu mới...">
+</div>
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-admin-pass')">HỦY BỎ</button>
+<button class="btn-main" style="background:var(--danger); color:#fff; border-color:var(--danger); flex:2" onclick="adminConfirmChangePass()">CẬP NHẬT</button>
+</div>
+</div>
+</div>
+
 
 <div id="print-area">
 <div class="p-wrap">
@@ -521,7 +543,7 @@ box-sizing: border-box;
 <input type="text" id="in-auditor-name" readonly style="background-color:#e9ecef; cursor:not-allowed;" title="Sửa tên ở mục Cài Đặt">
 </div>
 <div class="form-group">
-<label>Địa chỉ kiểm kê</label>
+<label>Địa chỉ kiểm kê (Tự động lấy vị trí)</label>
 <div style="display:flex; gap:10px;">
 <input type="text" id="in-print-address" placeholder="Đang xác định vị trí...">
 <button class="btn-sm" onclick="getLocation()" style="background:#000; color:#fff;">Lấy lại</button>
@@ -688,24 +710,6 @@ box-sizing: border-box;
 <div style="display:flex; gap:15px; margin-top:30px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-admin-name')">HỦY BỎ</button>
 <button class="btn-main" style="background:var(--info); color:#fff; border-color:var(--info); flex:2" onclick="adminConfirmChangeName()">CẬP NHẬT</button>
-</div>
-</div>
-</div>
-
-<div class="modal-overlay" id="modal-admin-pass">
-<div class="modal-content" style="max-width:400px;">
-<div class="modal-title">ĐỔI MẬT KHẨU USER</div>
-<div class="form-group">
-    <label>Tài khoản</label>
-    <input type="text" id="admin-target-user" readonly style="background:#eee;">
-</div>
-<div class="form-group">
-    <label>Mật khẩu mới</label>
-    <input type="password" id="admin-new-pass" placeholder="Nhập mật khẩu mới...">
-</div>
-<div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-admin-pass')">HỦY BỎ</button>
-<button class="btn-main" style="background:var(--danger); color:#fff; border-color:var(--danger); flex:2" onclick="adminConfirmChangePass()">CẬP NHẬT</button>
 </div>
 </div>
 </div>
@@ -1028,7 +1032,6 @@ function adminConfirmChangeName() {
 function adminOpenChangePass(phone) {
     document.getElementById('admin-target-user').value = phone;
     document.getElementById('admin-new-pass').value = '';
-    // THÊM: Xóa trắng ô xác nhận mật khẩu
     let confirmInput = document.getElementById('admin-confirm-new-pass');
     if (confirmInput) confirmInput.value = '';
     
@@ -1045,7 +1048,7 @@ function adminConfirmChangePass() {
     }
     
     let newPass = document.getElementById('admin-new-pass').value;
-    let confirmPass = document.getElementById('admin-confirm-new-pass').value; // Lấy giá trị xác nhận
+    let confirmPass = document.getElementById('admin-confirm-new-pass').value;
     
     if(!newPass || !confirmPass) { alert("Không được để trống mật khẩu!"); return; }
     if(newPass !== confirmPass) { alert("Mật khẩu mới và phần Nhập lại không khớp nhau!"); return; }
