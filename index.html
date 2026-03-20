@@ -364,9 +364,10 @@ box-sizing: border-box;
         <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
         <div class="form-group"><label>Số điện thoại (Cố định)</label><input type="tel" id="set-user-phone" readonly></div>
         
-        <div style="display:flex; gap:15px; margin-top:20px;">
-            <button class="btn-main" style="background:var(--success); color:white; border:none; margin-top:0; flex:2;" onclick="saveUserInfo()">CẬP NHẬT THÔNG TIN</button>
-            <button class="btn-main" style="background:var(--danger); color:white; border:none; margin-top:0; flex:1;" onclick="deleteMyAccount()">XÓA TÀI KHOẢN</button>
+        <div style="display:flex; gap:15px; margin-top:20px; flex-wrap:wrap;">
+            <button class="btn-main" style="background:var(--info); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="openUserChangePass()">ĐỔI MẬT KHẨU</button>
+            <button class="btn-main" style="background:var(--success); color:white; border:none; margin-top:0; flex:1.5; min-width:160px;" onclick="saveUserInfo()">CẬP NHẬT THÔNG TIN</button>
+            <button class="btn-main" style="background:var(--danger); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="deleteMyAccount()">XÓA TÀI KHOẢN</button>
         </div>
     </div>
 </div>
@@ -395,6 +396,29 @@ box-sizing: border-box;
 </div>
 </div>
 </div>
+
+<div class="modal-overlay" id="modal-user-change-pass">
+<div class="modal-content" style="max-width:400px;">
+<div class="modal-title">ĐỔI MẬT KHẨU</div>
+<div class="form-group">
+    <label>Mật khẩu hiện tại</label>
+    <input type="password" id="user-current-pass" placeholder="Nhập mật khẩu hiện tại...">
+</div>
+<div class="form-group">
+    <label>Mật khẩu mới</label>
+    <input type="password" id="user-new-pass" placeholder="Nhập mật khẩu mới...">
+</div>
+<div class="form-group">
+    <label>Nhập lại mật khẩu mới</label>
+    <input type="password" id="user-confirm-pass" placeholder="Xác nhận mật khẩu mới...">
+</div>
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-user-change-pass')">HỦY BỎ</button>
+<button class="btn-main" style="background:var(--info); color:#fff; border-color:var(--info); flex:2" onclick="confirmUserChangePass()">CẬP NHẬT</button>
+</div>
+</div>
+</div>
+
 
 <div id="print-area">
 <div class="p-wrap">
@@ -631,12 +655,25 @@ box-sizing: border-box;
 </div>
 </div>
 
-<div class="modal-overlay" id="modal-stk-nop"><div class="modal-content" style="max-width:400px;"><div class="modal-title">NỘP TIỀN TÍCH LŨY</div><div class="form-group"><label>SỐ TIỀN NỘP THÊM (VNĐ)</label><input type="text" id="in-nop-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div><div class="form-group"><label>LÃI SUẤT ÁP DỤNG (%)</label><input type="number" id="in-nop-ls" step="any"></div><input type="hidden" id="hid-nop-id"><div style="display:flex; gap:15px; margin-top:30px;"><button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-stk-nop')">HỦY BỎ</button><button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2" onclick="confirmNop()">XÁC NHẬN NỘP</button></div></div></div>
+<div class="modal-overlay" id="modal-stk-nop">
+<div class="modal-content" style="max-width:400px;">
+<div class="modal-title">NỘP TIỀN TÍCH LŨY</div>
+<div class="form-group"><label>SỐ TIỀN NỘP THÊM (VNĐ)</label><input type="text" id="in-nop-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div>
+<div class="form-group"><label>Ngày nộp</label><input type="date" id="in-stk-nop-date"></div>
+<div class="form-group"><label>LÃI SUẤT ÁP DỤNG (%)</label><input type="number" id="in-nop-ls" step="any"></div>
+<input type="hidden" id="hid-nop-id">
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-stk-nop')">HỦY BỎ</button>
+<button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2" onclick="confirmNop()">XÁC NHẬN NỘP</button>
+</div>
+</div>
+</div>
 
 <div class="modal-overlay" id="modal-stk-rut">
 <div class="modal-content" style="max-width:400px;">
 <div class="modal-title">LỆNH RÚT TIỀN SỔ TIẾT KIỆM</div>
 <div class="form-group"><label>SỐ TIỀN MUỐN RÚT (VNĐ)</label><input type="text" id="in-rut-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)"></div>
+<div class="form-group"><label>Ngày rút</label><input type="date" id="in-stk-rut-date"></div>
 <p id="stk-rut-warning" style="color:var(--danger); font-size:13px; font-style:italic; margin-top:5px;"></p>
 <input type="hidden" id="hid-rut-id">
 <div style="display:flex; gap:15px; margin-top:30px;">
@@ -810,10 +847,18 @@ function handleForgotPassword() {
     if (!phone) { alert("Vui lòng nhập số điện thoại!"); return; }
     if (!systemDB[phone]) { alert("Số điện thoại này không tồn tại trong hệ thống!"); return; }
 
-    systemDB[phone].forgotPassword = true;
-    saveSystemDB();
+    // Nếu là Admin thì tự reset luôn về 123
+    if (systemDB[phone].role === 'admin') {
+        systemDB[phone].password = '123';
+        systemDB[phone].forgotPassword = false;
+        saveSystemDB();
+        alert("Mật khẩu tài khoản Admin đã được reset về '123'.");
+    } else {
+        systemDB[phone].forgotPassword = true;
+        saveSystemDB();
+        alert("Yêu cầu của bạn đã được gửi đến Ban Quản Trị. Vui lòng chờ Admin đổi mật khẩu mới cho bạn.");
+    }
     
-    alert("Yêu cầu của bạn đã được gửi đến Ban Quản Trị. Vui lòng chờ Admin đổi mật khẩu mới cho bạn.");
     switchAuth('login');
 }
 
@@ -828,6 +873,36 @@ function handleLogout() {
 }
 
 // --- LOGIC USER SETTINGS ---
+function openUserChangePass() {
+    document.getElementById('user-current-pass').value = '';
+    document.getElementById('user-new-pass').value = '';
+    document.getElementById('user-confirm-pass').value = '';
+    openModal('modal-user-change-pass');
+}
+
+function confirmUserChangePass() {
+    let curPass = document.getElementById('user-current-pass').value;
+    let newPass = document.getElementById('user-new-pass').value;
+    let confirmPass = document.getElementById('user-confirm-pass').value;
+
+    if(!curPass || !newPass || !confirmPass) {
+        alert("Vui lòng điền đầy đủ thông tin!"); return;
+    }
+
+    if(systemDB[activeUserPhone].password !== curPass) {
+        alert("Mật khẩu hiện tại không đúng!"); return;
+    }
+
+    if(newPass !== confirmPass) {
+        alert("Mật khẩu mới và Nhập lại mật khẩu không khớp!"); return;
+    }
+
+    systemDB[activeUserPhone].password = newPass;
+    saveSystemDB();
+    alert("Đổi mật khẩu thành công!");
+    closeModal('modal-user-change-pass');
+}
+
 function saveUserInfo() {
     let newName = document.getElementById('set-user-name').value.trim();
     let newDob = document.getElementById('set-user-dob').value;
@@ -1395,6 +1470,7 @@ if(type === 'tich-luy') {
 }
 document.getElementById('hid-rut-id').value = id;
 document.getElementById('in-rut-val').value = "";
+document.getElementById('in-stk-rut-date').value = currentDay;
 let warning = document.getElementById('stk-rut-warning');
 if (type === 'ky-han') { warning.innerText = "* Rút sổ Kỳ Hạn: Rút tối thiểu 100k và Gốc còn lại >= 100k."; }
 openModal('modal-stk-rut');
@@ -1402,17 +1478,22 @@ openModal('modal-stk-rut');
 
 function confirmRut() {
 syncData(true);
-let id = parseInt(document.getElementById('hid-rut-id').value), v = cleanTien(document.getElementById('in-rut-val').value), s = masterData[currentDay].stk.find(x => x.id === id);
+let id = parseInt(document.getElementById('hid-rut-id').value), 
+    v = cleanTien(document.getElementById('in-rut-val').value), 
+    rutDate = document.getElementById('in-stk-rut-date').value,
+    s = masterData[currentDay].stk.find(x => x.id === id);
+
+if (!rutDate) { alert("Vui lòng chọn ngày rút!"); return; }
 if (!s) return;
 
 if (s.type === 'ky-han') {
 if(v >= 100000 && (s.amt - v >= 100000 || s.amt - v === 0)) {
-s.amt -= v; s.history.push({id: Date.now(), d: currentDay, n: "Rút tiền một phần", v: -v, ls: s.ls});
+s.amt -= v; s.history.push({id: Date.now(), d: rutDate, n: "Rút tiền một phần", v: -v, ls: s.ls});
 saveMaster(); closeModal('modal-stk-rut'); renderSTK(masterData[currentDay].stk); calcTotal();
 } else { alert("Sổ Kỳ Hạn: Rút tối thiểu 100k và Số gốc còn lại phải >= 100k (hoặc rút toàn bộ)!"); }
 } else {
 if(v > 0 && s.amt >= v) {
-s.amt -= v; s.history.push({id: Date.now(), d: currentDay, n: "Rút tiền", v: -v, ls: s.ls});
+s.amt -= v; s.history.push({id: Date.now(), d: rutDate, n: "Rút tiền", v: -v, ls: s.ls});
 saveMaster(); closeModal('modal-stk-rut'); renderSTK(masterData[currentDay].stk); calcTotal();
 } else { alert("Số tiền rút không hợp lệ hoặc lớn hơn số gốc hiện có trong sổ!"); }
 }
@@ -1435,12 +1516,25 @@ b.innerHTML += `<tr><td align="center">${vnDate(h.d)}</td><td style="text-align:
 openModal('modal-stk-detail');
 }
 
-function openNop(id) { document.getElementById('hid-nop-id').value = id; document.getElementById('in-nop-val').value = ""; openModal('modal-stk-nop'); }
+function openNop(id) { 
+    document.getElementById('hid-nop-id').value = id; 
+    document.getElementById('in-nop-val').value = ""; 
+    document.getElementById('in-stk-nop-date').value = currentDay;
+    openModal('modal-stk-nop'); 
+}
+
 function confirmNop() {
 syncData(true);
-let id = parseInt(document.getElementById('hid-nop-id').value), v = cleanTien(document.getElementById('in-nop-val').value), ls = parseFloat(document.getElementById('in-nop-ls').value)||0, s = masterData[currentDay].stk.find(x => x.id === id);
+let id = parseInt(document.getElementById('hid-nop-id').value), 
+    v = cleanTien(document.getElementById('in-nop-val').value), 
+    ls = parseFloat(document.getElementById('in-nop-ls').value)||0, 
+    nopDate = document.getElementById('in-stk-nop-date').value,
+    s = masterData[currentDay].stk.find(x => x.id === id);
+
+if (!nopDate) { alert("Vui lòng chọn ngày nộp!"); return; }
+
 if(s && v > 0) {
-s.amt += v; s.history.push({id: Date.now(), d: currentDay, n: "Nộp thêm", v, ls});
+s.amt += v; s.history.push({id: Date.now(), d: nopDate, n: "Nộp thêm", v, ls});
 saveMaster(); closeModal('modal-stk-nop'); renderSTK(masterData[currentDay].stk); calcTotal();
 } else { alert("Vui lòng nhập số tiền hợp lệ!"); }
 }
@@ -1757,4 +1851,3 @@ function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạ
 </script>
 </body>
 </html>
-Vẫn bị di chuyển theo nếu dùng trên laptop
