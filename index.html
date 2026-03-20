@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AssetPro Luxury - Tài Chính Cá Nhân</title>
+<style>
+:root {
+--primary: #1a1a1a;
+--accent: #b8860b;
+--success: #2d5a27;
+--danger: #8b0000;
+--info: #0056b3;
+--ivory: #faf9f6;
+--border: #dcdcdc;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+font-family: "Times New Roman", Times, serif;
+background-color: #f0f0f0;
+color: #222;
+margin: 0;
+min-height: 100vh;
+display: flex;
+justify-content: center;
+}
+
+/* === CSS THÊM MỚI CHO HỆ THỐNG AUTH (ĐĂNG NHẬP/ĐĂNG KÝ/ADMIN) === */
+.auth-wrapper {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: url('https://images.unsplash.com/photo-1616075133610-8dc0388cdce8?q=80&w=2000&auto=format&fit=crop') center/cover;
+    display: flex; justify-content: center; align-items: center; z-index: 100000;
+}
+.auth-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+}
+.auth-box {
+    background: var(--ivory); padding: 40px; border-radius: 8px; border-top: 5px solid var(--accent);
+    width: 90%; max-width: 400px; position: relative; z-index: 2; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+.auth-title { text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 25px; text-transform: uppercase; color: var(--primary); }
+.auth-switch { text-align: center; margin-top: 15px; font-size: 14px; cursor: pointer; color: var(--info); font-style: italic; }
+.auth-switch:hover { text-decoration: underline; }
+.admin-badge { background: var(--danger); color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; vertical-align: middle; margin-left: 5px; }
+
+/* Các style gốc giữ nguyên */
+.app-container {
+width: 100%; background-color: var(--ivory); min-height: 100vh;
+display: none; /* Ẩn đi khi chưa đăng nhập */
+flex-direction: column; position: relative;
+}
+
+/* HEADER - FIXED TO TOP */
+.header-main {
+display: flex; align-items: center; justify-content: space-between;
+background-color: var(--primary); padding: 15px 25px; color: white;
+position: sticky; top: 0; z-index: 50;
+border-bottom: 3px solid var(--accent);
+}
+.header-left { display: flex; align-items: center; gap: 15px; }
+.hamburger-btn { font-size: 26px; cursor: pointer; color: var(--accent); }
+.header-title { font-size: 20px; font-weight: bold; letter-spacing: 1px; font-variant: small-caps; }
+#header-date-picker { background: #fff; border: 1px solid var(--accent); padding: 8px 12px; font-family: "Times New Roman"; font-weight: bold; border-radius: 4px; font-size: 16px; cursor: pointer; }
+
+/* SIDEBAR */
+.sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 150; backdrop-filter: blur(5px); }
+.sidebar-overlay.active { display: block; }
+.sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background-color: var(--ivory); z-index: 200; transition: transform 0.4s ease; border-right: 5px solid var(--primary); }
+.sidebar.open { transform: translateX(280px); }
+.nav-item { padding: 18px 25px; font-size: 16px; font-weight: bold; cursor: pointer; border-bottom: 1px solid #eee; transition: 0.3s; }
+.nav-item:hover { color: var(--accent); padding-left: 30px; }
+.nav-item.active { background-color: var(--primary); color: var(--accent); }
+
+/* CONTENT */
+.main-wrapper { flex: 1; overflow-y: auto; width: 100%; padding: 25px 20px; }
+.page { display: none; max-width: 850px; margin: 0 auto; }
+.page.active { display: block; animation: fadeIn 0.4s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+h2 { font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 30px; text-transform: uppercase; border-bottom: 1px solid var(--accent); padding-bottom: 15px; }
+
+/* TABLES */
+.data-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.data-table th { background: #f4f4f4; border: 1px solid #ddd; padding: 15px 10px; font-size: 14px; text-align: center; text-transform: uppercase; }
+.data-table td { border: 1px solid #eee; padding: 12px 10px; }
+input, select { border: 1px solid #ccc; padding: 10px; font-family: "Times New Roman"; font-size: 16px; width: 100%; border-radius: 4px; box-sizing: border-box; }
+input:focus, select:focus { border-color: var(--accent); outline: none; background: #fffdf9; }
+input:read-only { background-color: #f9f9f9; color: #888; cursor: not-allowed; }
+
+/* CARDS */
+.stk-card, .quy-card { background: #fff; border: 1px solid var(--border); padding: 25px; margin-bottom: 25px; position: relative; border-top: 6px solid var(--primary); box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: 0.3s; }
+.stk-card:hover, .quy-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+.btn-i-detail { position: absolute; top: 15px; right: 15px; border: 1px solid #000; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; background: #eee; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 10; }
+
+.quy-card { border-top-color: var(--accent); }
+.stk-bank, .quy-storage { font-size: 14px; font-weight: bold; color: var(--accent); text-transform: uppercase; margin-bottom: 5px; }
+.stk-amount, .quy-amount { font-size: 28px; font-weight: bold; color: var(--danger); margin: 10px 0; }
+.stk-lai-dk { color: var(--success); font-weight: bold; font-style: italic; font-size: 15px; margin-bottom: 15px; display: block; }
+.quy-date { font-size: 13px; color: #666; font-style: italic; margin-bottom: 15px; display: block; }
+
+.progress-bg { background: #eee; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0; }
+.progress-bar { background: linear-gradient(90deg, var(--primary), var(--accent)); height: 100%; transition: width 1s; }
+
+/* BUTTONS */
+.btn-main { background: var(--primary); color: var(--accent); padding: 15px; border: 1px solid var(--accent); font-family: "Times New Roman"; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-top: 15px; transition: 0.2s; border-radius: 4px; text-transform: uppercase; }
+.btn-main:hover { filter: brightness(1.2); }
+.btn-sm { padding: 8px 16px; border: 1px solid #000; font-family: "Times New Roman"; font-weight: bold; cursor: pointer; background: #fff; border-radius: 4px; font-size: 13px; margin-left: 5px; margin-top: 5px; }
+
+/* MODALS */
+.modal-overlay {
+display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+background: rgba(0,0,0,0.85); z-index: 99999;
+justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px);
+}
+.modal-overlay.active { display: flex; }
+.modal-content {
+background: #fff; width: 100%; max-width: 550px;
+border: 2px solid var(--accent); padding: 35px;
+position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 60px rgba(0,0,0,0.6); border-radius: 8px;
+}
+.modal-title { font-size: 22px; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 25px; border-bottom: 1px solid #ccc; padding-bottom: 15px; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #333; text-transform: uppercase; }
+.sub-total-box { border: 2px double var(--primary); padding: 20px; text-align: center; margin-top: 30px; font-weight: bold; background: #fffaf0; }
+
+/* TAB UI */
+.tab-btn { flex: 1; padding: 15px; cursor: pointer; font-family: "Times New Roman"; font-weight: bold; border: 1px solid #000; background: #fff; text-transform: uppercase; }
+.tab-btn.active { background: var(--primary); color: var(--accent); }
+body.modal-open { overflow: hidden; }
+
+@media (min-width: 850px) {
+body { padding: 40px; }
+.app-container { flex-direction: row; max-width: 1200px; height: 90vh; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); display: none; }
+.sidebar { position: static; left: 0; width: 280px; height: 100%; border-right: 1px solid var(--primary); }
+.hamburger-btn { display: none; }
+.main-wrapper { padding: 50px; }
+.sidebar-overlay { display: none !important; }
+}
+
+/* KHU VỰC IN ẤN ĐẶC BIỆT (PRINT CSS) */
+#print-area { display: none; }
+@media print {
+body { background: #fff; padding: 0; margin: 0; }
+body * { visibility: hidden; }
+#print-area, #print-area * { visibility: visible; }
+
+#print-area {
+display: block; position: absolute; left: 0; top: 0; width: 100%;
+font-family: "Times New Roman", Times, serif; font-size: 13px; color: #000;
+box-sizing: border-box;
+}
+
+.p-wrap { border: 2px solid #000; padding: 20px; min-height: 95vh; display: flex; flex-direction: column;}
+
+.p-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px;}
+.p-title { text-align: center; text-transform: uppercase; font-weight: bold; font-size: 20px; margin: 15px 0 20px 0; }
+
+.p-info { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; font-size: 14px;}
+.p-info div { display: flex; }
+.p-info div span:first-child { width: 140px; font-weight: bold; }
+
+.p-section-title { font-weight: bold; text-transform: uppercase; margin: 15px 0 5px 0; font-size: 15px; border-bottom: 1px dashed #ccc; display: inline-block;}
+
+.p-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 13px; }
+.p-table th, .p-table td { border: 1px solid #000; padding: 6px; }
+.p-table th { text-align: center; background: #f0f0f0 !important; -webkit-print-color-adjust: exact; color: #000; }
+
+.p-tm-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 15px;}
+.p-tm-table th, .p-tm-table td { border: 1px solid #000; padding: 4px 6px; text-align: right;}
+.p-tm-table th { text-align: center; background: #f0f0f0 !important; -webkit-print-color-adjust: exact; color: #000; }
+.p-tm-table .tm-val { font-weight: bold; }
+.p-tm-table .tm-sl { text-align: center; }
+.p-tm-table .tm-empty { background: #e0e0e0 !important; -webkit-print-color-adjust: exact; }
+
+.p-split { display: flex; gap: 20px; margin-bottom: 15px; align-items: flex-start; }
+.p-split > div { flex: 1; }
+
+.p-footer { margin-top: auto; border: 2px solid #000; page-break-inside: avoid;}
+.p-sign { display: flex; border-bottom: 1px solid #000; }
+.p-sign > div { flex: 1; text-align: center; padding: 10px; height: 120px; position: relative; }
+.p-sign > div:first-child { border-right: 1px solid #000; }
+.p-sign-name { position: absolute; bottom: 10px; width: 100%; text-align: center; left: 0; font-weight: bold;}
+
+.p-absolute-footer { text-align: center; padding: 10px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div id="auth-screen" class="auth-wrapper">
+    <div class="auth-overlay"></div>
+    <div class="auth-box" id="login-box">
+        <div class="auth-title">ASSET PRO ĐĂNG NHẬP</div>
+        <div class="form-group">
+            <label>Số điện thoại</label>
+            <input type="tel" id="login-phone" placeholder="Nhập số điện thoại...">
+        </div>
+        <div class="form-group">
+            <label>Mật khẩu</label>
+            <input type="password" id="login-pass" placeholder="Nhập mật khẩu...">
+        </div>
+        <button class="btn-main" onclick="handleLogin()">VÀO HỆ THỐNG</button>
+        <div class="auth-switch" onclick="switchAuth('register')">Chưa có tài khoản? Tạo mới ngay.</div>
+    </div>
+
+    <div class="auth-box" id="register-box" style="display:none;">
+        <div class="auth-title">TẠO TÀI KHOẢN MỚI</div>
+        <div class="form-group">
+            <label>Số điện thoại</label>
+            <input type="tel" id="reg-phone" placeholder="Số điện thoại của bạn...">
+        </div>
+        <div class="form-group">
+            <label>Mật khẩu</label>
+            <input type="password" id="reg-pass" placeholder="Tạo mật khẩu...">
+        </div>
+        <button class="btn-main" style="background:var(--accent); color:white;" onclick="handleRegister()">ĐĂNG KÝ</button>
+        <div class="auth-switch" onclick="switchAuth('login')">Đã có tài khoản? Quay lại đăng nhập.</div>
+    </div>
+</div>
+
+<div class="app-container" id="main-app">
+<div class="sidebar-overlay" onclick="toggleMenu()"></div>
+<div class="sidebar" id="sidebarMenu">
+<div class="sidebar-header" style="background:var(--primary); color:var(--accent); padding:20px; text-align:center; font-weight:bold; font-size:18px; border-bottom:1px solid #444;">
+    ASSET PRO LUXURY<br>
+    <span id="display-user-phone" style="font-size:12px; font-weight:normal; color:#ccc;"></span>
+</div>
+<div class="nav-item active" onclick="showSheet('sheet-tm', this)">1. Tiền Mặt</div>
+<div class="nav-item" onclick="showSheet('sheet-nh', this)">2. Ngân Hàng</div>
+<div class="nav-item" onclick="showSheet('sheet-stk-quy', this)">3. Tiết Kiệm & Quỹ</div>
+<div class="nav-item" onclick="showSheet('sheet-tk', this)" style="color:var(--success)">4. Tổng Kết</div>
+<div class="nav-item" onclick="showSheet('sheet-print', this)" style="color:var(--info); border-top: 2px solid #eee;">🖨️ In Báo Cáo</div>
+<div class="nav-item" onclick="showSheet('sheet-settings', this)" style="color:var(--accent);">⚙️ Cài Đặt Danh Mục</div>
+<div class="nav-item" id="nav-admin" onclick="showSheet('sheet-admin', this)" style="display:none; color:var(--danger); border-top: 2px solid #eee;">🛡️ Quản Lý Người Dùng</div>
+<div class="nav-item" onclick="handleLogout()" style="color:#666;">🚪 Đăng Xuất</div>
+</div>
+
+<div class="main-wrapper">
+<div class="header-main">
+<div class="header-left"><div class="hamburger-btn" onclick="toggleMenu()">☰</div><div class="header-title" id="current-title">Tiền Mặt</div></div>
+<div class="header-right"><input type="date" id="header-date-picker" onchange="changeDate()"></div>
+</div>
+
+<div class="app-content">
+<div id="sheet-tm" class="page active">
+<h2>Biên Bản Kiểm Kê Tiền Mặt</h2>
+<table class="data-table"><thead><tr><th style="text-align: left;">Mệnh giá</th><th style="width:120px">Số lượng</th><th style="text-align:right">Thành tiền</th></tr></thead><tbody id="body-tm"></tbody></table>
+<div class="sub-total-box">TỔNG CỘNG TIỀN MẶT: <br><span id="val-tm" style="font-size:32px; color:var(--primary)">0</span> đ</div>
+</div>
+
+<div id="sheet-nh" class="page">
+<h2>Dư Nợ Tài Khoản Ngân Hàng</h2>
+<p style="font-size: 14px; color: #666; font-style: italic; text-align: center; margin-bottom: 20px;">* Cập nhật danh sách Ngân hàng trong mục Cài Đặt.</p>
+<table class="data-table"><thead><tr><th style="text-align:left">Ngân Hàng</th><th style="width:250px">Số Dư Hiện Tại (VNĐ)</th></tr></thead><tbody id="body-nh"></tbody></table>
+<div class="sub-total-box">TỔNG DƯ NỢ NGÂN HÀNG: <br><span id="val-nh" style="font-size:32px; color:var(--primary)">0</span> đ</div>
+</div>
+
+<div id="sheet-stk-quy" class="page">
+<div style="display:flex; margin-bottom:25px; border:1px solid #000">
+<button class="tab-btn active" id="btn-tab-stk" onclick="switchInternalTab('stk')">DANH SÁCH SỔ TIẾT KIỆM</button>
+<button class="tab-btn" id="btn-tab-quy" onclick="switchInternalTab('quy')">QUẢN LÝ CÁC QUỸ</button>
+</div>
+
+<div id="content-stk">
+<div id="stk-container"></div>
+<button class="btn-main" style="background:var(--success); color:white; border:none" onclick="openModal('modal-stk-add')">LẬP SỔ TIẾT KIỆM MỚI</button>
+<div class="sub-total-box" style="border-color:var(--success); background:#f4f9f4;">TỔNG TIẾT KIỆM: <span id="val-stk" style="font-size:26px; color:var(--success)">0</span> đ</div>
+</div>
+
+<div id="content-quy" style="display:none;">
+<div id="quy-container"></div>
+<button class="btn-main" style="background:var(--accent); color:white; border:none" onclick="openModal('modal-quy-add')">+ THIẾT LẬP QUỸ MỚI</button>
+<div class="sub-total-box" style="border-color:var(--accent); background:#fffdf5;">TỔNG CÁC QUỸ: <span id="val-quy" style="font-size:26px; color:var(--accent)">0</span> đ</div>
+</div>
+</div>
+
+<div id="sheet-tk" class="page">
+<h2>Báo Cáo Tổng Hợp Tài Sản</h2>
+<div style="background:white; border:2px solid #000; padding:40px; font-size: 18px;">
+<div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>1. Tiền mặt:</span><strong><span id="fin-tm">0</span> đ</strong></div>
+<div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>2. Ngân hàng:</span><strong><span id="fin-nh">0</span> đ</strong></div>
+<div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>3. Các loại quỹ:</span><strong><span id="fin-quy">0</span> đ</strong></div>
+<div style="display:flex; justify-content:space-between; margin-bottom:25px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>4. Tiết kiệm:</span><strong><span id="fin-stk">0</span> đ</strong></div>
+<div style="display:flex; justify-content:space-between; font-size:28px; border-top:4px double #000; padding-top:20px; color:var(--success)"><span>TỔNG GIÁ TRỊ:</span><strong><span id="fin-total">0</span> đ</strong></div>
+</div>
+<button class="btn-main" style="background:#eee; color:#000; margin-top:30px; border-color:#ccc" onclick="clearDayData()">XOÁ TOÀN BỘ DỮ LIỆU NGÀY NÀY</button>
+</div>
+
+<div id="sheet-print" class="page">
+<h2>Quản Lý In Ấn Báo Cáo</h2>
+<div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
+<div class="form-group" style="margin-bottom:0;">
+<label>Chọn ngày quyết toán muốn in</label>
+<div style="display:flex; gap:15px;">
+<input type="date" id="in-print-date" style="flex:2">
+<button class="btn-main" style="margin-top:0; flex:1; background:var(--info); color:white; border:none;" onclick="openPrintSetup()">TẠO BẢN IN</button>
+</div>
+</div>
+</div>
+
+<h3 style="text-align:left; border-bottom:2px solid var(--primary); padding-bottom:10px;">Lịch Sử In Ấn</h3>
+<table class="data-table">
+<thead><tr><th style="width:60px">STT</th><th style="text-align:left">Thời Gian In</th><th>Mã Đối Soát (ASCII)</th><th style="width:100px">Hành Động</th></tr></thead>
+<tbody id="body-print-history"></tbody>
+</table>
+</div>
+
+<div id="sheet-settings" class="page">
+<h2>Cấu Hình Danh Mục Ngân Hàng</h2>
+<div style="background:white; padding:30px; border:1px solid #000">
+<table class="data-table"><thead><tr><th style="width:60px">STT</th><th style="text-align:left">Tên Ngân Hàng Đầy Đủ</th><th style="width:180px">Tên Viết Tắt</th><th style="width:60px">Xóa</th></tr></thead><tbody id="body-settings-bank"></tbody></table>
+<button class="btn-main" style="background:#000; color:var(--accent)" onclick="openModal('modal-bank-add-settings')">+ THÊM NGÂN HÀNG HỆ THỐNG</button>
+</div>
+</div>
+
+<div id="sheet-admin" class="page">
+<h2>Bảng Điều Khiển Quản Trị Hệ Thống</h2>
+<div style="background:white; padding:30px; border:2px solid var(--danger)">
+    <h3 style="margin-top:0; color:var(--danger)">Danh sách tài khoản</h3>
+    <table class="data-table">
+        <thead><tr><th style="width:50px">STT</th><th style="text-align:left">Số Điện Thoại</th><th>Vai Trò</th><th style="width:150px">Đổi Mật Khẩu</th></tr></thead>
+        <tbody id="body-admin-users"></tbody>
+    </table>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+<div id="print-area">
+<div class="p-wrap">
+<div class="p-header">
+<div>
+<h2 style="margin:0; font-size:18px;">ASSET PRO LUXURY</h2>
+<div style="margin-top:5px;">Hệ Thống Quản Lý Tài Sản Cá Nhân</div>
+</div>
+<div style="text-align:right;">
+<div>Phiếu số: <span id="p-phieu" style="font-weight:bold;"></span> | Tuần: <span id="p-tuan" style="font-weight:bold;"></span></div>
+<div style="margin-top:5px;">Ngày <span id="p-d"></span> tháng <span id="p-m"></span> năm <span id="p-y"></span></div>
+</div>
+</div>
+
+<div class="p-title" id="p-title">KIỂM KÊ TRONG TUẦN</div>
+
+<div class="p-info">
+<div><span>Người kiểm toán:</span> <span id="p-auditor" style="font-weight:bold;"></span></div>
+<div><span>Địa chỉ thống kê:</span> <span id="p-address"></span></div>
+<div><span>Thời điểm in ấn:</span> <span id="p-time"></span></div>
+</div>
+
+<div class="p-section-title">I. KIỂM KÊ TIỀN MẶT</div>
+
+<table class="p-tm-table" id="p-tm-table">
+<thead>
+<tr>
+<th>Mệnh giá</th><th>SL</th><th>Tổng</th>
+<th>Mệnh giá</th><th>SL</th><th>Tổng</th>
+<th>Mệnh giá</th><th>SL</th><th>Tổng</th>
+</tr>
+</thead>
+<tbody id="p-tm-grid-tbody">
+</tbody>
+</table>
+<div style="text-align:right; font-weight:bold; margin-bottom:10px;">Tổng tiền mặt hiện có: <span id="p-tm-total" style="color:#000; font-size:16px;">0 đ</span></div>
+
+<div class="p-split">
+<div>
+<div class="p-section-title">II. TÀI KHOẢN NGÂN HÀNG</div>
+<table class="p-table" id="p-nh-table">
+<thead><tr><th>Loại tài khoản / Ngân hàng</th><th>Tổng dư nợ</th></tr></thead>
+<tbody></tbody>
+<tfoot><tr><td style="text-align:center; font-weight:bold;">Tổng cộng:</td><td align="right" id="p-nh-total" style="font-weight:bold;"></td></tr></tfoot>
+</table>
+
+<div class="p-section-title" style="margin-top:10px;">III. SỔ TIẾT KIỆM</div>
+<table class="p-table" id="p-stk-table">
+<thead><tr><th>Tên Sổ - Ngân hàng</th><th>Số tiền gốc</th></tr></thead>
+<tbody></tbody>
+<tfoot><tr><td style="text-align:center; font-weight:bold;">Tổng cộng:</td><td align="right" id="p-stk-total-print" style="font-weight:bold;"></td></tr></tfoot>
+</table>
+</div>
+
+<div>
+<div class="p-section-title">IV. CÁC QUỸ DỰ PHÒNG</div>
+<table class="p-table" id="p-quy-table">
+<thead><tr><th>Tên Quỹ</th><th>Tổng tiền</th></tr></thead>
+<tbody></tbody>
+<tfoot><tr><td style="text-align:center; font-weight:bold;">Tổng cộng:</td><td align="right" id="p-quy-total-print" style="font-weight:bold;"></td></tr></tfoot>
+</table>
+</div>
+</div>
+
+<div style="margin-top:10px; border-top: 2px dashed #000; padding-top:15px;">
+<div style="display:flex; justify-content:center; gap:20px; font-size:16px;">
+<div style="text-align:right; width:50%; font-weight:bold;">TỔNG TÀI SẢN (I + II + III + IV) =</div>
+<div style="width:50%;"><span id="p-final-total" style="font-weight:bold; font-size:18px;">0 đ</span></div>
+</div>
+<div style="display:flex; justify-content:center; gap:20px; font-size:16px; margin-top:10px;">
+<div style="text-align:right; width:50%; font-weight:bold;">Số tiền bàn giao =</div>
+<div style="width:50%;"><span id="p-final-total-2" style="font-weight:bold; font-size:18px;">0 đ</span></div>
+</div>
+<div style="text-align:center; font-style:italic; margin-top:10px; font-size:14px;">(Bằng chữ: <span id="p-text-total" style="font-weight:bold;"></span>)</div>
+</div>
+
+<div class="p-footer">
+<div style="text-align:center; font-weight:bold; border-bottom:1px solid #000; padding:8px; background:#f0f0f0 !important; -webkit-print-color-adjust: exact;">XÁC NHẬN BÀN GIAO & KIỂM ĐẾM</div>
+<div class="p-sign">
+<div>Người kiểm đếm<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-1"></div></div>
+<div>Người nhận bàn giao<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-2"></div></div>
+</div>
+<div class="p-absolute-footer">
+<div style="text-transform:uppercase; margin-bottom:10px; font-weight:bold;">PHIẾU KIỂM KÊ BẮT BUỘC PHẢI ĐƯỢC LƯU TRỮ - KHÔNG HỦY BỎ DƯỚI MỌI HÌNH THỨC</div>
+<div style="display:flex; justify-content:center; align-items:center; flex-direction:column; gap:5px; margin-bottom:10px;">
+    <div>MÃ ĐỐI SOÁT: <span id="p-ascii" style="font-family:monospace; font-weight:bold; letter-spacing:2px;"></span></div>
+    <div id="p-copy-info" style="display:none; font-weight:bold;">BẢN SAO</div>
+</div>
+<div style="font-weight:bold;">TỔNG CỤC QUẢN LÝ KINH TẾ<br>TRUNG TÂM QUẢN LÝ DÒNG TIỀN<br>BỘ PHẬN KIỂM TOÁN - THANH TRA</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-print-setup">
+<div class="modal-content">
+<h2 class="modal-title">CẤU HÌNH BẢN IN</h2>
+<div class="form-group">
+<label>Họ tên Người kiểm toán</label>
+<input type="text" id="in-auditor-name" placeholder="VD: Lê Hồng Ân Thiên">
+</div>
+<div class="form-group">
+<label>Địa chỉ kiểm kê (Tự động lấy vị trí)</label>
+<div style="display:flex; gap:10px;">
+<input type="text" id="in-print-address" placeholder="Đang xác định vị trí...">
+<button class="btn-sm" onclick="getLocation()" style="background:#000; color:#fff;">Lấy lại</button>
+</div>
+<p style="font-size:12px; color:#666; margin-top:5px; font-style:italic;">* Nếu trình duyệt chặn vị trí, bạn có thể tự nhập tay.</p>
+</div>
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-print-setup')">HỦY BỎ</button>
+<button class="btn-main" style="flex:2; background:var(--info); border-color:var(--info); color:white;" onclick="confirmExecutePrint()">XÁC NHẬN IN</button>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-stk-add">
+<div class="modal-content">
+<div class="modal-title">LẬP SỔ TIẾT KIỆM</div>
+<div class="form-group"><label>Tên khoản tiết kiệm</label><input type="text" id="in-stk-name" placeholder="VD: Gửi tiết kiệm mua xe"></div>
+<div class="form-group"><label>Ngân hàng quản lý</label><select id="sel-stk-nh"></select></div>
+<div style="display:flex; gap:15px;">
+<div class="form-group" style="flex:1"><label>Hình thức gửi</label><select id="sel-stk-type"><option value="ky-han">Kỳ hạn cố định</option><option value="tich-luy">Gửi góp tích lũy</option></select></div>
+<div class="form-group" style="flex:1"><label>Lãi suất (%/năm)</label><input type="number" id="in-stk-ls" step="any" placeholder="Ví dụ: 5.5"></div>
+</div>
+<div class="form-group"><label>Số tiền gốc ban đầu</label><input type="text" id="in-stk-amt" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)" value="0"></div>
+<div style="background: #fafafa; border: 1px solid #ddd; padding: 20px; border-radius: 4px; margin-bottom: 20px;">
+<div style="display:flex; gap:15px;">
+<div class="form-group" style="flex:1"><label>Ngày gửi</label><input type="date" id="in-stk-start" onchange="autoCalcEnd()"></div>
+<div class="form-group" style="flex:1"><label>Cách tính hạn</label><select id="sel-calc-type" onchange="toggleCalcType()"><option value="month">Tự động (Tháng)</option><option value="day">Nhập tay</option></select></div>
+</div>
+<div id="box-stk-mo" class="form-group"><label>Số tháng gửi</label><input type="number" id="in-stk-mo" oninput="autoCalcEnd()"></div>
+<div class="form-group" style="margin-bottom:0;"><label>Ngày đáo hạn</label><input type="date" id="in-stk-end"></div>
+</div>
+<div style="display:flex; gap:15px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-stk-add')">HỦY BỎ</button>
+<button class="btn-main" style="flex:2" onclick="saveNewSTK()">LƯU VÀO HỆ THỐNG</button>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-quy-add">
+<div class="modal-content">
+<div class="modal-title">THIẾT LẬP QUỸ MỚI</div>
+<div class="form-group"><label>Tên Quỹ</label><input type="text" id="in-quy-name" placeholder="VD: Quỹ du lịch, Quỹ dự phòng..."></div>
+<div class="form-group"><label>Ngày thành lập</label><input type="date" id="in-quy-date"></div>
+<div class="form-group"><label>Số tiền khởi tạo</label><input type="text" id="in-quy-amt" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)" value="0"></div>
+<div class="form-group"><label>Nơi lưu trữ tiền quỹ ban đầu</label><select id="sel-quy-storage" style="width: 100%; padding: 10px;"></select></div>
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-add')">HỦY BỎ</button>
+<button class="btn-main" style="flex:2; background:var(--accent); color:white; border-color:var(--accent)" onclick="saveNewQuy()">TẠO QUỸ</button>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-quy-edit-storage">
+<div class="modal-content" style="max-width:450px">
+<div class="modal-title">PHÂN BỔ LƯU TRỮ QUỸ</div>
+<div class="form-group"><label>Nơi lưu trữ (Tiền mặt/Ngân hàng)</label><select id="sel-quy-edit-storage" style="width: 100%; padding: 10px;"></select></div>
+<div class="form-group"><label>Số tiền phân bổ (VNĐ)</label><input type="text" id="in-quy-edit-amt" oninput="formatInput(this)" style="font-size:20px; font-weight:bold; color:var(--success)"></div>
+<input type="hidden" id="hid-quy-edit-id">
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-edit-storage')">HỦY</button>
+<button class="btn-main" style="flex:1; background:var(--info); border-color:var(--info); color:white;" onclick="confirmEditQuyStorage()">CẬP NHẬT</button>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-quy-detail">
+<div class="modal-content" style="max-width:500px;">
+<div class="modal-title">CHI TIẾT PHÂN BỔ QUỸ</div>
+<div id="quy-detail-summary" style="background:#f4f9f4; padding:15px; border:1px solid var(--accent); margin-bottom:20px; font-size:16px; line-height:1.6;"></div>
+<table class="data-table"><thead><tr style="background:#e9ecef"><th>Nơi cất giữ</th><th>Số dư (VNĐ)</th></tr></thead><tbody id="quy-detail-tbody"></tbody></table>
+<button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:10px;" onclick="closeModal('modal-quy-detail')">ĐÓNG</button>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-quy-nop">
+<div class="modal-content" style="max-width:400px;">
+<div class="modal-title">NỘP THÊM VÀO QUỸ</div>
+<div class="form-group"><label>SỐ TIỀN NỘP (VNĐ)</label><input type="text" id="in-quy-nop-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div>
+<div class="form-group"><label>Nạp vào nơi lưu trữ nào?</label><select id="sel-quy-nop-storage" style="width: 100%; padding: 10px;"></select></div>
+<input type="hidden" id="hid-quy-nop-id">
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-nop')">HỦY BỎ</button>
+<button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2" onclick="confirmNopQuy()">XÁC NHẬN NỘP</button>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-quy-rut">
+<div class="modal-content" style="max-width:450px">
+<div class="modal-title">RÚT TIỀN TỪ QUỸ</div>
+<div class="form-group"><label>Số tiền rút (VNĐ)</label><input type="text" id="in-quy-rut-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)"></div>
+<div class="form-group"><label>Rút từ nơi lưu trữ nào?</label><select id="sel-quy-rut-storage" style="width: 100%; padding: 10px;"></select></div>
+<div class="form-group"><label>Nguyên do rút tiền</label><div style="display:flex; gap:10px;"><select id="sel-quy-rut-reason" style="flex:1; padding: 10px;"></select><button class="btn-sm" style="background:#000; color:#fff;" onclick="openReasonManager()">[+] Quản lý</button></div></div>
+<input type="hidden" id="hid-quy-rut-id">
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-rut')">HỦY BỎ</button>
+<button class="btn-main" style="background:var(--danger); color:#fff; border-color:var(--danger); flex:2" onclick="confirmRutQuy()">XÁC NHẬN RÚT</button>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-quy-reasons" style="z-index: 100000;">
+<div class="modal-content" style="max-width:400px;">
+<div class="modal-title">QUẢN LÝ LÝ DO RÚT</div>
+<div style="display:flex; gap:10px; margin-bottom: 20px;"><input type="text" id="in-new-reason" placeholder="Nhập nguyên do mới..." style="flex:1; padding:10px;"><button class="btn-sm" style="background:var(--success); color:#fff; font-size:14px; padding:0 15px;" onclick="saveNewReason()">THÊM</button></div>
+<table class="data-table"><thead><tr style="background:#e9ecef"><th style="text-align:left">Tên Nguyên Do</th><th style="width:50px">Xóa</th></tr></thead><tbody id="body-reasons-list"></tbody></table>
+<button class="btn-main" style="background:#000; color:#fff; border-color:#000;" onclick="closeReasonManager()">ĐÓNG</button>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-bank-add-settings">
+<div class="modal-content" style="max-width:450px">
+<div class="modal-title">THÊM NGÂN HÀNG MỚI</div>
+<div class="form-group"><label>Tên Đầy Đủ Ngân Hàng</label><input type="text" id="set-bnk-full" placeholder="Ngân hàng TMCP Ngoại Thương Việt Nam"></div>
+<div class="form-group"><label>Tên Giao Dịch (Viết Tắt)</label><input type="text" id="set-bnk-short" placeholder="Vietcombank"></div>
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-bank-add-settings')">HỦY</button>
+<button class="btn-main" style="flex:1" onclick="saveBankToSystem()">LƯU NGÂN HÀNG</button>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-stk-nop"><div class="modal-content" style="max-width:400px;"><div class="modal-title">NỘP TIỀN TÍCH LŨY</div><div class="form-group"><label>SỐ TIỀN NỘP THÊM (VNĐ)</label><input type="text" id="in-nop-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div><div class="form-group"><label>LÃI SUẤT ÁP DỤNG (%)</label><input type="number" id="in-nop-ls" step="any"></div><input type="hidden" id="hid-nop-id"><div style="display:flex; gap:15px; margin-top:30px;"><button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-stk-nop')">HỦY BỎ</button><button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2" onclick="confirmNop()">XÁC NHẬN NỘP</button></div></div></div>
+
+<div class="modal-overlay" id="modal-stk-rut">
+<div class="modal-content" style="max-width:400px;">
+<div class="modal-title">LỆNH RÚT TIỀN SỔ TIẾT KIỆM</div>
+<div class="form-group"><label>SỐ TIỀN MUỐN RÚT (VNĐ)</label><input type="text" id="in-rut-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)"></div>
+<p id="stk-rut-warning" style="color:var(--danger); font-size:13px; font-style:italic; margin-top:5px;"></p>
+<input type="hidden" id="hid-rut-id">
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1;" onclick="closeModal('modal-stk-rut')">KHÔNG RÚT</button>
+<button class="btn-main" style="background:var(--danger); color:#fff; border-color:var(--danger); flex:1" onclick="confirmRut()">XÁC NHẬN RÚT</button>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-stk-dh"><div class="modal-content" style="max-width:450px;"><div class="modal-title">ĐÁO HẠN VÀ TÁI TỤC</div><div class="form-group"><label>LÃI THỰC NHẬN ĐỢT NÀY</label><input type="text" id="in-dh-lai" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div><div style="display:flex; gap:15px; background:#f4f4f4; padding:15px; border:1px solid #ccc;"><div class="form-group" style="margin-bottom:0; flex:1"><label>LÃI SUẤT VÒNG TỚI</label><input type="number" id="in-dh-ls" step="any"></div><div class="form-group" style="margin-bottom:0; flex:1"><label>KỲ HẠN TỚI (THÁNG)</label><input type="number" id="in-dh-mo" placeholder="Trống = Kế thừa cũ"></div></div><input type="hidden" id="hid-dh-id"><div style="display:flex; gap:15px; margin-top:30px;"><button class="btn-main" style="background:var(--danger); color:white; border:color:var(--danger); flex:1" onclick="confirmDH(false)">TẤT TOÁN SỔ</button><button class="btn-main" style="background:var(--primary); color:var(--accent); flex:2" onclick="confirmDH(true)">XÁC NHẬN TÁI TỤC</button></div></div></div>
+<div class="modal-overlay" id="modal-stk-detail"><div class="modal-content" style="max-width:750px;"><div class="modal-title">BIÊN BẢN GIAO DỊCH SỔ</div><div id="detail-summary" style="background:#f4f9f4; padding:20px; border:1px solid var(--success); margin-bottom:20px; font-size:15px; line-height:1.6;"></div><div style="overflow-x:auto;"><table class="data-table"><thead><tr style="background:#e9ecef"><th>Ngày GD</th><th>Nội Dung</th><th>Lãi Suất</th><th>Số Ngày Gửi</th><th>Lãi Ước Tính</th><th>Biến Động Nợ</th></tr></thead><tbody id="detail-tbody"></tbody></table></div><button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-stk-detail')">ĐÓNG BIÊN BẢN</button></div></div>
+
+<div class="modal-overlay" id="modal-admin-pass">
+<div class="modal-content" style="max-width:400px;">
+<div class="modal-title">ĐỔI MẬT KHẨU USER</div>
+<div class="form-group">
+    <label>Tài khoản</label>
+    <input type="text" id="admin-target-user" readonly>
+</div>
+<div class="form-group">
+    <label>Mật khẩu mới</label>
+    <input type="password" id="admin-new-pass" placeholder="Nhập mật khẩu mới...">
+</div>
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-admin-pass')">HỦY BỎ</button>
+<button class="btn-main" style="background:var(--danger); color:#fff; border-color:var(--danger); flex:2" onclick="adminConfirmChangePass()">CẬP NHẬT</button>
+</div>
+</div>
+</div>
+
+<script>
+// =====================================
+// HỆ THỐNG XÁC THỰC & CƠ SỞ DỮ LIỆU MÔ PHỎNG
+// =====================================
+
+// Khởi tạo Database giả lập trên LocalStorage nếu chưa có
+let systemDB = JSON.parse(localStorage.getItem('assetPro_ServerDB')) || {};
+
+// Tạo mặc định tài khoản Admin nếu DB trống
+if (!systemDB['0839578432']) {
+    systemDB['0839578432'] = {
+        password: '123',
+        role: 'admin',
+        data: {
+            banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}],
+            quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"],
+            printHistory: []
+        }
+    };
+    saveSystemDB();
+}
+
+let activeUserPhone = null;
+let masterData = {}; // Dữ liệu của user đang đăng nhập
+let currentDay = new Date().toISOString().split('T')[0];
+let isPrinting = false;
+const denoms = [500000, 200000, 100000, 50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100];
+
+function saveSystemDB() {
+    localStorage.setItem('assetPro_ServerDB', JSON.stringify(systemDB));
+}
+
+// Override hàm saveMaster cũ để lưu vào database phân vùng của user
+function saveMaster() { 
+    if(activeUserPhone) {
+        systemDB[activeUserPhone].data = masterData;
+        saveSystemDB(); 
+    }
+}
+
+// --- LOGIC GIAO DIỆN AUTH ---
+function switchAuth(type) {
+    document.getElementById('login-box').style.display = type === 'login' ? 'block' : 'none';
+    document.getElementById('register-box').style.display = type === 'register' ? 'block' : 'none';
+}
+
+function handleLogin() {
+    let phone = document.getElementById('login-phone').value.trim();
+    let pass = document.getElementById('login-pass').value;
+
+    if (!systemDB[phone]) { alert("Tài khoản không tồn tại!"); return; }
+    if (systemDB[phone].password !== pass) { alert("Sai mật khẩu!"); return; }
+
+    // Đăng nhập thành công
+    activeUserPhone = phone;
+    masterData = systemDB[phone].data;
+
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'flex';
+    document.getElementById('display-user-phone').innerText = 'User: ' + phone;
+
+    // Check Role Admin
+    if (systemDB[phone].role === 'admin') {
+        document.getElementById('nav-admin').style.display = 'block';
+    } else {
+        document.getElementById('nav-admin').style.display = 'none';
+    }
+
+    // Khởi chạy App
+    initializeApp();
+}
+
+function handleRegister() {
+    let phone = document.getElementById('reg-phone').value.trim();
+    let pass = document.getElementById('reg-pass').value;
+
+    if (!phone || !pass) { alert("Vui lòng điền đủ thông tin!"); return; }
+    if (systemDB[phone]) { alert("Số điện thoại này đã được đăng ký!"); return; }
+
+    // Tạo user mới kèm Data trắng
+    systemDB[phone] = {
+        password: pass,
+        role: 'user',
+        data: {
+            banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}],
+            quyReasons: ["Chi tiêu", "Đầu tư"],
+            printHistory: []
+        }
+    };
+    saveSystemDB();
+    alert("Đăng ký thành công! Vui lòng đăng nhập.");
+    switchAuth('login');
+    document.getElementById('login-phone').value = phone;
+}
+
+function handleLogout() {
+    if(confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+        activeUserPhone = null;
+        masterData = {};
+        document.getElementById('auth-screen').style.display = 'flex';
+        document.getElementById('main-app').style.display = 'none';
+        document.getElementById('login-pass').value = '';
+    }
+}
+
+// --- LOGIC ADMIN ---
+function renderAdminPanel() {
+    let tbody = document.getElementById('body-admin-users');
+    tbody.innerHTML = '';
+    let stt = 1;
+    for (const phone in systemDB) {
+        let roleHtml = systemDB[phone].role === 'admin' ? '<span class="admin-badge">ADMIN</span>' : 'USER';
+        tbody.innerHTML += `
+        <tr>
+            <td align="center">${stt++}</td>
+            <td style="font-weight:bold">${phone}</td>
+            <td align="center">${roleHtml}</td>
+            <td align="center"><button class="btn-sm" style="background:var(--primary); color:white;" onclick="adminOpenChangePass('${phone}')">Đổi Pass</button></td>
+        </tr>`;
+    }
+}
+
+function adminOpenChangePass(phone) {
+    document.getElementById('admin-target-user').value = phone;
+    document.getElementById('admin-new-pass').value = '';
+    openModal('modal-admin-pass');
+}
+
+function adminConfirmChangePass() {
+    let phone = document.getElementById('admin-target-user').value;
+    let newPass = document.getElementById('admin-new-pass').value;
+    if(!newPass) { alert("Không được để trống mật khẩu!"); return; }
+
+    if(systemDB[phone]) {
+        systemDB[phone].password = newPass;
+        saveSystemDB();
+        alert("Đã đổi mật khẩu thành công cho số: " + phone);
+        closeModal('modal-admin-pass');
+    }
+}
+
+
+// =====================================
+// KHỞI CHẠY APP SAU KHI LOGG IN
+// =====================================
+function initializeApp() {
+    document.getElementById('header-date-picker').value = currentDay;
+    document.getElementById('in-quy-date').value = currentDay;
+    document.getElementById('in-print-date').value = currentDay;
+    
+    // Đảm bảo dữ liệu cơ bản luôn tồn tại
+    if(!masterData.banks) masterData.banks = [];
+    if(!masterData.quyReasons) masterData.quyReasons = [];
+    if(!masterData.printHistory) masterData.printHistory = [];
+
+    initTM();
+    refreshBankSettings();
+    toggleCalcType();
+    renderPrintHistory();
+    showSheet('sheet-tm', document.querySelector('.nav-item.active'));
+    
+    // Nếu là admin, render thêm panel admin
+    if (systemDB[activeUserPhone].role === 'admin') { renderAdminPanel(); }
+}
+
+function initTM() {
+const tb = document.getElementById('body-tm'); tb.innerHTML = "";
+denoms.forEach((m, i) => {
+let tr = document.createElement('tr');
+tr.innerHTML = `<td style="font-weight:bold">${formatTien(m)}</td><td><input type="text" inputmode="numeric" class="in-tm-val" oninput="formatSoLuong(this); syncData_NoLoad();" id="tm-${i}" style="text-align:right"></td><td id="val-tm-${i}" style="color:#666; text-align:right">0 đ</td>`;
+tb.appendChild(tr);
+});
+}
+
+function refreshBankSettings() {
+const bodySet = document.getElementById('body-settings-bank'); bodySet.innerHTML = "";
+masterData.banks.forEach((b, i) => {
+bodySet.innerHTML += `<tr><td align="center">${i+1}</td><td>${b.full}</td><td>${b.short}</td><td align="center"><span onclick="removeBank(${i})" style="color:red; cursor:pointer; font-weight:bold;">✖</span></td></tr>`;
+});
+
+let bankOptionsHtml = masterData.banks.map(b => `<option value="${b.short}">${b.short}</option>`).join('');
+document.getElementById('sel-stk-nh').innerHTML = bankOptionsHtml;
+
+let quyStorageHtml = `<option value="Tiền mặt">Tiền mặt / Két sắt</option>` + bankOptionsHtml;
+document.getElementById('sel-quy-storage').innerHTML = quyStorageHtml;
+document.getElementById('sel-quy-edit-storage').innerHTML = quyStorageHtml;
+
+loadDay();
+}
+
+function saveBankToSystem() {
+let f = document.getElementById('set-bnk-full').value.trim(), s = document.getElementById('set-bnk-short').value.trim() || f;
+if(!f) { alert("Tên ngân hàng không được để trống!"); return; }
+masterData.banks.push({full: f, short: s});
+saveMaster(); refreshBankSettings(); closeModal('modal-bank-add-settings');
+document.getElementById('set-bnk-full').value = ""; document.getElementById('set-bnk-short').value = "";
+}
+
+function removeBank(index) {
+if(confirm("Bạn có chắc chắn muốn xóa ngân hàng này khỏi hệ thống?")) {
+masterData.banks.splice(index, 1); saveMaster(); refreshBankSettings();
+}
+}
+
+function toggleCalcType() {
+const type = document.getElementById('sel-calc-type').value, box = document.getElementById('box-stk-mo'), inEnd = document.getElementById('in-stk-end');
+if (type === 'month') { box.style.display = 'block'; inEnd.readOnly = true; inEnd.style.background = '#f2f2f7'; autoCalcEnd(); }
+else { box.style.display = 'none'; inEnd.readOnly = false; inEnd.style.background = '#fff'; }
+}
+
+function autoCalcEnd() {
+if (document.getElementById('sel-calc-type').value !== 'month') return;
+let start = document.getElementById('in-stk-start').value, mo = parseInt(document.getElementById('in-stk-mo').value);
+if (start && mo > 0) {
+let d = new Date(start); d.setMonth(d.getMonth() + mo);
+while(d.getDay()===0 || d.getDay()===6) d.setDate(d.getDate()+1);
+document.getElementById('in-stk-end').value = d.toISOString().split('T')[0];
+}
+}
+
+function loadDay() {
+if(isPrinting) return;
+
+if (!masterData[currentDay]) masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
+let data = masterData[currentDay];
+
+document.querySelectorAll('.in-tm-val').forEach((inp, i) => inp.value = data.tm[i] || "");
+
+const bodyNH = document.getElementById('body-nh'); bodyNH.innerHTML = "";
+masterData.banks.forEach((bank) => {
+let savedVal = (data.nh || []).find(x => x.n === bank.short)?.v || "";
+bodyNH.innerHTML += `<tr><td style="font-weight:bold">${bank.short}</td><td><input type="text" inputmode="numeric" class="in-nh-val" data-name="${bank.short}" value="${savedVal?formatTien(cleanTien(savedVal)):''}" oninput="formatInput(this); syncData_NoLoad();" style="text-align:right; border:none; background:transparent; font-weight:bold; width:100%; color:var(--primary);"></td></tr>`;
+});
+
+if (!data.quy || data.quy.length === 0) {
+let prevDate = Object.keys(masterData).sort().reverse().find(d => d < currentDay && !['banks', 'quyReasons', 'printHistory'].includes(d) && masterData[d].quy && masterData[d].quy.length > 0);
+if (prevDate) data.quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
+else data.quy = [];
+}
+renderQuy(data.quy);
+
+if (!data.stk || data.stk.length === 0) {
+let prevDate = Object.keys(masterData).sort().reverse().find(d => d < currentDay && !['banks', 'quyReasons', 'printHistory'].includes(d) && masterData[d].stk && masterData[d].stk.length > 0);
+if (prevDate) data.stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
+else data.stk = [];
+}
+renderSTK(data.stk);
+
+saveMaster();
+calcTotal();
+}
+
+function syncData(forceSave = true) {
+if(isPrinting) return;
+
+if (!masterData[currentDay]) masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
+if (!masterData[currentDay].quy) masterData[currentDay].quy = [];
+if (!masterData[currentDay].stk) masterData[currentDay].stk = [];
+
+masterData[currentDay].tm = Array.from(document.querySelectorAll('.in-tm-val')).map(inp => inp.value);
+masterData[currentDay].nh = Array.from(document.querySelectorAll('.in-nh-val')).map(inp => ({n: inp.dataset.name, v: inp.value}));
+
+if(forceSave) saveMaster();
+calcTotal();
+}
+
+function syncData_NoLoad() { syncData(false); }
+
+// =====================================
+// QUẢN LÝ QUỸ
+// =====================================
+function getQuyTotalAmt(quy) {
+return (quy.storages || []).reduce((sum, item) => sum + (item.v || 0), 0);
+}
+
+function renderQuy(list) {
+const cont = document.getElementById('quy-container');
+let htmlContent = "";
+list.forEach(q => {
+let totalAmt = getQuyTotalAmt(q);
+let storageNames = (q.storages || []).map(s => s.name).join(', ');
+if(storageNames.length > 30) storageNames = storageNames.substring(0, 27) + '...';
+
+htmlContent += `
+<div class="quy-card">
+<button class="btn-i-detail" onclick="openDetailQuy(${q.id})" style="background:var(--accent); color:#fff; border:none;">i</button>
+<div class="quy-storage">📌 Phân bổ tại: ${storageNames}</div>
+<div style="font-weight:bold; font-size:18px; margin-bottom:5px;">${q.name}</div>
+<div class="quy-date">Ngày lập: ${vnDate(q.date)}</div>
+<div class="quy-amount">${formatTien(totalAmt)} đ</div>
+<div class="btn-actions">
+<button class="btn-sm" style="color:var(--info); border-color:var(--info);" onclick="openEditQuyStorage(${q.id})">Phân bổ lưu trữ</button>
+<button class="btn-sm" style="color:var(--primary); border-color:var(--primary);" onclick="openNopQuy(${q.id})">Nộp thêm</button>
+<button class="btn-sm" style="color:white; background:var(--danger); border-color:var(--danger);" onclick="openRutQuy(${q.id})">Rút tiền</button>
+<button class="btn-sm" style="color:red; border-color:red;" onclick="deleteQuy(${q.id})">Xóa Quỹ</button>
+</div>
+</div>`;
+});
+cont.innerHTML = htmlContent;
+}
+
+function saveNewQuy() {
+syncData(true);
+let name = document.getElementById('in-quy-name').value || "Quỹ mới",
+date = document.getElementById('in-quy-date').value,
+amt = cleanTien(document.getElementById('in-quy-amt').value),
+storage = document.getElementById('sel-quy-storage').value;
+
+if (amt < 0 || !date || name.trim() === "") { alert("Vui lòng nhập đủ Tên quỹ, Ngày và Số tiền khởi tạo!"); return; }
+
+let quyObj = { id: Date.now(), name: name, date: date, storages: [{name: storage, v: amt}] };
+
+if(!masterData[currentDay].quy) masterData[currentDay].quy = [];
+masterData[currentDay].quy.push(quyObj);
+
+saveMaster(); closeModal('modal-quy-add'); renderQuy(masterData[currentDay].quy); calcTotal();
+document.getElementById('in-quy-name').value = ""; document.getElementById('in-quy-amt').value = "0";
+}
+
+function openDetailQuy(id) {
+let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
+document.getElementById('quy-detail-summary').innerHTML = `Tên Quỹ: <b>${q.name}</b><br>Ngày lập: <b>${vnDate(q.date)}</b><br>Tổng tài sản quỹ: <b style="color:var(--danger)">${formatTien(getQuyTotalAmt(q))} đ</b>`;
+
+let b = document.getElementById('quy-detail-tbody'); b.innerHTML = "";
+q.storages.forEach((s) => {
+b.innerHTML += `<tr><td style="font-weight:bold">${s.name}</td><td align="right" style="color:var(--success); font-weight:bold; font-size:16px;">${formatTien(s.v)} đ</td></tr>`;
+});
+openModal('modal-quy-detail');
+}
+
+function openEditQuyStorage(id) {
+let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
+document.getElementById('hid-quy-edit-id').value = id;
+document.getElementById('in-quy-edit-amt').value = "";
+openModal('modal-quy-edit-storage');
+}
+
+function confirmEditQuyStorage() {
+syncData(true);
+let id = parseInt(document.getElementById('hid-quy-edit-id').value), newStorage = document.getElementById('sel-quy-edit-storage').value, amount = cleanTien(document.getElementById('in-quy-edit-amt').value);
+let q = masterData[currentDay].quy.find(x => x.id === id);
+if(q) {
+let existingStorage = q.storages.find(s => s.name === newStorage);
+if(existingStorage) { existingStorage.v += amount; } else { q.storages.push({name: newStorage, v: amount}); }
+saveMaster(); closeModal('modal-quy-edit-storage'); renderQuy(masterData[currentDay].quy); calcTotal();
+}
+}
+
+function openNopQuy(id) {
+syncData(true);
+let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
+document.getElementById('hid-quy-nop-id').value = id;
+document.getElementById('in-quy-nop-val').value = "";
+
+let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
+document.getElementById('sel-quy-nop-storage').innerHTML = storageHtml;
+openModal('modal-quy-nop');
+}
+
+function confirmNopQuy() {
+syncData(true);
+let id = parseInt(document.getElementById('hid-quy-nop-id').value), val = cleanTien(document.getElementById('in-quy-nop-val').value), storageName = document.getElementById('sel-quy-nop-storage').value;
+if (val <= 0) { alert("Vui lòng nhập số tiền nộp hợp lệ!"); return; }
+
+let q = masterData[currentDay].quy.find(x => x.id === id);
+if (q) {
+let storageIndex = q.storages.findIndex(s => s.name === storageName);
+if (storageIndex > -1) {
+q.storages[storageIndex].v += val;
+saveMaster(); closeModal('modal-quy-nop'); renderQuy(masterData[currentDay].quy); calcTotal();
+}
+}
+}
+
+function refreshQuyReasons() {
+if (!masterData.quyReasons) masterData.quyReasons = ["Chi tiêu sinh hoạt", "Đầu tư", "Sự kiện / Quà cáp"];
+let html = masterData.quyReasons.map(r => `<option value="${r}">${r}</option>`).join('');
+document.getElementById('sel-quy-rut-reason').innerHTML = html;
+
+let listHtml = "";
+masterData.quyReasons.forEach((r, i) => {
+listHtml += `<tr><td style="font-weight:bold">${r}</td><td align="center"><span onclick="deleteReason(${i})" style="color:red; cursor:pointer; font-weight:bold;">✖</span></td></tr>`;
+});
+document.getElementById('body-reasons-list').innerHTML = listHtml;
+}
+
+function openReasonManager() {
+refreshQuyReasons();
+document.getElementById('in-new-reason').value = "";
+openModal('modal-quy-reasons');
+}
+
+function closeReasonManager() { closeModal('modal-quy-reasons'); refreshQuyReasons(); }
+
+function saveNewReason() {
+let reason = document.getElementById('in-new-reason').value.trim();
+if (reason !== "") {
+if (!masterData.quyReasons.includes(reason)) {
+masterData.quyReasons.push(reason); saveMaster(); refreshQuyReasons();
+document.getElementById('in-new-reason').value = "";
+} else { alert("Nguyên do này đã tồn tại!"); }
+}
+}
+
+function deleteReason(index) {
+if(confirm("Xóa nguyên do này?")) { masterData.quyReasons.splice(index, 1); saveMaster(); refreshQuyReasons(); }
+}
+
+function openRutQuy(id) {
+syncData(true);
+let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
+document.getElementById('hid-quy-rut-id').value = id;
+document.getElementById('in-quy-rut-val').value = "";
+
+let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
+document.getElementById('sel-quy-rut-storage').innerHTML = storageHtml;
+
+refreshQuyReasons();
+openModal('modal-quy-rut');
+}
+
+function confirmRutQuy() {
+syncData(true);
+let id = parseInt(document.getElementById('hid-quy-rut-id').value), val = cleanTien(document.getElementById('in-quy-rut-val').value), storageName = document.getElementById('sel-quy-rut-storage').value;
+if (val <= 0) { alert("Vui lòng nhập số tiền rút hợp lệ!"); return; }
+
+let q = masterData[currentDay].quy.find(x => x.id === id);
+if (q) {
+let storageIndex = q.storages.findIndex(s => s.name === storageName);
+if (storageIndex > -1) {
+if (q.storages[storageIndex].v < val) {
+alert("Lỗi: Số tiền rút lớn hơn số dư hiện có trong Nơi lưu trữ này (" + formatTien(q.storages[storageIndex].v) + "đ)!");
+return;
+}
+q.storages[storageIndex].v -= val;
+saveMaster(); closeModal('modal-quy-rut'); renderQuy(masterData[currentDay].quy); calcTotal();
+}
+}
+}
+
+function deleteQuy(id) {
+if(confirm("Bạn có chắc chắn muốn xóa quỹ này không? Dữ liệu sẽ không thể khôi phục.")) {
+syncData(true); masterData[currentDay].quy = masterData[currentDay].quy.filter(x => x.id !== id);
+saveMaster(); renderQuy(masterData[currentDay].quy); calcTotal();
+}
+}
+
+// =====================================
+// 5. QUẢN LÝ SỔ TIẾT KIỆM
+// =====================================
+function saveNewSTK() {
+syncData(true);
+let name = document.getElementById('in-stk-name').value || "Sổ tiết kiệm", nh = document.getElementById('sel-stk-nh').value,
+amt = cleanTien(document.getElementById('in-stk-amt').value), ls = parseFloat(document.getElementById('in-stk-ls').value)||0,
+start = document.getElementById('in-stk-start').value, end = document.getElementById('in-stk-end').value,
+type = document.getElementById('sel-stk-type').value, mo = parseInt(document.getElementById('in-stk-mo').value)||0;
+
+if (amt < 0 || !end) { alert("Vui lòng nhập Ngày đáo hạn hợp lệ."); return; }
+
+let stkObj = { id: Date.now(), name, nh, amt, ls, start, end, type, mo, history: [{id: Date.now(), d: start, n: "Mở sổ ban đầu", v: amt, ls: ls}] };
+
+if (!masterData[currentDay].stk) masterData[currentDay].stk = [];
+masterData[currentDay].stk.push(stkObj);
+
+saveMaster(); closeModal('modal-stk-add'); renderSTK(masterData[currentDay].stk); calcTotal();
+
+document.getElementById('in-stk-name').value = ""; document.getElementById('in-stk-amt').value = "0"; document.getElementById('in-stk-ls').value = "";
+}
+
+function renderSTK(list) {
+const cont = document.getElementById('stk-container'); cont.innerHTML = "";
+const dToday = new Date(currentDay).getTime();
+list.forEach(s => {
+let dE = new Date(s.end).getTime(), remain = Math.floor((dE - dToday)/86400000);
+let total = Math.max(1, Math.floor((dE - new Date(s.start).getTime())/86400000));
+let per = Math.min(100, Math.max(0, (Math.floor((dToday - new Date(s.start).getTime())/86400000) / total) * 100));
+let laiSum = s.history.reduce((a, h) => a + (h.v > 0 ? calcH(h, s.end).lai : 0), 0);
+
+cont.innerHTML += `
+<div class="stk-card ${s.type}">
+<button class="btn-i-detail" onclick="openDetail(${s.id})">i</button>
+<div class="stk-bank">${s.nh}</div>
+<div style="font-weight:bold; font-size:18px; margin-bottom:10px;">${s.name} <span style="font-size:11px; border:1px solid var(--primary); padding:2px 6px; font-weight:normal; margin-left:5px;">${s.type==='ky-han'?'Kỳ hạn cố định':'Góp tích lũy'}</span></div>
+<div class="stk-amount">${formatTien(s.amt)} đ</div>
+<div class="stk-lai-dk">Tổng lãi ước tính: +${formatTien(laiSum)} đ</div>
+<div style="font-size:13px; margin-top:15px; font-weight:bold;">Tình trạng: ${remain > 0 ? 'Còn ' + remain + ' ngày nữa đáo hạn' : '<span style="color:var(--danger)">SỔ ĐÃ ĐẾN HẠN</span>'}</div>
+<div class="progress-bg"><div class="progress-bar" style="width:${per}%"></div></div>
+<div class="btn-actions">
+${remain <= 0 ? `<button class="btn-sm" style="background:var(--primary); color:var(--accent); font-size:14px; padding:10px 15px;" onclick="openDH(${s.id})">XỬ LÝ ĐÁO HẠN</button>` : ''}
+${s.type==='tich-luy'?`<button class="btn-sm" style="background:var(--success); color:white;" onclick="openNop(${s.id})">NỘP THÊM</button>`:''}
+<button class="btn-sm" style="background:var(--danger); color:white;" onclick="openRut(${s.id}, '${s.type}')">RÚT TIỀN</button>
+<button class="btn-sm" style="color:red; border-color:red" onclick="deleteSTK(${s.id})">Xóa sổ 0%</button>
+</div>
+</div>`;
+});
+}
+
+function openRut(id, type) {
+document.getElementById('hid-rut-id').value = id;
+document.getElementById('in-rut-val').value = "";
+let warning = document.getElementById('stk-rut-warning');
+if (type === 'ky-han') { warning.innerText = "* Rút sổ Kỳ Hạn: Rút tối thiểu 100k và Gốc còn lại >= 100k."; }
+else { warning.innerText = "* Rút sổ Góp: Rút thoải mái trong hạn mức số dư."; }
+openModal('modal-stk-rut');
+}
+
+function confirmRut() {
+syncData(true);
+let id = parseInt(document.getElementById('hid-rut-id').value), v = cleanTien(document.getElementById('in-rut-val').value), s = masterData[currentDay].stk.find(x => x.id === id);
+if (!s) return;
+
+if (s.type === 'ky-han') {
+if(v >= 100000 && (s.amt - v >= 100000 || s.amt - v === 0)) {
+s.amt -= v; s.history.push({id: Date.now(), d: currentDay, n: "Rút tiền một phần", v: -v, ls: s.ls});
+saveMaster(); closeModal('modal-stk-rut'); renderSTK(masterData[currentDay].stk); calcTotal();
+} else { alert("Sổ Kỳ Hạn: Rút tối thiểu 100k và Số gốc còn lại phải >= 100k (hoặc rút toàn bộ)!"); }
+} else {
+if(v > 0 && s.amt >= v) {
+s.amt -= v; s.history.push({id: Date.now(), d: currentDay, n: "Rút tiền", v: -v, ls: s.ls});
+saveMaster(); closeModal('modal-stk-rut'); renderSTK(masterData[currentDay].stk); calcTotal();
+} else { alert("Số tiền rút không hợp lệ hoặc lớn hơn số gốc hiện có trong sổ!"); }
+}
+}
+
+function calcH(h, endDate) {
+if (!endDate || h.v <= 0) return {days: 0, lai: 0};
+let days = Math.max(0, Math.floor((new Date(endDate).getTime() - new Date(h.d).getTime()) / 86400000));
+return {days, lai: Math.round(h.v * (h.ls / 100) * (days / 365))};
+}
+
+function openDetail(id) {
+let s = masterData[currentDay].stk.find(x => x.id === id); if(!s) return;
+document.getElementById('detail-summary').innerHTML = `Sổ tiết kiệm: <b>${s.name}</b><br>Ngân hàng: <b>${s.nh}</b><br>Kỳ hạn gửi: <b>${vnDate(s.start)}</b> đến <b>${vnDate(s.end)}</b>`;
+let b = document.getElementById('detail-tbody'); b.innerHTML = "";
+s.history.forEach((h) => {
+let r = calcH(h, s.end);
+b.innerHTML += `<tr><td align="center">${vnDate(h.d)}</td><td style="text-align:left; font-weight:bold">${h.n}</td><td align="center">${h.ls}%</td><td align="center">${r.days} ngày</td><td style="color:green; font-weight:bold">${h.v>0 ? '+'+formatTien(r.lai) : '--'}</td><td style="font-weight:bold; color:${h.v>0?'var(--success)':'var(--danger)'}">${h.v>0 ? '+'+formatTien(h.v) : formatTien(h.v)}</td></tr>`;
+});
+openModal('modal-stk-detail');
+}
+
+function openNop(id) { document.getElementById('hid-nop-id').value = id; document.getElementById('in-nop-val').value = ""; openModal('modal-stk-nop'); }
+function confirmNop() {
+syncData(true);
+let id = parseInt(document.getElementById('hid-nop-id').value), v = cleanTien(document.getElementById('in-nop-val').value), ls = parseFloat(document.getElementById('in-nop-ls').value)||0, s = masterData[currentDay].stk.find(x => x.id === id);
+if(s && v > 0) {
+s.amt += v; s.history.push({id: Date.now(), d: currentDay, n: "Nộp thêm", v, ls});
+saveMaster(); closeModal('modal-stk-nop'); renderSTK(masterData[currentDay].stk); calcTotal();
+} else { alert("Vui lòng nhập số tiền hợp lệ!"); }
+}
+
+function openDH(id) {
+syncData(true); let s = masterData[currentDay].stk.find(x => x.id === id); if(!s) return;
+let lai = s.history.reduce((a,h)=>a+(h.v>0?calcH(h,s.end).lai:0),0);
+document.getElementById('hid-dh-id').value = id; document.getElementById('in-dh-lai').value = formatTien(lai);
+document.getElementById('in-dh-ls').value = s.ls; document.getElementById('in-dh-mo').value = "";
+openModal('modal-stk-dh');
+}
+function confirmDH(isRenew) {
+let id = parseInt(document.getElementById('hid-dh-id').value);
+if (!isRenew) {
+if(confirm("Tất toán sổ sẽ xóa toàn bộ số dư và lịch sử giao dịch khỏi mục Tiết Kiệm. Bạn chắc chắn muốn xóa?")) {
+masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id);
+} else return;
+} else {
+let s = masterData[currentDay].stk.find(x => x.id === id), lai = cleanTien(document.getElementById('in-dh-lai').value), ls = parseFloat(document.getElementById('in-dh-ls').value)||0, mo = parseInt(document.getElementById('in-dh-mo').value)||s.mo||1;
+s.amt += lai; s.ls = ls; s.mo = mo; s.start = s.end;
+let d = new Date(s.start); d.setMonth(d.getMonth() + mo);
+while(d.getDay()===0 || d.getDay()===6) d.setDate(d.getDate()+1);
+s.end = d.toISOString().split('T')[0];
+s.history = [{id: Date.now(), d: s.start, n: `Tái tục vòng mới (Cộng ${formatTien(lai)}đ tiền lãi)`, v: s.amt, ls: ls}];
+}
+saveMaster(); closeModal('modal-stk-dh'); renderSTK(masterData[currentDay].stk); calcTotal();
+}
+
+// =====================================
+// 6. IN ẤN & TỔNG KẾT
+// =====================================
+
+function getLocation() {
+const addrInput = document.getElementById('in-print-address');
+addrInput.value = "Đang tìm vị trí...";
+if (navigator.geolocation) {
+navigator.geolocation.getCurrentPosition((position) => {
+const lat = position.coords.latitude;
+const lon = position.coords.longitude;
+fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+.then(res => res.json())
+.then(data => { addrInput.value = data.display_name || "Không lấy được địa chỉ chi tiết"; })
+.catch(err => { addrInput.value = "Hồ Chí Minh, Việt Nam (Mặc định)"; });
+}, () => { addrInput.value = "Chưa cấp quyền vị trí, vui lòng nhập tay"; });
+} else { addrInput.value = "Trình duyệt không hỗ trợ"; }
+}
+
+function getWeekNumber(d) {
+d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+let yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+}
+
+function getDayName(d) {
+let day = new Date(d).getDay();
+if (day === 1) return "KIỂM KÊ ĐẦU TUẦN";
+if (day === 0) return "KIỂM KÊ CUỐI TUẦN";
+return "KIỂM KÊ TRONG TUẦN";
+}
+
+function docTien(so) {
+if (so === 0) return "KHÔNG ĐỒNG";
+let chuSo = ["KHÔNG", "MỘT", "HAI", "BA", "BỐN", "NĂM", "SÁU", "BẢY", "TÁM", "CHÍN"];
+let donVi = ["", "NGHÌN", "TRIỆU", "TỶ"];
+function docBlock(so, dayDu) {
+let chuoi = ""; let tram = Math.floor(so / 100); let chuc = Math.floor((so % 100) / 10); let donvi = so % 10;
+if (dayDu || tram > 0) { chuoi += chuSo[tram] + " TRĂM "; chuoi += (chuc === 0 && donvi > 0) ? "LẺ " : ""; }
+if (chuc === 1) chuoi += "MƯỜI "; if (chuc > 1) chuoi += chuSo[chuc] + " MƯƠI ";
+if (donvi === 1 && chuc > 1) chuoi += "MỐT "; else if (donvi === 5 && chuc > 0) chuoi += "LĂM "; else if (donvi === 4 && chuc > 1) chuoi += "TƯ "; else if (donvi > 0) chuoi += chuSo[donvi] + " ";
+return chuoi.trim();
+}
+let strSo = so.toString(); let blocks = [];
+while (strSo.length > 0) { blocks.push(strSo.slice(-3)); strSo = strSo.slice(0, -3); }
+let result = "";
+for (let i = 0; i < blocks.length; i++) {
+let blockVal = parseInt(blocks[i]);
+if (blockVal > 0 || (i === 0 && blocks.length === 1)) {
+let doc = docBlock(blockVal, i < blocks.length - 1);
+if(doc) result = doc + " " + donVi[i] + " " + result;
+}
+}
+return result.trim().replace(/\s+/g, ' ') + " ĐỒNG";
+}
+
+function calcTotal() {
+if(isPrinting) return;
+let data = masterData[currentDay] || {tm:[], nh:[], quy:[], stk:[]};
+
+let tTM = 0; denoms.forEach((m, i) => { 
+    let v = (parseInt(data.tm[i])||0); 
+    let val = v*m;
+    tTM += val; 
+    let cell = document.getElementById(`val-tm-${i}`);
+    if(cell) cell.innerText = formatTien(val)+' đ'; 
+});
+let tNH = (data.nh || []).reduce((s,x)=>s+cleanTien(x.v),0);
+let tQuy = (data.quy || []).reduce((s,q)=>s+getQuyTotalAmt(q),0);
+let tSTK = (data.stk || []).reduce((s,x)=>s+(x.amt||0),0);
+let finalT = tTM + tNH + tQuy + tSTK;
+
+if(document.getElementById('val-tm')) document.getElementById('val-tm').innerText = formatTien(tTM);
+if(document.getElementById('val-nh')) document.getElementById('val-nh').innerText = formatTien(tNH);
+if(document.getElementById('val-quy')) document.getElementById('val-quy').innerText = formatTien(tQuy);
+if(document.getElementById('val-stk')) document.getElementById('val-stk').innerText = formatTien(tSTK);
+
+if(document.getElementById('fin-tm')) document.getElementById('fin-tm').innerText = formatTien(tTM);
+if(document.getElementById('fin-nh')) document.getElementById('fin-nh').innerText = formatTien(tNH);
+if(document.getElementById('fin-quy')) document.getElementById('fin-quy').innerText = formatTien(tQuy);
+if(document.getElementById('fin-stk')) document.getElementById('fin-stk').innerText = formatTien(tSTK);
+if(document.getElementById('fin-total')) document.getElementById('fin-total').innerText = formatTien(finalT);
+}
+
+function buildPrintLayout(printDate) {
+let data = masterData[printDate] || {tm:[], nh:[], quy:[], stk:[]};
+let tTM = 0; denoms.forEach((m, i) => { let v = (parseInt(data.tm && data.tm[i])||0); tTM += v*m; });
+let tNH = (data.nh || []).reduce((s,x)=>s+cleanTien(x.v),0);
+let tQuy = (data.quy || []).reduce((s,q)=>s+getQuyTotalAmt(q),0);
+let tSTK = (data.stk || []).reduce((s,x)=>s+(x.amt||0),0);
+let finalT = tTM + tNH + tQuy + tSTK;
+
+document.getElementById('p-tm-total').innerText = formatTien(tTM) + " đ";
+document.getElementById('p-final-total').innerText = formatTien(finalT) + " đ";
+document.getElementById('p-final-total-2').innerText = formatTien(finalT) + " đ";
+document.getElementById('p-text-total').innerText = docTien(finalT);
+
+let printCells = [null, null, denoms[0], denoms[1], denoms[2], denoms[3], denoms[4], denoms[5], denoms[6], denoms[7], denoms[8], denoms[9], denoms[10], denoms[11], null];
+
+let tmPrintHtml = "";
+for(let i=0; i<5; i++) {
+tmPrintHtml += `<tr>`;
+for(let j=0; j<3; j++) {
+let cellVal = printCells[i * 3 + j];
+if (cellVal === null) {
+tmPrintHtml += `<td class="tm-empty"></td><td class="tm-empty"></td><td class="tm-empty"></td>`;
+} else {
+let originIdx = denoms.indexOf(cellVal);
+let slg = (data.tm && data.tm[originIdx]) ? parseInt(data.tm[originIdx]) : 0;
+let tong = cellVal * slg;
+tmPrintHtml += `<td class="tm-val">${formatTien(cellVal)}</td><td class="tm-sl">${slg === 0 ? '' : slg}</td><td>${tong > 0 ? formatTien(tong) : '-'}</td>`;
+}
+}
+tmPrintHtml += `</tr>`;
+}
+document.getElementById('p-tm-grid-tbody').innerHTML = tmPrintHtml;
+
+let nhPrintHtml = "";
+(data.nh || []).forEach(n => {
+    let rawVal = cleanTien(n.v);
+    if(rawVal > 0) nhPrintHtml += `<tr><td style="text-align:left;">${n.n}</td><td align="right">${formatTien(rawVal)} đ</td></tr>`;
+});
+document.querySelector('#p-nh-table tbody').innerHTML = nhPrintHtml;
+document.getElementById('p-nh-total').innerText = formatTien(tNH) + " đ";
+
+let stkPrintHtml = "";
+(data.stk || []).forEach(s => {
+if(s.amt > 0) stkPrintHtml += `<tr><td style="text-align:left;">[Sổ] ${s.name} (${s.nh})</td><td align="right">${formatTien(s.amt)} đ</td></tr>`;
+});
+document.querySelector('#p-stk-table tbody').innerHTML = stkPrintHtml;
+document.getElementById('p-stk-total-print').innerText = formatTien(tSTK) + " đ";
+
+let quyPrintHtml = "";
+(data.quy || []).forEach(q => {
+let t = getQuyTotalAmt(q);
+if(t > 0) quyPrintHtml += `<tr><td style="text-align:left;">${q.name}</td><td align="right">${formatTien(t)} đ</td></tr>`;
+});
+document.querySelector('#p-quy-table tbody').innerHTML = quyPrintHtml;
+document.getElementById('p-quy-total-print').innerText = formatTien(tQuy) + " đ";
+}
+
+function generateASCII(length) {
+    let result = '';
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charsLength = chars.length;
+    for (let i = 0; i < length; i++) result += chars.charAt(Math.floor(Math.random() * charsLength));
+    return result;
+}
+
+function openPrintSetup() {
+let printDate = document.getElementById('in-print-date').value;
+if(!printDate) { alert("Vui lòng chọn ngày in!"); return; }
+
+let history = masterData.printHistory || [];
+if(history.length > 0) { document.getElementById('in-auditor-name').value = history[history.length-1].auditor || ""; }
+
+openModal('modal-print-setup');
+getLocation();
+}
+
+function confirmExecutePrint() {
+let printDate = document.getElementById('in-print-date').value;
+let auditor = document.getElementById('in-auditor-name').value.trim() || "Chưa nhập";
+let address = document.getElementById('in-print-address').value.trim() || "Chưa nhập";
+
+closeModal('modal-print-setup');
+buildPrintLayout(printDate);
+
+setTimeout(() => {
+let asciiCode = generateASCII(12);
+let nowTime = new Date().toLocaleString('vi-VN');
+
+document.getElementById('p-auditor').innerText = auditor;
+document.getElementById('p-address').innerText = address;
+document.getElementById('p-sign-name-1').innerText = auditor;
+
+let startDate = new Date('2026-01-01T00:00:00');
+let targetDate = new Date(printDate + 'T00:00:00');
+let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
+
+let dObj = new Date(printDate);
+document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0');
+document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0');
+document.getElementById('p-y').innerText = dObj.getFullYear();
+
+document.getElementById('p-tuan').innerText = getWeekNumber(dObj);
+document.getElementById('p-time').innerText = nowTime;
+document.getElementById('p-title').innerText = getDayName(printDate);
+document.getElementById('p-ascii').innerText = asciiCode;
+document.getElementById('p-copy-info').style.display = 'none';
+
+if(!masterData.printHistory) masterData.printHistory = [];
+masterData.printHistory.push({ date: printDate, time: nowTime, code: asciiCode, auditor: auditor, address: address });
+
+saveMaster(); renderPrintHistory();
+window.print();
+}, 100);
+}
+
+function printOldRecord(dateStr, codeStr) {
+let history = masterData.printHistory || [];
+let record = history.find(x => x.code === codeStr);
+if(!record) return;
+
+buildPrintLayout(dateStr);
+
+setTimeout(() => {
+document.getElementById('p-auditor').innerText = record.auditor;
+document.getElementById('p-address').innerText = record.address;
+document.getElementById('p-sign-name-1').innerText = record.auditor;
+
+let startDate = new Date('2026-01-01T00:00:00');
+let targetDate = new Date(dateStr + 'T00:00:00');
+let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
+
+let dObj = new Date(dateStr);
+document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0');
+document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0');
+document.getElementById('p-y').innerText = dObj.getFullYear();
+
+document.getElementById('p-tuan').innerText = getWeekNumber(dObj);
+document.getElementById('p-time').innerText = record.time;
+document.getElementById('p-title').innerText = getDayName(dateStr);
+document.getElementById('p-ascii').innerText = codeStr;
+
+const copyBox = document.getElementById('p-copy-info');
+copyBox.style.display = 'block';
+copyBox.innerHTML = `BẢN SAO<br><span style="font-size:10px; font-weight:normal;">Thời gian in lại: ${new Date().toLocaleString('vi-VN')}</span>`;
+
+window.print();
+}, 100);
+}
+
+function renderPrintHistory() {
+const tbody = document.getElementById('body-print-history');
+tbody.innerHTML = "";
+let history = masterData.printHistory || [];
+history.slice().reverse().forEach((record, index) => {
+tbody.innerHTML += `
+<tr>
+<td align="center">${index + 1}</td>
+<td style="font-weight:bold">${record.time} <br> <span style="font-size:12px; color:#666; font-weight:normal;">(Ngày QT: ${vnDate(record.date)})</span></td>
+<td style="font-family:monospace; font-size:16px;">${record.code}</td>
+<td align="center"><button class="btn-sm" style="background:var(--primary); color:var(--accent);" onclick="printOldRecord('${record.date}', '${record.code}')">In lại</button></td>
+</tr>`;
+});
+}
+
+// --- UTILS ---
+function showSheet(id, el) {
+document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+if(el) el.classList.add('active');
+document.getElementById('current-title').innerText = el ? (el.innerText.split('. ')[1] || el.innerText.replace('🖨️ ', '').replace('⚙️ ', '').replace('🛡️ ', '')) : "Quyết Toán";
+if (window.innerWidth < 850) toggleMenu();
+if(id === 'sheet-print') renderPrintHistory();
+}
+
+function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('active'); }
+function switchInternalTab(tab) { document.getElementById('content-stk').style.display = (tab === 'stk' ? 'block' : 'none'); document.getElementById('content-quy').style.display = (tab === 'quy' ? 'block' : 'none'); document.getElementById('btn-tab-stk').classList.toggle('active', tab === 'stk'); document.getElementById('btn-tab-quy').classList.toggle('active', tab === 'quy'); }
+function deleteSTK(id) { if(confirm("Xóa bỏ hoàn toàn sổ tiết kiệm này?")) { syncData(true); masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id); saveMaster(); renderSTK(masterData[currentDay].stk); calcTotal(); } }
+
+function openModal(id) { document.getElementById(id).classList.add('active'); document.body.classList.add('modal-open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.classList.remove('modal-open'); }
+function formatTien(n) { return new Intl.NumberFormat('vi-VN').format(n); }
+function cleanTien(s) { return s ? parseInt(s.toString().replace(/\D/g, '')) || 0 : 0; }
+function formatInput(i) { let v = i.value.replace(/\D/g, ''); i.value = v ? formatTien(v) : ""; }
+function formatSoLuong(i) { i.value = i.value.replace(/\D/g, ''); }
+function vnDate(s) { if(!s) return "--"; let p = s.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
+function changeDate() { currentDay = document.getElementById('header-date-picker').value; loadDay(); }
+function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạch dữ liệu Tiền mặt, Ngân hàng, Quỹ và Sổ tiết kiệm của ngày hiển thị. Bạn chắc chắn?")) { delete masterData[currentDay]; saveMaster(); loadDay(); } }
+</script>
+</body>
+</html>
