@@ -28,7 +28,6 @@ display: flex;
 justify-content: center;
 }
 
-/* === CSS HỆ THỐNG AUTH === */
 .auth-wrapper {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: url('https://images.unsplash.com/photo-1616075133610-8dc0388cdce8?q=80&w=2000&auto=format&fit=crop') center/cover;
@@ -302,7 +301,6 @@ body * { visibility: hidden; }
         <div style="display:flex; justify-content:space-between; margin-bottom:25px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>4. Tiết kiệm:</span><strong><span id="fin-stk">0</span> đ</strong></div>
         <div style="display:flex; justify-content:space-between; font-size:28px; border-top:4px double #000; padding-top:20px; color:var(--success)"><span>TỔNG GIÁ TRỊ:</span><strong><span id="fin-total">0</span> đ</strong></div>
         </div>
-        <button class="btn-main" style="background:#eee; color:#000; margin-top:30px; border-color:#ccc" onclick="clearDayData()">XOÁ TOÀN BỘ DỮ LIỆU NGÀY NÀY</button>
         </div>
 
         <div id="sheet-print" class="page">
@@ -417,13 +415,14 @@ body * { visibility: hidden; }
 <div class="modal-overlay" id="modal-edit-tm1">
 <div class="modal-content" style="max-width:550px;">
 <div class="modal-title">CHỈNH SỬA TIỀN MẶT</div>
-<div style="overflow-y:auto; max-height:350px;">
-<table class="data-table">
-    <thead><tr><th style="text-align:left">Mệnh giá</th><th style="width:90px">SL Đầu</th><th style="width:110px">SL Mới</th></tr></thead>
+<button class="btn-sm" style="background:var(--success); color:#fff; margin-bottom:15px;" onclick="addTMEditRow()">+ Thêm mệnh giá cần sửa</button>
+<div style="overflow-y:auto; max-height:300px;">
+<table class="data-table" style="margin-bottom:0;">
+    <thead><tr><th style="text-align:left">Mệnh giá</th><th style="width:70px">SL Đầu</th><th style="width:80px">SL Mới</th><th style="text-align:right">Tổng Mới</th><th style="width:40px">Xóa</th></tr></thead>
     <tbody id="edit-tm1-tbody"></tbody>
 </table>
 </div>
-<div class="sub-total-box" style="margin-top:10px; padding:15px;">Chênh lệch: <span id="edit-tm1-diff" style="color:var(--primary); font-size:22px;">0</span> đ</div>
+<div class="sub-total-box" style="margin-top:15px; padding:15px;">Chênh lệch: <span id="edit-tm1-diff" style="color:var(--primary); font-size:22px;">0</span> đ</div>
 <div style="display:flex; gap:15px; margin-top:20px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-edit-tm1')">HỦY BỎ</button>
 <button class="btn-main" style="background:var(--info); color:#fff; border-color:var(--info); flex:2" onclick="proceedEditTM()">TIẾP TỤC</button>
@@ -436,7 +435,7 @@ body * { visibility: hidden; }
 <div class="modal-title">CHI TIẾT CHÊNH LỆCH TIỀN MẶT</div>
 <div style="font-weight:bold; margin-bottom:15px; text-align:center; font-size:16px;">Số tiền cần giải trình: <span id="edit-tm2-target" style="color:var(--danger); font-size:22px;">0</span> đ</div>
 <div id="tm2-rows-container"></div>
-<button class="btn-sm" style="background:var(--success); color:#fff; margin-top:10px; margin-bottom:20px;" onclick="addTM2Row()">+ Thêm nội dung</button>
+<button class="btn-sm" style="background:var(--success); color:#fff; margin-top:10px; margin-bottom:20px;" onclick="addTM2Row()">+ Thêm nội dung chi</button>
 <div style="font-weight:bold; text-align:right;">Đã nhập: <span id="edit-tm2-current" style="color:var(--info); font-size:18px;">0</span> đ</div>
 <div style="display:flex; gap:15px; margin-top:20px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-edit-tm2')">HỦY</button>
@@ -446,15 +445,16 @@ body * { visibility: hidden; }
 </div>
 
 <div class="modal-overlay" id="modal-edit-nh">
-<div class="modal-content" style="max-width:650px;">
+<div class="modal-content" style="max-width:700px;">
 <div class="modal-title">ĐIỀU CHỈNH SỐ DƯ NGÂN HÀNG</div>
-<div style="overflow-x:auto;">
-    <table class="data-table" style="min-width:600px;">
-        <thead><tr><th style="width:120px">Ngân hàng</th><th>Dư Cũ</th><th>Dư Mới</th><th style="width:160px">Lý do</th></tr></thead>
+<button class="btn-sm" style="background:var(--success); color:#fff; margin-bottom:15px;" onclick="addNHEditRow()">+ Thêm ngân hàng điều chỉnh</button>
+<div style="overflow-y:auto; max-height:350px;">
+    <table class="data-table" style="min-width:600px; margin-bottom:0;">
+        <thead><tr><th style="width:120px">Ngân hàng</th><th>Dư Cũ</th><th>Dư Mới</th><th style="width:160px">Lý do</th><th style="width:40px">Xóa</th></tr></thead>
         <tbody id="edit-nh-tbody"></tbody>
     </table>
 </div>
-<div style="display:flex; gap:15px; margin-top:10px;">
+<div style="display:flex; gap:15px; margin-top:20px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-edit-nh')">HỦY</button>
 <button class="btn-main" style="flex:2" onclick="confirmEditNH()">LƯU ĐIỀU CHỈNH</button>
 </div>
@@ -573,7 +573,7 @@ body * { visibility: hidden; }
 <input type="text" id="in-auditor-name" readonly style="background-color:#e9ecef; cursor:not-allowed;" title="Sửa tên ở mục Cài Đặt">
 </div>
 <div class="form-group">
-<label>Địa chỉ kiểm kê (Tự động lấy vị trí)</label>
+<label>Địa chỉ kiểm kê</label>
 <div style="display:flex; gap:10px;">
 <input type="text" id="in-print-address" placeholder="Đang xác định vị trí...">
 <button class="btn-sm" onclick="getLocation()" style="background:#000; color:#fff;">Lấy lại</button>
@@ -922,21 +922,17 @@ function loadDay() {
 if(isPrinting) return;
 
 if (!masterData[currentDay]) {
+    // TỰ ĐỘNG LUÂN CHUYỂN DỮ LIỆU TỪ NGÀY GẦN NHẤT
     masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
     let pastDates = Object.keys(masterData).filter(d => d < currentDay && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
     
-    let lastTM = pastDates.find(d => masterData[d].tm && masterData[d].tm.length > 0);
-    if(lastTM) masterData[currentDay].tm = JSON.parse(JSON.stringify(masterData[lastTM].tm));
-    
-    let lastNH = pastDates.find(d => masterData[d].nh && masterData[d].nh.length > 0);
-    if(lastNH) masterData[currentDay].nh = JSON.parse(JSON.stringify(masterData[lastNH].nh));
-    
-    let lastQuy = pastDates.find(d => masterData[d].quy && masterData[d].quy.length > 0);
-    if(lastQuy) masterData[currentDay].quy = JSON.parse(JSON.stringify(masterData[lastQuy].quy));
-    
-    let lastSTK = pastDates.find(d => masterData[d].stk && masterData[d].stk.length > 0);
-    if(lastSTK) masterData[currentDay].stk = JSON.parse(JSON.stringify(masterData[lastSTK].stk));
-    
+    if (pastDates.length > 0) {
+        let prevDate = pastDates[0];
+        if(masterData[prevDate].tm) masterData[currentDay].tm = JSON.parse(JSON.stringify(masterData[prevDate].tm));
+        if(masterData[prevDate].nh) masterData[currentDay].nh = JSON.parse(JSON.stringify(masterData[prevDate].nh));
+        if(masterData[prevDate].quy) masterData[currentDay].quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
+        if(masterData[prevDate].stk) masterData[currentDay].stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
+    }
     saveMaster();
 }
 
@@ -950,7 +946,7 @@ denoms.forEach((m, i) => {
     let qty = hasVal ? parseInt(rawVal) : 0;
     let val = qty * m;
     
-    let qtyDisplay = hasVal ? qty : ''; 
+    let qtyDisplay = hasVal ? qty : '-'; 
     let valDisplay = hasVal ? (val === 0 ? '0 đ' : formatTien(val) + ' đ') : '-'; 
     tr.innerHTML = `<td style="font-weight:bold">${formatTien(m)}</td><td align="center" style="font-weight:bold; color:var(--info)">${qtyDisplay}</td><td id="val-tm-${i}" style="color:#666; text-align:right; font-weight:bold;">${valDisplay}</td>`;
     tbTM.appendChild(tr);
@@ -961,7 +957,8 @@ masterData.banks.forEach((bank) => {
     let savedVal = (data.nh || []).find(x => x.n === bank.short)?.v;
     let hasVal = savedVal !== undefined && savedVal !== "" && savedVal !== null;
     let valDisplay = hasVal ? formatTien(cleanTien(savedVal)) + ' đ' : '-';
-    bodyNH.innerHTML += `<tr><td style="font-weight:bold">${bank.short}</td><td align="right" style="color:var(--primary); font-weight:bold; font-size:16px;">${valDisplay}</td><td align="center"><button class="btn-sm" style="border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-weight:bold;" onclick="openBankInfo('${bank.full}', '${bank.short}', '${valDisplay}')">i</button></td></tr>`;
+    let rawBalance = hasVal ? savedVal : '0';
+    bodyNH.innerHTML += `<tr><td style="font-weight:bold">${bank.short}</td><td align="right" style="color:var(--primary); font-weight:bold; font-size:16px;">${valDisplay}</td><td align="center"><button class="btn-sm" style="border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-weight:bold;" onclick="openBankInfo('${bank.full}', '${bank.short}', '${rawBalance !== '0' ? formatTien(cleanTien(rawBalance)) + ' đ' : '0 đ'}')">i</button></td></tr>`;
 });
 
 renderQuy(data.quy || []);
@@ -976,27 +973,55 @@ function openEditTM() {
     let data = masterData[currentDay].tm || [];
     let tbody = document.getElementById('edit-tm1-tbody');
     tbody.innerHTML = '';
-    denoms.forEach((m, i) => {
-        let oldRaw = data[i];
-        let oldQty = (oldRaw !== undefined && oldRaw !== "") ? parseInt(oldRaw) : 0;
-        let displayOld = (oldRaw !== undefined && oldRaw !== "") ? oldQty : '';
-        tbody.innerHTML += `<tr>
-            <td style="font-weight:bold">${formatTien(m)}</td>
-            <td align="center">${displayOld}</td>
-            <td><input type="text" inputmode="numeric" class="in-edit-tm-new" data-idx="${i}" data-old="${oldQty}" data-m="${m}" value="${displayOld}" oninput="formatSoLuong(this); calcEditTMDiff();" style="text-align:right"></td>
-        </tr>`;
-    });
-    calcEditTMDiff();
+    pendingTMChanges = [...data];
+    if (pendingTMChanges.length === 0) pendingTMChanges = Array(12).fill("");
+    
+    pendingTMDiff = 0;
+    document.getElementById('edit-tm1-diff').innerHTML = `<span style="color:var(--primary)">0</span>`;
     openModal('modal-edit-tm1');
+}
+
+function addTMEditRow() {
+    let tbody = document.getElementById('edit-tm1-tbody');
+    let options = denoms.map((m, i) => `<option value="${i}">${formatTien(m)} đ</option>`).join('');
+    let tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td><select class="sel-tm-denom" onchange="updateTMEditRow(this)">${options}</select></td>
+        <td class="tm-old-qty" align="center">0</td>
+        <td><input type="text" inputmode="numeric" class="in-tm-new-qty" value="0" oninput="formatSoLuong(this); updateTMEditRowTotal(this);" style="text-align:right; width:80px;"></td>
+        <td class="tm-new-total" align="right">0 đ</td>
+        <td align="center"><button class="btn-sm" style="background:red;color:white;border:none;" onclick="this.closest('tr').remove(); calcEditTMDiff();">X</button></td>
+    `;
+    tbody.appendChild(tr);
+    updateTMEditRow(tr.querySelector('.sel-tm-denom'));
+}
+
+function updateTMEditRow(sel) {
+    let tr = sel.closest('tr');
+    let i = sel.value;
+    let oldRaw = pendingTMChanges[i];
+    let oldQty = (oldRaw !== undefined && oldRaw !== "") ? parseInt(oldRaw) : 0;
+    tr.querySelector('.tm-old-qty').innerText = oldQty;
+    tr.querySelector('.tm-old-qty').setAttribute('data-old', oldQty);
+    updateTMEditRowTotal(tr.querySelector('.in-tm-new-qty'));
+}
+
+function updateTMEditRowTotal(inp) {
+    let tr = inp.closest('tr');
+    let i = tr.querySelector('.sel-tm-denom').value;
+    let m = denoms[i];
+    let newQty = parseInt(inp.value) || 0;
+    tr.querySelector('.tm-new-total').innerText = formatTien(m * newQty) + " đ";
+    calcEditTMDiff();
 }
 
 function calcEditTMDiff() {
     let diff = 0;
-    document.querySelectorAll('.in-edit-tm-new').forEach(inp => {
-        let oldQty = parseInt(inp.getAttribute('data-old')) || 0;
-        let m = parseInt(inp.getAttribute('data-m'));
-        let newQtyStr = inp.value;
-        let newQty = (newQtyStr !== "") ? parseInt(newQtyStr) : 0;
+    document.querySelectorAll('#edit-tm1-tbody tr').forEach(tr => {
+        let i = tr.querySelector('.sel-tm-denom').value;
+        let oldQty = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-old')) || 0;
+        let newQty = parseInt(tr.querySelector('.in-tm-new-qty').value) || 0;
+        let m = denoms[i];
         diff += (newQty - oldQty) * m;
     });
     pendingTMDiff = diff;
@@ -1006,9 +1031,11 @@ function calcEditTMDiff() {
 }
 
 function proceedEditTM() {
-    pendingTMChanges = [];
-    document.querySelectorAll('.in-edit-tm-new').forEach(inp => {
-        pendingTMChanges[inp.getAttribute('data-idx')] = inp.value;
+    document.querySelectorAll('#edit-tm1-tbody tr').forEach(tr => {
+        let i = tr.querySelector('.sel-tm-denom').value;
+        let newQty = tr.querySelector('.in-tm-new-qty').value;
+        if(newQty === "") newQty = "0"; 
+        pendingTMChanges[i] = newQty;
     });
     
     if (pendingTMDiff === 0) {
@@ -1067,59 +1094,90 @@ function openBankInfo(fullName, shortName, balance) {
 }
 
 function openEditNH() {
-    let dataNH = masterData[currentDay].nh || [];
     let tbody = document.getElementById('edit-nh-tbody');
     tbody.innerHTML = '';
-    
-    // Tải danh sách lý do NH
-    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản thanh toán", "Nhận tiền lương", "Rút tiền mặt"];
-    let reasonOptions = masterData.bankReasons.map(r => `<option value="${r}">${r}</option>`).join('');
-    
-    masterData.banks.forEach(bank => {
-        let oldValRaw = dataNH.find(x => x.n === bank.short)?.v;
-        let oldVal = oldValRaw ? cleanTien(oldValRaw) : 0;
-        let valDisplay = (oldValRaw !== undefined && oldValRaw !== "" && oldValRaw !== null) ? formatTien(oldVal) : '';
-        
-        tbody.innerHTML += `<tr>
-            <td style="font-weight:bold">${bank.short}</td>
-            <td align="right">${valDisplay !== '' ? valDisplay + ' đ' : '-'}</td>
-            <td><input type="text" class="in-edit-nh-new" data-name="${bank.short}" data-old="${oldVal}" value="${valDisplay}" oninput="formatInput(this)" style="text-align:right; width:120px;"></td>
-            <td><select class="sel-edit-nh-reason" style="width:120px;">${reasonOptions}</select></td>
-        </tr>`;
-    });
     openModal('modal-edit-nh');
 }
 
-function confirmEditNH() {
-    let newNHData = [];
-    let hasError = false;
+function addNHEditRow() {
+    let tbody = document.getElementById('edit-nh-tbody');
+    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản thanh toán", "Nhận tiền lương", "Rút tiền mặt"];
+    let reasonOptions = masterData.bankReasons.map(r => `<option value="${r}">${r}</option>`).join('');
+    let bankOptions = masterData.banks.map(b => `<option value="${b.short}">${b.short}</option>`).join('');
     
-    document.querySelectorAll('.in-edit-nh-new').forEach((inp, idx) => {
-        let bName = inp.getAttribute('data-name');
-        let oldVal = parseInt(inp.getAttribute('data-old'));
-        let newRaw = inp.value;
-        let newVal = newRaw !== "" ? cleanTien(newRaw) : null;
+    let tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td><select class="sel-edit-nh-name" onchange="updateNHEditRow(this)">${bankOptions}</select></td>
+        <td class="nh-old-val" align="right" data-old="0">0 đ</td>
+        <td><input type="text" class="in-edit-nh-new" value="0" oninput="formatInput(this)" style="text-align:right; width:100px;"></td>
+        <td>
+            <div style="display:flex; gap:5px;">
+                <select class="sel-edit-nh-reason" style="width:120px;">${reasonOptions}</select>
+                <button class="btn-sm" style="background:#000;color:#fff;" onclick="addBankReason(this)">+</button>
+            </div>
+        </td>
+        <td align="center"><button class="btn-sm" style="background:red;color:white;border:none;" onclick="this.closest('tr').remove();">X</button></td>
+    `;
+    tbody.appendChild(tr);
+    updateNHEditRow(tr.querySelector('.sel-edit-nh-name'));
+}
+
+function updateNHEditRow(sel) {
+    let tr = sel.closest('tr');
+    let bName = sel.value;
+    let oldValRaw = (masterData[currentDay].nh || []).find(x => x.n === bName)?.v;
+    let oldVal = oldValRaw ? cleanTien(oldValRaw) : 0;
+    tr.querySelector('.nh-old-val').innerText = formatTien(oldVal) + " đ";
+    tr.querySelector('.nh-old-val').setAttribute('data-old', oldVal);
+}
+
+function addBankReason(btn) {
+    let r = prompt("Nhập nguyên nhân điều chỉnh mới:");
+    if(r && r.trim() !== "") {
+        r = r.trim();
+        if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản thanh toán", "Nhận tiền lương", "Rút tiền mặt"];
+        if(!masterData.bankReasons.includes(r)) {
+            masterData.bankReasons.push(r);
+            saveMaster();
+            document.querySelectorAll('.sel-edit-nh-reason').forEach(sel => {
+                let opt = document.createElement('option');
+                opt.value = r; opt.innerText = r;
+                sel.appendChild(opt);
+            });
+        }
+        btn.previousElementSibling.value = r;
+    }
+}
+
+function confirmEditNH() {
+    let newNHData = [...(masterData[currentDay].nh || [])];
+    
+    document.querySelectorAll('#edit-nh-tbody tr').forEach((tr) => {
+        let bName = tr.querySelector('.sel-edit-nh-name').value;
+        let oldVal = parseInt(tr.querySelector('.nh-old-val').getAttribute('data-old')) || 0;
+        let newValStr = tr.querySelector('.in-edit-nh-new').value;
+        let newVal = newValStr !== "" ? cleanTien(newValStr) : 0;
         
-        if(newVal !== null) {
-            newNHData.push({ n: bName, v: newVal.toString() });
+        let idx = newNHData.findIndex(x => x.n === bName);
+        if (idx > -1) newNHData[idx].v = newVal.toString();
+        else newNHData.push({ n: bName, v: newVal.toString() });
+        
+        let diff = newVal - oldVal;
+        if (diff < 0) { 
+            let amountToDeduct = Math.abs(diff);
+            let reasonSelect = tr.querySelector('.sel-edit-nh-reason').value;
             
-            let diff = newVal - oldVal;
-            if (diff < 0) { // GIẢM NGÂN HÀNG -> TRỪ QUỸ NẾU CÓ
-                let amountToDeduct = Math.abs(diff);
-                let reasonSelect = document.querySelectorAll('.sel-edit-nh-reason')[idx].value;
-                
-                if(masterData[currentDay].quy) {
-                    masterData[currentDay].quy.forEach(q => {
-                        let storageItem = q.storages.find(s => s.name === bName);
-                        if (storageItem && amountToDeduct > 0) {
-                            let deduct = Math.min(storageItem.v, amountToDeduct);
-                            storageItem.v -= deduct;
-                            amountToDeduct -= deduct;
-                            if(!q.history) q.history = [];
-                            q.history.push({ d: currentDay, type: 'rut', amount: deduct, storage: bName, reason: 'Tự trừ do điều chỉnh giảm NH: ' + reasonSelect });
-                        }
-                    });
-                }
+            if(masterData[currentDay].quy) {
+                masterData[currentDay].quy.forEach(q => {
+                    let storageItem = q.storages.find(s => s.name === bName);
+                    if (storageItem && amountToDeduct > 0) {
+                        let deduct = Math.min(storageItem.v, amountToDeduct);
+                        storageItem.v -= deduct;
+                        amountToDeduct -= deduct;
+                        if(!q.history) q.history = [];
+                        q.history.push({ d: currentDay, type: 'rut', amount: deduct, storage: bName, reason: 'Trừ do điều chỉnh giảm NH: ' + reasonSelect });
+                    }
+                });
             }
         }
     });
@@ -1174,6 +1232,9 @@ document.getElementById('in-stk-end').value = d.toISOString().split('T')[0];
 }
 }
 
+// =====================================
+// QUẢN LÝ QUỸ
+// =====================================
 function getQuyTotalAmt(quy) { return (quy.storages || []).reduce((sum, item) => sum + (item.v || 0), 0); }
 
 function renderQuy(list) {
