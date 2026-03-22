@@ -71,7 +71,7 @@ justify-content: center;
     flex-direction: column; 
     width: 100%;
     height: 100vh; 
-    overflow: hidden; 
+    overflow: hidden; /* CẮT NGANG ĐỂ HEADER KHÔNG CHẠY */
 }
 
 /* HEADER - GẮN CỐ ĐỊNH TRÊN CÙNG */
@@ -90,7 +90,7 @@ justify-content: center;
 /* NỘI DUNG CUỘN (BÊN DƯỚI HEADER) */
 .app-content {
     flex: 1;
-    overflow-y: auto; 
+    overflow-y: auto; /* CHỈ CUỘN Ở ĐÂY */
     padding: 25px 20px;
     background-color: var(--ivory);
 }
@@ -143,6 +143,7 @@ body.modal-open { overflow: hidden; }
     .hide-on-mobile { display: none !important; }
 }
 
+/* RESPONSIVE LAYOUT CHO DESKTOP */
 @media (min-width: 850px) {
 body { padding: 40px; background-color: #e0e0e0;}
 .app-container { flex-direction: row; max-width: 1200px; height: calc(100vh - 80px); border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); display: none; }
@@ -200,6 +201,14 @@ body * { visibility: hidden; }
         <div class="form-group">
             <label>Mật khẩu</label>
             <input type="password" id="login-pass" placeholder="Nhập mật khẩu...">
+        </div>
+        <div class="form-group">
+            <label>Mã xác nhận (Captcha)</label>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <canvas id="captchaCanvas" width="130" height="42" style="border: 1px solid #ccc; border-radius: 4px; cursor: pointer; background: #fff;" onclick="generateCaptcha()" title="Bấm để đổi mã mới"></canvas>
+                <input type="text" id="login-captcha" placeholder="Nhập mã..." style="flex: 1;" onkeydown="if(event.key === 'Enter') handleLogin()">
+            </div>
+            <div style="font-size: 11px; color: #666; margin-top: 5px; font-style: italic;">* Bấm vào ảnh để đổi mã mới</div>
         </div>
         <div style="text-align:right; margin-top:-10px; margin-bottom:15px;">
             <span style="font-size:13px; color:var(--danger); cursor:pointer; font-style:italic;" onclick="switchAuth('forgot')">Quên mật khẩu?</span>
@@ -308,6 +317,7 @@ body * { visibility: hidden; }
         <div style="display:flex; justify-content:space-between; margin-bottom:25px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>4. Tiết kiệm:</span><strong><span id="fin-stk">0</span> đ</strong></div>
         <div style="display:flex; justify-content:space-between; font-size:28px; border-top:4px double #000; padding-top:20px; color:var(--success)"><span>TỔNG GIÁ TRỊ:</span><strong><span id="fin-total">0</span> đ</strong></div>
         </div>
+        <button class="btn-main" style="background:#eee; color:#000; margin-top:30px; border-color:#ccc" onclick="clearDayData()">XOÁ TOÀN BỘ DỮ LIỆU NGÀY NÀY</button>
         </div>
 
         <div id="sheet-print" class="page">
@@ -661,7 +671,7 @@ body * { visibility: hidden; }
 </div>
 <input type="hidden" id="hid-dh-id">
 <div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:var(--danger); color:white; border:color:var(--danger); flex:1" onclick="confirmDH(false)">TẤT TOÁN SỔ</button>
+<button class="btn-main" style="background:var(--danger); color:white; border-color:var(--danger); flex:1" onclick="confirmDH(false)">TẤT TOÁN SỔ</button>
 <button class="btn-main" style="background:var(--primary); color:var(--accent); flex:2" onclick="confirmDH(true)">XÁC NHẬN TÁI TỤC</button>
 </div>
 </div>
@@ -758,7 +768,6 @@ body * { visibility: hidden; }
 <div class="p-sign">
 <div>Người kiểm đếm<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-1"></div></div>
 <div>Người nhận bàn giao<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-2"></div></div>
-<div>Giám đốc<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-3"></div></div>
 </div>
 <div class="p-absolute-footer">
 <div style="text-transform:uppercase; margin-bottom:10px; font-weight:bold;">PHIẾU KIỂM KÊ BẮT BUỘC PHẢI ĐƯỢC LƯU TRỮ - KHÔNG HỦY BỎ DƯỚI MỌI HÌNH THỨC</div>
@@ -829,6 +838,48 @@ let pendingTMDiff = 0;
 let currentQuyDetailId = null;
 let currentEditBankShortName = "";
 let currentEditBankOldVal = 0;
+let currentCaptchaCode = "";
+
+// Hàm tạo Captcha
+function generateCaptcha() {
+    const canvas = document.getElementById('captchaCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+    let captcha = '';
+    for (let i = 0; i < 5; i++) {
+        captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    currentCaptchaCode = captcha;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Vẽ nhiễu nền
+    for (let i = 0; i < 30; i++) {
+        ctx.fillStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.3)`;
+        ctx.beginPath();
+        ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 3, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Vẽ đường kẻ nhiễu
+    for (let i = 0; i < 4; i++) {
+        ctx.strokeStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.5)`;
+        ctx.beginPath();
+        ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+        ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+        ctx.stroke();
+    }
+
+    // Vẽ chữ Captcha
+    ctx.font = 'bold 24px "Times New Roman"';
+    ctx.fillStyle = '#1a1a1a';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.setTransform(1, Math.random()*0.2 - 0.1, Math.random()*0.2 - 0.1, 1, 0, 0); 
+    ctx.fillText(captcha, canvas.width / 2, canvas.height / 2);
+    ctx.setTransform(1, 0, 0, 1, 0, 0); 
+}
 
 async function loadServerDB() {
     try {
@@ -870,18 +921,43 @@ function switchAuth(type) {
     document.getElementById('login-box').style.display = type === 'login' ? 'block' : 'none';
     document.getElementById('register-box').style.display = type === 'register' ? 'block' : 'none';
     document.getElementById('forgot-box').style.display = type === 'forgot' ? 'block' : 'none';
+    if(type === 'login') generateCaptcha();
 }
 
 function handleLogin() {
     let phone = document.getElementById('login-phone').value.trim();
     let pass = document.getElementById('login-pass').value;
+    let captchaInput = document.getElementById('login-captcha').value.trim();
 
-    if (!systemDB[phone]) { alert("Tài khoản không tồn tại hoặc dữ liệu đang tải, vui lòng thử lại sau vài giây!"); return; }
-    if (systemDB[phone].password !== pass) { alert("Sai mật khẩu!"); return; }
+    if (!phone || !pass || !captchaInput) { 
+        alert("Vui lòng nhập đủ Số điện thoại, Mật khẩu và Mã Captcha!"); 
+        return; 
+    }
+
+    if (captchaInput.toUpperCase() !== currentCaptchaCode.toUpperCase()) {
+        alert("Mã Captcha không chính xác!");
+        generateCaptcha();
+        document.getElementById('login-captcha').value = '';
+        document.getElementById('login-captcha').focus();
+        return;
+    }
+
+    if (!systemDB[phone]) { 
+        alert("Tài khoản không tồn tại hoặc dữ liệu đang tải, vui lòng thử lại sau vài giây!"); 
+        generateCaptcha();
+        document.getElementById('login-captcha').value = '';
+        return; 
+    }
+    
+    if (systemDB[phone].password !== pass) { 
+        alert("Sai mật khẩu!"); 
+        generateCaptcha();
+        document.getElementById('login-captcha').value = '';
+        return; 
+    }
 
     activeUserPhone = phone;
     
-    // Gán dữ liệu với màng bọc an toàn tránh undefined crash toàn hệ thống
     if (!systemDB[phone].data) {
         systemDB[phone].data = { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] };
     }
@@ -898,6 +974,10 @@ function handleLogin() {
     } else {
         document.getElementById('nav-admin').style.display = 'none';
     }
+
+    // Clear login fields for next time
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-captcha').value = '';
 
     initializeApp();
 }
@@ -945,6 +1025,8 @@ function handleLogout() {
         document.getElementById('auth-screen').style.display = 'flex';
         document.getElementById('main-app').style.display = 'none';
         document.getElementById('login-pass').value = '';
+        document.getElementById('login-captcha').value = '';
+        generateCaptcha();
     }
 }
 
@@ -992,6 +1074,7 @@ function deleteMyAccount() {
             activeUserPhone = null; masterData = {};
             document.getElementById('auth-screen').style.display = 'flex';
             document.getElementById('main-app').style.display = 'none';
+            generateCaptcha();
         }
     }
 }
@@ -1991,7 +2074,6 @@ document.getElementById('p-address').innerText = address;
 
 document.getElementById('p-sign-name-1').innerText = ""; 
 document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
-document.getElementById('p-sign-name-3').innerText = "";
 
 let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(printDate + 'T00:00:00');
 let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
@@ -2014,7 +2096,6 @@ document.getElementById('p-auditor').innerText = record.auditor;
 document.getElementById('p-address').innerText = record.address; 
 document.getElementById('p-sign-name-1').innerText = ""; 
 document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
-document.getElementById('p-sign-name-3').innerText = "";
 
 let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(dateStr + 'T00:00:00'); let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
 document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
@@ -2062,6 +2143,8 @@ function formatSoLuong(i) { i.value = i.value.replace(/\D/g, ''); }
 function vnDate(s) { if(!s) return "--"; let p = s.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
 function changeDate() { currentDay = document.getElementById('header-date-picker').value; loadDay(); }
 function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạch dữ liệu Tiền mặt, Ngân hàng, Quỹ và Sổ tiết kiệm của ngày hiển thị. Bạn chắc chắn?")) { delete masterData[currentDay]; saveMaster(); loadDay(); } }
+
+generateCaptcha(); // Initialize Captcha on first load
 </script>
 </body>
 </html>
