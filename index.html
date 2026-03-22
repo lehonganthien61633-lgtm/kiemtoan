@@ -93,9 +93,11 @@ justify-content: center;
     overflow-y: auto; 
     padding: 25px 20px;
     background-color: var(--ivory);
+    display: flex;
+    flex-direction: column;
 }
 
-.page { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 40px;}
+.page { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 40px; width: 100%; }
 .page.active { display: block; animation: fadeIn 0.4s; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -392,6 +394,17 @@ body * { visibility: hidden; }
                 <tbody id="body-admin-users"></tbody>
             </table>
         </div>
+        </div>
+
+        <div style="text-align: center; margin-top: auto; padding: 30px 20px; color: #333; width: 100%;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <img src="https://drive.google.com/file/d/1JmKMRizy7qkbjVuvEAXGuAjYU7z_iTem/view?usp=sharing" alt="[LOGO]" style="height: 40px; display: inline-block;"> 
+                <span style="font-size: 16px; font-weight: bold; color: #1a1a1a;">Copyright © 2026 Thiên Trường Software. All rights reserved.</span>
+            </div>
+            <div style="max-width: 650px; margin: 15px auto 0; border-top: 1px solid #ccc; padding-top: 10px; font-size: 13px; color: #444; line-height: 1.6;">
+                Established March 22, 2026 | Saigon, Vietnam | https://lehonganthien61633-lgtm.github.io/kiemtoan/<br>
+                <span style="font-style: italic;">Bản quyền thuộc về Thiên Trường Software</span>
+            </div>
         </div>
 
     </div>
@@ -788,6 +801,18 @@ body * { visibility: hidden; }
     <div id="p-copy-info" style="display:none; font-weight:bold;">BẢN SAO</div>
 </div>
 <div style="font-weight:bold;">TỔNG CỤC QUẢN LÝ KINH TẾ<br>TRUNG TÂM QUẢN LÝ DÒNG TIỀN<br>BỘ PHẬN KIỂM TOÁN - THANH TRA</div>
+
+<div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #000; text-align: center; -webkit-print-color-adjust: exact;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <img src="https://drive.google.com/file/d/1JmKMRizy7qkbjVuvEAXGuAjYU7z_iTem/view?usp=sharing" alt="[LOGO]" style="height: 30px; display: inline-block;"> 
+        <span style="font-size: 14px; font-weight: bold; color: #000;">Copyright © 2026 Thiên Trường Software. All rights reserved.</span>
+    </div>
+    <div style="margin-top: 8px; font-size: 11px; color: #000;">
+        Established March 22, 2026 | Saigon, Vietnam | https://lehonganthien61633-lgtm.github.io/kiemtoan/<br>
+        <span style="font-style: italic;">Bản quyền thuộc về Thiên Trường Software</span>
+    </div>
+</div>
+
 </div>
 </div>
 </div>
