@@ -28,6 +28,7 @@ display: flex;
 justify-content: center;
 }
 
+/* === CSS HỆ THỐNG AUTH === */
 .auth-wrapper {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: url('https://images.unsplash.com/photo-1616075133610-8dc0388cdce8?q=80&w=2000&auto=format&fit=crop') center/cover;
@@ -47,11 +48,13 @@ justify-content: center;
 .badge-notif { background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 12px; margin-left: 5px; font-weight: bold; display: inline-block; animation: pulse 1.5s infinite; }
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
+/* Cấu trúc Layout Chính */
 .app-container {
     width: 100%; background-color: var(--ivory); height: 100vh;
     display: none; flex-direction: column; position: relative; overflow: hidden;
 }
 
+/* SIDEBAR */
 .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 150; backdrop-filter: blur(5px); }
 .sidebar-overlay.active { display: block; }
 .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background-color: var(--ivory); z-index: 200; transition: transform 0.4s ease; border-right: 5px solid var(--primary); display: flex; flex-direction: column;}
@@ -61,15 +64,17 @@ justify-content: center;
 .nav-item:hover { color: var(--accent); padding-left: 30px; }
 .nav-item.active { background-color: var(--primary); color: var(--accent); }
 
+/* VÙNG NỘI DUNG CHÍNH (BÊN PHẢI) */
 .main-wrapper { 
     flex: 1; 
     display: flex; 
     flex-direction: column; 
     width: 100%;
     height: 100vh; 
-    overflow: hidden;
+    overflow: hidden; /* CẮT NGANG ĐỂ HEADER KHÔNG CHẠY */
 }
 
+/* HEADER - GẮN CỐ ĐỊNH TRÊN CÙNG */
 .header-main {
     display: flex; align-items: center; justify-content: space-between;
     background-color: var(--primary); padding: 15px 25px; color: white;
@@ -82,9 +87,10 @@ justify-content: center;
 .header-title { font-size: 20px; font-weight: bold; letter-spacing: 1px; font-variant: small-caps; }
 #header-date-picker { background: #fff; border: 1px solid var(--accent); padding: 8px 12px; font-family: "Times New Roman"; font-weight: bold; border-radius: 4px; font-size: 16px; cursor: pointer; }
 
+/* NỘI DUNG CUỘN (BÊN DƯỚI HEADER) */
 .app-content {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: auto; /* CHỈ CUỘN Ở ĐÂY */
     padding: 25px 20px;
     background-color: var(--ivory);
 }
@@ -95,6 +101,7 @@ justify-content: center;
 
 h2 { font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 30px; text-transform: uppercase; border-bottom: 1px solid var(--accent); padding-bottom: 15px; }
 
+/* TABLES & COMPONENTS */
 .data-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 .data-table th { background: #f4f4f4; border: 1px solid #ddd; padding: 15px 10px; font-size: 14px; text-align: center; text-transform: uppercase; }
 .data-table td { border: 1px solid #eee; padding: 12px 10px; }
@@ -257,7 +264,7 @@ body * { visibility: hidden; }
         <div class="header-right"><input type="date" id="header-date-picker" onchange="changeDate()"></div>
     </div>
 
-    <div class="app-content">
+    <div class="app-content" id="app-scroll-container">
         <div id="sheet-tm" class="page active">
         <h2>Biên Bản Kiểm Kê Tiền Mặt</h2>
         <div style="text-align:right; margin-bottom:10px;"><button class="btn-sm" style="background:var(--accent); color:white;" onclick="openEditTM()">Chỉnh sửa số liệu</button></div>
@@ -301,6 +308,7 @@ body * { visibility: hidden; }
         <div style="display:flex; justify-content:space-between; margin-bottom:25px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>4. Tiết kiệm:</span><strong><span id="fin-stk">0</span> đ</strong></div>
         <div style="display:flex; justify-content:space-between; font-size:28px; border-top:4px double #000; padding-top:20px; color:var(--success)"><span>TỔNG GIÁ TRỊ:</span><strong><span id="fin-total">0</span> đ</strong></div>
         </div>
+        <button class="btn-main" style="background:#eee; color:#000; margin-top:30px; border-color:#ccc" onclick="clearDayData()">XOÁ TOÀN BỘ DỮ LIỆU NGÀY NÀY</button>
         </div>
 
         <div id="sheet-print" class="page">
@@ -445,12 +453,12 @@ body * { visibility: hidden; }
 </div>
 
 <div class="modal-overlay" id="modal-edit-nh">
-<div class="modal-content" style="max-width:700px;">
+<div class="modal-content" style="max-width:750px;">
 <div class="modal-title">ĐIỀU CHỈNH SỐ DƯ NGÂN HÀNG</div>
 <button class="btn-sm" style="background:var(--success); color:#fff; margin-bottom:15px;" onclick="addNHEditRow()">+ Thêm ngân hàng điều chỉnh</button>
 <div style="overflow-y:auto; max-height:350px;">
-    <table class="data-table" style="min-width:600px; margin-bottom:0;">
-        <thead><tr><th style="width:120px">Ngân hàng</th><th>Dư Cũ</th><th>Dư Mới</th><th style="width:160px">Lý do</th><th style="width:40px">Xóa</th></tr></thead>
+    <table class="data-table" style="min-width:650px; margin-bottom:0;">
+        <thead><tr><th style="width:120px">Ngân hàng</th><th>Dư Cũ</th><th>Dư Mới</th><th>Thay Đổi</th><th style="width:160px">Lý do</th><th style="width:40px">Xóa</th></tr></thead>
         <tbody id="edit-nh-tbody"></tbody>
     </table>
 </div>
@@ -922,7 +930,6 @@ function loadDay() {
 if(isPrinting) return;
 
 if (!masterData[currentDay]) {
-    // TỰ ĐỘNG LUÂN CHUYỂN DỮ LIỆU TỪ NGÀY GẦN NHẤT
     masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
     let pastDates = Object.keys(masterData).filter(d => d < currentDay && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
     
@@ -1077,7 +1084,6 @@ function confirmEditTM() {
         alert(`Tổng số tiền giải trình (${formatTien(sum)}đ) phải BẰNG số tiền chênh lệch (${formatTien(Math.abs(pendingTMDiff))}đ)!`);
         return;
     }
-    // Xác nhận lưu
     masterData[currentDay].tm = pendingTMChanges;
     saveMaster(); loadDay(); closeModal('modal-edit-tm2');
     alert("Cập nhật số liệu Tiền Mặt thành công!");
@@ -1109,7 +1115,8 @@ function addNHEditRow() {
     tr.innerHTML = `
         <td><select class="sel-edit-nh-name" onchange="updateNHEditRow(this)">${bankOptions}</select></td>
         <td class="nh-old-val" align="right" data-old="0">0 đ</td>
-        <td><input type="text" class="in-edit-nh-new" value="0" oninput="formatInput(this)" style="text-align:right; width:100px;"></td>
+        <td><input type="text" class="in-edit-nh-new" value="0" oninput="formatInput(this); updateNHEditRowDiff(this);" style="text-align:right; width:100px;"></td>
+        <td class="nh-diff-val" align="right" style="font-weight:bold;">0 đ</td>
         <td>
             <div style="display:flex; gap:5px;">
                 <select class="sel-edit-nh-reason" style="width:120px;">${reasonOptions}</select>
@@ -1129,6 +1136,19 @@ function updateNHEditRow(sel) {
     let oldVal = oldValRaw ? cleanTien(oldValRaw) : 0;
     tr.querySelector('.nh-old-val').innerText = formatTien(oldVal) + " đ";
     tr.querySelector('.nh-old-val').setAttribute('data-old', oldVal);
+    updateNHEditRowDiff(tr.querySelector('.in-edit-nh-new'));
+}
+
+function updateNHEditRowDiff(inp) {
+    let tr = inp.closest('tr');
+    let oldVal = parseInt(tr.querySelector('.nh-old-val').getAttribute('data-old')) || 0;
+    let newValStr = inp.value;
+    let newVal = newValStr !== "" ? cleanTien(newValStr) : 0;
+    let diff = newVal - oldVal;
+    let diffCell = tr.querySelector('.nh-diff-val');
+    let sign = diff > 0 ? '+' : '';
+    diffCell.style.color = diff > 0 ? 'var(--success)' : (diff < 0 ? 'var(--danger)' : 'var(--primary)');
+    diffCell.innerText = sign + formatTien(diff) + " đ";
 }
 
 function addBankReason(btn) {
@@ -1187,7 +1207,6 @@ function confirmEditNH() {
     alert("Đã cập nhật số liệu Ngân hàng và tự động đồng bộ Quỹ (nếu có giảm)!");
 }
 
-
 function refreshBankSettings() {
 const bodySet = document.getElementById('body-settings-bank'); bodySet.innerHTML = "";
 masterData.banks.forEach((b, i) => {
@@ -1232,9 +1251,6 @@ document.getElementById('in-stk-end').value = d.toISOString().split('T')[0];
 }
 }
 
-// =====================================
-// QUẢN LÝ QUỸ
-// =====================================
 function getQuyTotalAmt(quy) { return (quy.storages || []).reduce((sum, item) => sum + (item.v || 0), 0); }
 
 function renderQuy(list) {
@@ -1730,3 +1746,8 @@ function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạ
 </script>
 </body>
 </html>
+Ở phần in báo cáo
+Khi in thêm mục chữ ký giám đốc và có phần nhập tên giám đốc ở cài đặt in. Chỉ có Root Admin có quyền hiện cài đặt thay đổi được tên này.
+Chữ ký người bàn giao sẽ là của  các tài khoản còn chữ ký của người kiểm đếm sẽ bị trống để ký
+Họ và tên của người dùng ở cài đặt phải tự động viết hoa
+kHÔNG THỂ ĐỔI MẬT KHẨU CHO USER ĐƯỢC
