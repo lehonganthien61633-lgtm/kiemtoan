@@ -577,6 +577,7 @@ body * { visibility: hidden; }
 <div class="p-sign">
 <div>Người kiểm đếm<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-1"></div></div>
 <div>Người nhận bàn giao<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-2"></div></div>
+<div>Giám đốc<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-3"></div></div>
 </div>
 <div class="p-absolute-footer">
 <div style="text-transform:uppercase; margin-bottom:10px; font-weight:bold;">PHIẾU KIỂM KÊ BẮT BUỘC PHẢI ĐƯỢC LƯU TRỮ - KHÔNG HỦY BỎ DƯỚI MỌI HÌNH THỨC</div>
@@ -676,6 +677,7 @@ function saveSystemDB() {
 
 function saveMaster() { 
     if(activeUserPhone) {
+        if(!systemDB[activeUserPhone]) systemDB[activeUserPhone] = {};
         systemDB[activeUserPhone].data = masterData;
         saveSystemDB(); 
     }
@@ -696,6 +698,11 @@ function handleLogin() {
     if (systemDB[phone].password !== pass) { alert("Sai mật khẩu!"); return; }
 
     activeUserPhone = phone;
+    
+    // Gán dữ liệu với màng bọc an toàn tránh undefined crash toàn hệ thống
+    if (!systemDB[phone].data) {
+        systemDB[phone].data = { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], printHistory: [] };
+    }
     masterData = systemDB[phone].data;
 
     document.getElementById('auth-screen').style.display = 'none';
@@ -930,9 +937,11 @@ function initializeApp() {
     document.getElementById('set-user-dob').value = systemDB[activeUserPhone].dob || "";
     document.getElementById('set-user-phone').value = activeUserPhone;
 
-    if(!masterData.banks) masterData.banks = [];
-    if(!masterData.quyReasons) masterData.quyReasons = [];
+    // Bọc an toàn dữ liệu cơ bản
+    if(!masterData.banks) masterData.banks = [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}];
+    if(!masterData.quyReasons) masterData.quyReasons = ["Chi tiêu sinh hoạt", "Đầu tư", "Sự kiện / Quà cáp"];
     if(!masterData.printHistory) masterData.printHistory = [];
+    if(!masterData.nh_history) masterData.nh_history = [];
 
     refreshBankSettings();
     renderPrintHistory();
@@ -947,26 +956,25 @@ function loadDay() {
 
     if (!masterData[currentDay]) {
         masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
+        // TỰ ĐỘNG LUÂN CHUYỂN DỮ LIỆU TỪ NGÀY GẦN NHẤT
+        let pastDates = Object.keys(masterData).filter(d => d < currentDay && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
+        if (pastDates.length > 0) {
+            let prevDate = pastDates[0];
+            if(masterData[prevDate].tm && masterData[prevDate].tm.length > 0) masterData[currentDay].tm = JSON.parse(JSON.stringify(masterData[prevDate].tm));
+            if(masterData[prevDate].nh && masterData[prevDate].nh.length > 0) masterData[currentDay].nh = JSON.parse(JSON.stringify(masterData[prevDate].nh));
+            if(masterData[prevDate].quy && masterData[prevDate].quy.length > 0) masterData[currentDay].quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
+            if(masterData[prevDate].stk && masterData[prevDate].stk.length > 0) masterData[currentDay].stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
+        }
+        saveMaster();
     }
-    
-    let data = masterData[currentDay];
-    
-    let pastDates = Object.keys(masterData).filter(d => d < currentDay && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
-    if (pastDates.length > 0) {
-        let prevDate = pastDates[0];
-        if((!data.tm || data.tm.length === 0) && masterData[prevDate].tm) data.tm = JSON.parse(JSON.stringify(masterData[prevDate].tm));
-        if((!data.nh || data.nh.length === 0) && masterData[prevDate].nh) data.nh = JSON.parse(JSON.stringify(masterData[prevDate].nh));
-        if((!data.quy || data.quy.length === 0) && masterData[prevDate].quy) data.quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
-        if((!data.stk || data.stk.length === 0) && masterData[prevDate].stk) data.stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
-    }
-    saveMaster();
 
-    let tmData = data.tm || [];
+    let data = masterData[currentDay];
+
     const tbTM = document.getElementById('body-tm'); tbTM.innerHTML = "";
     denoms.forEach((m, i) => {
         let tr = document.createElement('tr');
-        let rawVal = tmData[i];
-        let hasVal = rawVal !== undefined && rawVal !== "" && rawVal !== null;
+        let rawVal = (data.tm && data.tm[i] !== undefined) ? data.tm[i] : null;
+        let hasVal = rawVal !== null && rawVal !== "";
         let qty = hasVal ? parseInt(rawVal) : 0;
         let val = qty * m;
         
@@ -976,10 +984,9 @@ function loadDay() {
         tbTM.appendChild(tr);
     });
 
-    let nhData = data.nh || [];
     const bodyNH = document.getElementById('body-nh'); bodyNH.innerHTML = "";
     masterData.banks.forEach((bank) => {
-        let savedVal = nhData.find(x => x.n === bank.short)?.v;
+        let savedVal = (data.nh || []).find(x => x.n === bank.short)?.v;
         let hasVal = savedVal !== undefined && savedVal !== "" && savedVal !== null;
         let valDisplay = hasVal ? formatTien(cleanTien(savedVal)) + ' đ' : '-';
         let rawBalance = hasVal ? savedVal : '0';
@@ -1222,9 +1229,10 @@ function confirmEditNH() {
     let qbFull = document.getElementById('quick-bank-full') ? document.getElementById('quick-bank-full').value.trim() : '';
     let qbShort = document.getElementById('quick-bank-short') ? document.getElementById('quick-bank-short').value.trim() : '';
     if (!qbShort && qbFull) qbShort = qbFull;
-    let qbBal = document.getElementById('quick-bank-balance') ? cleanTien(document.getElementById('quick-bank-balance').value) : 0;
+    let qbBalStr = document.getElementById('quick-bank-balance') ? document.getElementById('quick-bank-balance').value : '';
+    let qbBal = qbBalStr !== "" ? cleanTien(qbBalStr) : null;
     
-    if (qbFull !== "") {
+    if (qbFull !== "" && qbBal !== null) {
         if(!masterData.banks.find(b => b.short === qbShort)) {
             masterData.banks.push({full: qbFull, short: qbShort});
             newNHData.push({ n: qbShort, v: qbBal.toString() });
@@ -1717,8 +1725,26 @@ if (rawVal !== null) {
 } } tmPrintHtml += `</tr>`; }
 document.getElementById('p-tm-grid-tbody').innerHTML = tmPrintHtml;
 
+let activeBanks = (data.nh || []).filter(n => cleanTien(n.v) > 0);
 let nhPrintHtml = "";
-(data.nh || []).forEach(n => { let rawVal = cleanTien(n.v); if(rawVal > 0) nhPrintHtml += `<tr><td style="text-align:left;">${n.n}</td><td align="right">${formatTien(rawVal)} đ</td></tr>`; });
+if (activeBanks.length > 2) {
+    document.querySelector('#p-nh-table thead').innerHTML = `<tr><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th></tr>`;
+    document.querySelector('#p-nh-table tfoot td:first-child').setAttribute('colspan', '3');
+    for (let i = 0; i < activeBanks.length; i += 2) {
+        let b1 = activeBanks[i];
+        let b2 = activeBanks[i+1];
+        nhPrintHtml += `<tr>
+            <td style="text-align:left;">${b1.n}</td><td align="right">${formatTien(cleanTien(b1.v))} đ</td>
+            <td style="text-align:left;">${b2 ? b2.n : ''}</td><td align="right">${b2 ? formatTien(cleanTien(b2.v)) + ' đ' : ''}</td>
+        </tr>`;
+    }
+} else {
+    document.querySelector('#p-nh-table thead').innerHTML = `<tr><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th></tr>`;
+    document.querySelector('#p-nh-table tfoot td:first-child').removeAttribute('colspan');
+    activeBanks.forEach(n => { 
+        nhPrintHtml += `<tr><td style="text-align:left;">${n.n}</td><td align="right">${formatTien(cleanTien(n.v))} đ</td></tr>`; 
+    });
+}
 document.querySelector('#p-nh-table tbody').innerHTML = nhPrintHtml;
 document.getElementById('p-nh-total').innerText = formatTien(tNH) + " đ";
 
@@ -1753,7 +1779,12 @@ closeModal('modal-print-setup'); buildPrintLayout(printDate);
 
 setTimeout(() => {
 let asciiCode = generateASCII(12); let nowTime = new Date().toLocaleString('vi-VN');
-document.getElementById('p-auditor').innerText = auditor; document.getElementById('p-address').innerText = address; document.getElementById('p-sign-name-1').innerText = "";
+document.getElementById('p-auditor').innerText = auditor; 
+document.getElementById('p-address').innerText = address; 
+
+document.getElementById('p-sign-name-1').innerText = ""; 
+document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
+document.getElementById('p-sign-name-3').innerText = "";
 
 let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(printDate + 'T00:00:00');
 let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
@@ -1772,7 +1803,12 @@ function printOldRecord(dateStr, codeStr) {
 let history = masterData.printHistory || []; let record = history.find(x => x.code === codeStr); if(!record) return;
 buildPrintLayout(dateStr);
 setTimeout(() => {
-document.getElementById('p-auditor').innerText = record.auditor; document.getElementById('p-address').innerText = record.address; document.getElementById('p-sign-name-1').innerText = "";
+document.getElementById('p-auditor').innerText = record.auditor; 
+document.getElementById('p-address').innerText = record.address; 
+document.getElementById('p-sign-name-1').innerText = ""; 
+document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
+document.getElementById('p-sign-name-3').innerText = "";
+
 let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(dateStr + 'T00:00:00'); let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
 document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
 let dObj = new Date(dateStr);
