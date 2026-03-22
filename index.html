@@ -143,7 +143,6 @@ body.modal-open { overflow: hidden; }
     .hide-on-mobile { display: none !important; }
 }
 
-/* RESPONSIVE LAYOUT CHO DESKTOP */
 @media (min-width: 850px) {
 body { padding: 40px; background-color: #e0e0e0;}
 .app-container { flex-direction: row; max-width: 1200px; height: calc(100vh - 80px); border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); display: none; }
@@ -296,6 +295,11 @@ body * { visibility: hidden; }
         </div>
 
         <div id="content-stk">
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <button class="btn-sm stk-filter-btn active" style="flex:1; background:var(--primary); color:var(--accent);" onclick="filterSTK('all', this)">Tất cả</button>
+            <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('ky-han', this)">Kỳ hạn cố định</button>
+            <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('tich-luy', this)">Góp tích lũy</button>
+        </div>
         <div id="stk-container"></div>
         <button class="btn-main" style="background:var(--success); color:white; border:none" onclick="openModal('modal-stk-add')">LẬP SỔ TIẾT KIỆM MỚI</button>
         <div class="sub-total-box" style="border-color:var(--success); background:#f4f9f4;">TỔNG TIẾT KIỆM: <span id="val-stk" style="font-size:26px; color:var(--success)">0</span> đ</div>
@@ -317,7 +321,6 @@ body * { visibility: hidden; }
         <div style="display:flex; justify-content:space-between; margin-bottom:25px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>4. Tiết kiệm:</span><strong><span id="fin-stk">0</span> đ</strong></div>
         <div style="display:flex; justify-content:space-between; font-size:28px; border-top:4px double #000; padding-top:20px; color:var(--success)"><span>TỔNG GIÁ TRỊ:</span><strong><span id="fin-total">0</span> đ</strong></div>
         </div>
-        <button class="btn-main" style="background:#eee; color:#000; margin-top:30px; border-color:#ccc" onclick="clearDayData()">XOÁ TOÀN BỘ DỮ LIỆU NGÀY NÀY</button>
         </div>
 
         <div id="sheet-print" class="page">
@@ -432,10 +435,9 @@ body * { visibility: hidden; }
 <div class="modal-overlay" id="modal-edit-tm1">
 <div class="modal-content" style="max-width:550px;">
 <div class="modal-title">CHỈNH SỬA TIỀN MẶT</div>
-<button class="btn-sm" style="background:var(--success); color:#fff; margin-bottom:15px;" onclick="addTMEditRow()">+ Thêm mệnh giá cần sửa</button>
 <div style="overflow-y:auto; max-height:300px;">
 <table class="data-table" style="margin-bottom:0;">
-    <thead><tr><th style="text-align:left">Mệnh giá</th><th style="width:70px">SL Đầu</th><th style="width:80px">SL Mới</th><th style="text-align:right">Tổng Mới</th><th style="width:40px">Xóa</th></tr></thead>
+    <thead><tr><th style="text-align:left">Mệnh giá</th><th style="width:70px">SL Đầu</th><th style="width:80px">SL Mới</th><th style="text-align:right">Tổng Mới</th></tr></thead>
     <tbody id="edit-tm1-tbody"></tbody>
 </table>
 </div>
@@ -839,6 +841,7 @@ let currentQuyDetailId = null;
 let currentEditBankShortName = "";
 let currentEditBankOldVal = 0;
 let currentCaptchaCode = "";
+let currentSTKFilter = 'all';
 
 // Hàm tạo Captcha
 function generateCaptcha() {
@@ -854,7 +857,6 @@ function generateCaptcha() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Vẽ nhiễu nền
     for (let i = 0; i < 30; i++) {
         ctx.fillStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.3)`;
         ctx.beginPath();
@@ -862,7 +864,6 @@ function generateCaptcha() {
         ctx.fill();
     }
 
-    // Vẽ đường kẻ nhiễu
     for (let i = 0; i < 4; i++) {
         ctx.strokeStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.5)`;
         ctx.beginPath();
@@ -871,7 +872,6 @@ function generateCaptcha() {
         ctx.stroke();
     }
 
-    // Vẽ chữ Captcha
     ctx.font = 'bold 24px "Times New Roman"';
     ctx.fillStyle = '#1a1a1a';
     ctx.textAlign = 'center';
@@ -975,7 +975,6 @@ function handleLogin() {
         document.getElementById('nav-admin').style.display = 'none';
     }
 
-    // Clear login fields for next time
     document.getElementById('login-pass').value = '';
     document.getElementById('login-captcha').value = '';
 
@@ -1264,7 +1263,7 @@ function loadDay() {
 }
 
 // =====================================
-// CHỈNH SỬA TIỀN MẶT
+// CHỈNH SỬA TIỀN MẶT (HIỂN THỊ TẤT CẢ MỆNH GIÁ)
 // =====================================
 function openEditTM() {
     let data = masterData[currentDay].tm || [];
@@ -1275,48 +1274,38 @@ function openEditTM() {
     
     pendingTMDiff = 0;
     document.getElementById('edit-tm1-diff').innerHTML = `<span style="color:var(--primary)">0</span>`;
+    
+    denoms.forEach((m, i) => {
+        let oldRaw = pendingTMChanges[i];
+        let oldQty = (oldRaw !== undefined && oldRaw !== "") ? parseInt(oldRaw) : 0;
+        
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="font-weight:bold">${formatTien(m)}</td>
+            <td class="tm-old-qty" align="center" data-old="${oldQty}" data-index="${i}">${oldQty}</td>
+            <td><input type="text" inputmode="numeric" class="in-tm-new-qty" value="${oldRaw !== "" ? oldQty : ""}" oninput="formatSoLuong(this); updateFixedTMEditRowTotal(this);" style="text-align:right; width:80px;"></td>
+            <td class="tm-new-total" align="right">${formatTien(oldQty * m)} đ</td>
+        `;
+        tbody.appendChild(tr);
+    });
+
     openModal('modal-edit-tm1');
 }
 
-function addTMEditRow() {
-    let tbody = document.getElementById('edit-tm1-tbody');
-    let options = denoms.map((m, i) => `<option value="${i}">${formatTien(m)} đ</option>`).join('');
-    let tr = document.createElement('tr');
-    tr.innerHTML = `
-        <td><select class="sel-tm-denom" onchange="updateTMEditRow(this)">${options}</select></td>
-        <td class="tm-old-qty" align="center">0</td>
-        <td><input type="text" inputmode="numeric" class="in-tm-new-qty" value="0" oninput="formatSoLuong(this); updateTMEditRowTotal(this);" style="text-align:right; width:80px;"></td>
-        <td class="tm-new-total" align="right">0 đ</td>
-        <td align="center"><button class="btn-sm" style="background:red;color:white;border:none;" onclick="this.closest('tr').remove(); calcEditTMDiff();">X</button></td>
-    `;
-    tbody.appendChild(tr);
-    updateTMEditRow(tr.querySelector('.sel-tm-denom'));
-}
-
-function updateTMEditRow(sel) {
-    let tr = sel.closest('tr');
-    let i = sel.value;
-    let oldRaw = pendingTMChanges[i];
-    let oldQty = (oldRaw !== undefined && oldRaw !== "") ? parseInt(oldRaw) : 0;
-    tr.querySelector('.tm-old-qty').innerText = oldQty;
-    tr.querySelector('.tm-old-qty').setAttribute('data-old', oldQty);
-    updateTMEditRowTotal(tr.querySelector('.in-tm-new-qty'));
-}
-
-function updateTMEditRowTotal(inp) {
+function updateFixedTMEditRowTotal(inp) {
     let tr = inp.closest('tr');
-    let i = tr.querySelector('.sel-tm-denom').value;
+    let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
     let m = denoms[i];
     let newQtyStr = inp.value;
     let newQty = (newQtyStr !== "") ? parseInt(newQtyStr) : 0;
     tr.querySelector('.tm-new-total').innerText = formatTien(m * newQty) + " đ";
-    calcEditTMDiff();
+    calcEditTMDiffFixed();
 }
 
-function calcEditTMDiff() {
+function calcEditTMDiffFixed() {
     let diff = 0;
     document.querySelectorAll('#edit-tm1-tbody tr').forEach(tr => {
-        let i = tr.querySelector('.sel-tm-denom').value;
+        let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
         let oldQty = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-old')) || 0;
         let newQtyStr = tr.querySelector('.in-tm-new-qty').value;
         let newQty = (newQtyStr !== "") ? parseInt(newQtyStr) : 0;
@@ -1331,7 +1320,7 @@ function calcEditTMDiff() {
 
 function proceedEditTM() {
     document.querySelectorAll('#edit-tm1-tbody tr').forEach(tr => {
-        let i = tr.querySelector('.sel-tm-denom').value;
+        let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
         let newQty = tr.querySelector('.in-tm-new-qty').value;
         pendingTMChanges[i] = newQty;
     });
@@ -1825,6 +1814,22 @@ saveMaster(); loadDay();
 }
 
 // =====================================
+// FILTER CHO SỔ TIẾT KIỆM
+// =====================================
+function filterSTK(type, btn) {
+    currentSTKFilter = type;
+    document.querySelectorAll('.stk-filter-btn').forEach(b => {
+        b.style.background = '#fff';
+        b.style.color = '#000';
+    });
+    btn.style.background = 'var(--primary)';
+    btn.style.color = 'var(--accent)';
+    
+    let list = masterData[currentDay]?.stk || [];
+    renderSTK(list);
+}
+
+// =====================================
 // SỔ TIẾT KIỆM
 // =====================================
 function saveNewSTK() {
@@ -1844,7 +1849,18 @@ document.getElementById('in-stk-name').value = ""; document.getElementById('in-s
 function renderSTK(list) {
 const cont = document.getElementById('stk-container'); cont.innerHTML = "";
 const dToday = new Date(currentDay).getTime();
-list.forEach(s => {
+
+let filteredList = list;
+if (currentSTKFilter !== 'all') {
+    filteredList = list.filter(s => s.type === currentSTKFilter);
+}
+
+if(filteredList.length === 0) {
+    cont.innerHTML = `<div style="text-align:center; padding:20px; color:#666; font-style:italic;">Không có sổ tiết kiệm nào trong danh mục này.</div>`;
+    return;
+}
+
+filteredList.forEach(s => {
 let dE = new Date(s.end).getTime(), remain = Math.floor((dE - dToday)/86400000);
 let total = Math.max(1, Math.floor((dE - new Date(s.start).getTime())/86400000));
 let per = Math.min(100, Math.max(0, (Math.floor((dToday - new Date(s.start).getTime())/86400000) / total) * 100));
