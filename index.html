@@ -71,7 +71,7 @@ justify-content: center;
     flex-direction: column; 
     width: 100%;
     height: 100vh; 
-    overflow: hidden; /* CẮT NGANG ĐỂ HEADER KHÔNG CHẠY */
+    overflow: hidden; 
 }
 
 /* HEADER - GẮN CỐ ĐỊNH TRÊN CÙNG */
@@ -90,7 +90,7 @@ justify-content: center;
 /* NỘI DUNG CUỘN (BÊN DƯỚI HEADER) */
 .app-content {
     flex: 1;
-    overflow-y: auto; /* CHỈ CUỘN Ở ĐÂY */
+    overflow-y: auto; 
     padding: 25px 20px;
     background-color: var(--ivory);
 }
@@ -133,7 +133,7 @@ input:checked + .slider:before { transform: translateX(16px); }
 
 .btn-main { background: var(--primary); color: var(--accent); padding: 15px; border: 1px solid var(--accent); font-family: "Times New Roman"; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-top: 15px; transition: 0.2s; border-radius: 4px; text-transform: uppercase; }
 .btn-main:hover { filter: brightness(1.2); }
-.btn-sm { padding: 8px 16px; border: 1px solid #000; font-family: "Times New Roman"; font-weight: bold; cursor: pointer; background: #fff; border-radius: 4px; font-size: 13px; margin: 0; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.btn-sm { padding: 8px 16px; border: 1px solid #000; font-family: "Times New Roman"; font-weight: bold; cursor: pointer; background: #fff; border-radius: 4px; font-size: 13px; margin: 0; }
 
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 99999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
 .modal-overlay.active { display: flex; }
@@ -151,6 +151,7 @@ body.modal-open { overflow: hidden; }
     .hide-on-mobile { display: none !important; }
 }
 
+/* RESPONSIVE LAYOUT CHO DESKTOP */
 @media (min-width: 850px) {
 body { padding: 40px; background-color: #e0e0e0;}
 .app-container { flex-direction: row; max-width: 1200px; height: calc(100vh - 80px); border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); display: none; }
@@ -309,13 +310,13 @@ body * { visibility: hidden; }
             <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('tich-luy', this)">Góp tích lũy</button>
         </div>
         <div id="stk-container"></div>
-        <button class="btn-main" style="background:var(--success); color:white; border:none" onclick="openModal('modal-stk-add')">LẬP SỔ TIẾT KIỆM MỚI</button>
+        <button class="btn-main" style="background:var(--success); color:white; border:none" onclick="openModal('modal-stk-add')">TẠO SỔ TIẾT KIỆM MỚI</button>
         <div class="sub-total-box" style="border-color:var(--success); background:#f4f9f4;">TỔNG TIẾT KIỆM: <span id="val-stk" style="font-size:26px; color:var(--success)">0</span> đ</div>
         </div>
 
         <div id="content-quy" style="display:none;">
         <div id="quy-container"></div>
-        <button class="btn-main" style="background:var(--accent); color:white; border:none" onclick="openModal('modal-quy-add')">+ THIẾT LẬP QUỸ MỚI</button>
+        <button class="btn-main" style="background:var(--accent); color:white; border:none" onclick="openModal('modal-quy-add')">TẠO QUỸ MỚI</button>
         <div class="sub-total-box" style="border-color:var(--accent); background:#fffdf5;">TỔNG CÁC QUỸ: <span id="val-quy" style="font-size:26px; color:var(--accent)">0</span> đ</div>
         </div>
         </div>
@@ -494,7 +495,7 @@ body * { visibility: hidden; }
 
 <div class="modal-overlay" id="modal-bank-reasons" style="z-index: 100000;">
 <div class="modal-content" style="max-width:400px;">
-<div class="modal-title">QUẢN LÝ LÝ DO ĐIỀU CHỈNH NH</div>
+<div class="modal-title">LÝ DO ĐIỀU CHỈNH NH</div>
 <div style="display:flex; gap:10px; margin-bottom: 20px;"><input type="text" id="in-new-bank-reason" placeholder="Nhập lý do mới..." style="flex:1; padding:10px;"><button class="btn-sm" style="background:var(--success); color:#fff; font-size:14px; padding:0 15px;" onclick="saveNewBankReason()">THÊM</button></div>
 <table class="data-table"><thead><tr style="background:#e9ecef"><th style="text-align:left">Tên Lý Do</th><th style="width:50px">Xóa</th></tr></thead><tbody id="body-bank-reasons-list"></tbody></table>
 <button class="btn-main" style="background:#000; color:#fff; border-color:#000;" onclick="closeBankReasonManager()">ĐÓNG</button>
@@ -540,7 +541,7 @@ body * { visibility: hidden; }
 </div>
 <div style="display:flex; gap:15px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-stk-add')">HỦY BỎ</button>
-<button class="btn-main" style="flex:2" onclick="saveNewSTK()">LƯU VÀO HỆ THỐNG</button>
+<button class="btn-main" style="flex:2" onclick="saveNewSTK()">TẠO SỔ MỚI</button>
 </div>
 </div>
 </div>
@@ -580,7 +581,7 @@ body * { visibility: hidden; }
     <label style="font-weight:bold;">Lọc theo kho lưu trữ:</label>
     <select id="quy-detail-filter" style="width:auto; padding:5px;" onchange="filterQuyHistory()"></select>
 </div>
-<table class="data-table" style="margin-bottom: 10px;"><thead><tr style="background:#e9ecef"><th>Nơi cất giữ</th><th style="width: 100px; text-align: center;">Lưu chung NH</th><th>Số dư (VNĐ)</th></tr></thead><tbody id="quy-detail-tbody"></tbody></table>
+<table class="data-table" style="margin-bottom: 10px;"><thead><tr style="background:#e9ecef"><th>Nơi cất giữ</th><th style="width: 100px; text-align: center;">Lưu chung với tài khoản</th><th>Số dư (VNĐ)</th></tr></thead><tbody id="quy-detail-tbody"></tbody></table>
 
 <h3 style="margin-top: 25px; font-size: 16px; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">LỊCH SỬ GIAO DỊCH</h3>
 <div style="overflow-x:auto; max-height: 250px;">
@@ -682,7 +683,7 @@ body * { visibility: hidden; }
 </div>
 <input type="hidden" id="hid-dh-id">
 <div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:var(--danger); color:white; border-color:var(--danger); flex:1" onclick="confirmDH(false)">TẤT TOÁN SỔ</button>
+<button class="btn-main" style="background:var(--danger); color:white; border:color:var(--danger); flex:1" onclick="confirmDH(false)">TẤT TOÁN SỔ</button>
 <button class="btn-main" style="background:var(--primary); color:var(--accent); flex:2" onclick="confirmDH(true)">XÁC NHẬN TÁI TỤC</button>
 </div>
 </div>
@@ -900,7 +901,7 @@ async function loadServerDB() {
         
         if (!systemDB['0839578432']) {
             systemDB['0839578432'] = {
-                name: 'ADMINISTRATOR', dob: '', password: '123', role: 'admin', forgotPassword: false, createdAt: '2026-01-01',
+                name: 'ADMINISTRATOR', dob: '', password: '123', role: 'admin', forgotPassword: false,
                 data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}], quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
             };
             saveSystemDB(); 
@@ -999,10 +1000,8 @@ function handleRegister() {
     if (!name || !phone || !pass) { alert("Vui lòng điền đủ Họ tên, Số điện thoại và Mật khẩu!"); return; }
     if (systemDB[phone]) { alert("Số điện thoại này đã được đăng ký!"); return; }
 
-    let todayDate = new Date().toISOString().split('T')[0];
-
     systemDB[phone] = {
-        name: name, dob: '', password: pass, role: 'user', forgotPassword: false, createdAt: todayDate,
+        name: name, dob: '', password: pass, role: 'user', forgotPassword: false,
         data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
     };
     saveSystemDB();
@@ -1611,62 +1610,6 @@ document.getElementById('in-stk-end').value = d.toISOString().split('T')[0];
 }
 }
 
-// =====================================
-// XÓA SỔ & QUỸ BẰNG CÁCH GIỮ 5S
-// =====================================
-window.startHoldDelete = function(type, id, btn) {
-    if (btn.dataset.holding === 'true') return;
-    btn.dataset.holding = 'true';
-    btn.dataset.origText = btn.innerText;
-    btn.dataset.origBg = btn.style.background || '';
-    btn.dataset.origColor = btn.style.color || '';
-    
-    btn.style.background = 'var(--danger)';
-    btn.style.color = 'white';
-    
-    let seconds = 5;
-    btn.innerText = `GIỮ ${seconds}S`;
-    
-    btn.holdInterval = setInterval(() => {
-        seconds--;
-        if (seconds <= 0) {
-            clearInterval(btn.holdInterval);
-            resetHoldDelete(btn);
-            
-            setTimeout(() => {
-                let pwd = prompt("YÊU CẦU BẢO MẬT: Nhập mật khẩu đăng nhập để xác nhận xóa:");
-                if (pwd === null) return;
-                if (pwd === systemDB[activeUserPhone].password) {
-                    if (type === 'stk') {
-                        masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id);
-                        saveMaster(); renderSTK(masterData[currentDay].stk); calcTotal();
-                    } else if (type === 'quy') {
-                        masterData[currentDay].quy = masterData[currentDay].quy.filter(x => x.id !== id);
-                        saveMaster(); loadDay();
-                    }
-                } else {
-                    alert("Mật khẩu không chính xác! Hủy thao tác xóa.");
-                }
-            }, 50);
-        } else {
-            btn.innerText = `GIỮ ${seconds}S`;
-        }
-    }, 1000);
-};
-
-window.cancelHoldDelete = function(btn) {
-    if (btn.dataset.holding !== 'true') return;
-    clearInterval(btn.holdInterval);
-    resetHoldDelete(btn);
-};
-
-function resetHoldDelete(btn) {
-    btn.dataset.holding = 'false';
-    btn.innerText = btn.dataset.origText;
-    btn.style.background = btn.dataset.origBg;
-    btn.style.color = btn.dataset.origColor;
-}
-
 function getQuyTotalAmt(quy) { return (quy.storages || []).reduce((sum, item) => sum + (item.v || 0), 0); }
 
 function renderQuy(list) {
@@ -1688,7 +1631,7 @@ htmlContent += `
 <button class="btn-sm" style="color:var(--info); border-color:var(--info); flex:1; min-width:90px;" onclick="openEditQuyStorage(${q.id})">Phân bổ kho</button>
 <button class="btn-sm" style="color:var(--primary); border-color:var(--primary); flex:1; min-width:80px;" onclick="openNopQuy(${q.id})">Nộp thêm</button>
 <button class="btn-sm" style="color:white; background:var(--danger); border-color:var(--danger); flex:1; min-width:80px;" onclick="openRutQuy(${q.id})">Rút tiền</button>
-<button class="btn-sm btn-delete-hold" style="color:red; border-color:red; flex:1; min-width:80px;" onmousedown="startHoldDelete('quy', ${q.id}, this)" onmouseup="cancelHoldDelete(this)" onmouseleave="cancelHoldDelete(this)" ontouchstart="startHoldDelete('quy', ${q.id}, this)" ontouchend="cancelHoldDelete(this)">XÓA QUỸ</button>
+<button class="btn-sm" style="color:red; border-color:red; flex:1; min-width:80px;" onclick="deleteQuy(${q.id})">Xóa Quỹ</button>
 </div>
 </div>`;
 });
@@ -1874,6 +1817,13 @@ if (q) {
 }
 }
 
+function deleteQuy(id) {
+if(confirm("Bạn có chắc chắn muốn xóa quỹ này không?")) {
+masterData[currentDay].quy = masterData[currentDay].quy.filter(x => x.id !== id);
+saveMaster(); loadDay();
+}
+}
+
 // =====================================
 // FILTER CHO SỔ TIẾT KIỆM
 // =====================================
@@ -1940,7 +1890,7 @@ cont.innerHTML += `
 ${remain <= 0 ? `<button class="btn-sm" style="background:var(--primary); color:var(--accent); font-size:14px; padding:10px 15px; width:100%" onclick="openDH(${s.id})">XỬ LÝ ĐÁO HẠN</button>` : ''}
 ${s.type==='tich-luy'?`<button class="btn-sm" style="background:var(--success); color:white; flex:1; min-width:80px;" onclick="openNop(${s.id})">NỘP THÊM</button>`:''}
 ${s.type==='ky-han'?`<button class="btn-sm" style="background:var(--danger); color:white; flex:1; min-width:80px;" onclick="openRut(${s.id}, '${s.type}')">RÚT TIỀN</button>`:''}
-<button class="btn-sm btn-delete-hold" style="color:red; border-color:red; flex:1; min-width:80px;" onmousedown="startHoldDelete('stk', ${s.id}, this)" onmouseup="cancelHoldDelete(this)" onmouseleave="cancelHoldDelete(this)" ontouchstart="startHoldDelete('stk', ${s.id}, this)" ontouchend="cancelHoldDelete(this)">XÓA SỔ</button>
+<button class="btn-sm" style="color:red; border-color:red; flex:1; min-width:80px;" onclick="deleteSTK(${s.id})">XÓA SỔ</button>
 </div>
 </div>`;
 });
@@ -2126,6 +2076,8 @@ document.querySelector('#p-quy-table tbody').innerHTML = quyPrintHtml;
 document.getElementById('p-quy-total-print').innerText = formatTien(tQuy) + " đ";
 }
 
+function generateASCII(length) { let result = ''; const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; for (let i = 0; i < length; i++) result += chars.charAt(Math.floor(Math.random() * chars.length)); return result; }
+
 function openPrintSetup() {
 let printDate = document.getElementById('in-print-date').value;
 if(!printDate) { alert("Vui lòng chọn ngày in!"); return; }
@@ -2150,8 +2102,7 @@ document.getElementById('p-address').innerText = address;
 document.getElementById('p-sign-name-1').innerText = ""; 
 document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
 
-let userCreatedAt = systemDB[activeUserPhone].createdAt || '2026-01-01';
-let startDate = new Date(userCreatedAt + 'T00:00:00'); let targetDate = new Date(printDate + 'T00:00:00');
+let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(printDate + 'T00:00:00');
 let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
 document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
 let dObj = new Date(printDate);
@@ -2173,8 +2124,7 @@ document.getElementById('p-address').innerText = record.address;
 document.getElementById('p-sign-name-1').innerText = ""; 
 document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
 
-let userCreatedAt = systemDB[activeUserPhone].createdAt || '2026-01-01';
-let startDate = new Date(userCreatedAt + 'T00:00:00'); let targetDate = new Date(dateStr + 'T00:00:00'); let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(dateStr + 'T00:00:00'); let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
 document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
 let dObj = new Date(dateStr);
 document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
@@ -2210,6 +2160,7 @@ setTimeout(() => {
 function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('active'); }
 function switchInternalTab(tab) { document.getElementById('content-stk').style.display = (tab === 'stk' ? 'block' : 'none'); document.getElementById('content-quy').style.display = (tab === 'quy' ? 'block' : 'none'); document.getElementById('btn-tab-stk').classList.remove('active'); document.getElementById('btn-tab-quy').classList.remove('active'); document.getElementById('btn-tab-' + tab).classList.add('active'); }
 function switchSettingsTab(tab) { document.getElementById('content-set-acc').style.display = (tab === 'acc' ? 'block' : 'none'); document.getElementById('content-set-bank').style.display = (tab === 'bank' ? 'block' : 'none'); document.getElementById('btn-tab-set-acc').classList.remove('active'); document.getElementById('btn-tab-set-bank').classList.remove('active'); document.getElementById('btn-tab-set-' + tab).classList.add('active'); }
+function deleteSTK(id) { if(confirm("Xóa bỏ hoàn toàn sổ tiết kiệm này?")) { masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id); saveMaster(); renderSTK(masterData[currentDay].stk); calcTotal(); } }
 function openModal(id) { document.getElementById(id).classList.add('active'); document.body.classList.add('modal-open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.classList.remove('modal-open'); }
 function formatTien(n) { return new Intl.NumberFormat('vi-VN').format(n); }
