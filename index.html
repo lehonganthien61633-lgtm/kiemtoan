@@ -151,7 +151,6 @@ body.modal-open { overflow: hidden; }
     .hide-on-mobile { display: none !important; }
 }
 
-/* RESPONSIVE LAYOUT CHO DESKTOP */
 @media (min-width: 850px) {
 body { padding: 40px; background-color: #e0e0e0;}
 .app-container { flex-direction: row; max-width: 1200px; height: calc(100vh - 80px); border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); display: none; }
@@ -273,6 +272,9 @@ body * { visibility: hidden; }
             🛡️ Quản Lý Người Dùng <span id="admin-notif-badge" class="badge-notif" style="display:none;">!</span>
         </div>
         <div class="nav-item" onclick="handleLogout()" style="color:#666;">🚪 Đăng Xuất</div>
+    </div>
+    <div style="margin-top:auto; padding:20px; font-size:11px; color:#888; text-align:center; border-top:1px solid #ddd;">
+        Bản quyền thuộc về<br><strong style="color:var(--accent)">Thiên Trường Software</strong><br>chuẩn quốc tế
     </div>
 </div>
 
@@ -683,7 +685,7 @@ body * { visibility: hidden; }
 </div>
 <input type="hidden" id="hid-dh-id">
 <div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:var(--danger); color:white; border-color:var(--danger); flex:1" onclick="confirmDH(false)">TẤT TOÁN SỔ</button>
+<button class="btn-main" style="background:var(--danger); color:white; border:color:var(--danger); flex:1" onclick="confirmDH(false)">TẤT TOÁN SỔ</button>
 <button class="btn-main" style="background:var(--primary); color:var(--accent); flex:2" onclick="confirmDH(true)">XÁC NHẬN TÁI TỤC</button>
 </div>
 </div>
@@ -780,7 +782,6 @@ body * { visibility: hidden; }
 <div class="p-sign">
 <div>Người kiểm đếm<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-1"></div></div>
 <div>Người nhận bàn giao<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-2"></div></div>
-<div>Giám đốc<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-3"></div></div>
 </div>
 <div class="p-absolute-footer">
 <div style="text-transform:uppercase; margin-bottom:10px; font-weight:bold;">PHIẾU KIỂM KÊ BẮT BUỘC PHẢI ĐƯỢC LƯU TRỮ - KHÔNG HỦY BỎ DƯỚI MỌI HÌNH THỨC</div>
@@ -789,6 +790,7 @@ body * { visibility: hidden; }
     <div id="p-copy-info" style="display:none; font-weight:bold;">BẢN SAO</div>
 </div>
 <div style="font-weight:bold;">TỔNG CỤC QUẢN LÝ KINH TẾ<br>TRUNG TÂM QUẢN LÝ DÒNG TIỀN<br>BỘ PHẬN KIỂM TOÁN - THANH TRA</div>
+<div style="margin-top: 10px; font-size: 10px; font-style: italic; color: #555;">Bản quyền thuộc về Thiên Trường Software chuẩn quốc tế</div>
 </div>
 </div>
 </div>
@@ -2142,9 +2144,9 @@ let printDate = document.getElementById('in-print-date').value;
 let auditor = document.getElementById('in-auditor-name').value.trim() || "Chưa nhập";
 let address = document.getElementById('in-print-address').value.trim() || "Chưa nhập";
 
-closeModal('modal-print-setup'); buildPrintLayout(printDate);
+closeModal('modal-print-setup'); 
+buildPrintLayout(printDate);
 
-setTimeout(() => {
 let asciiCode = generateASCII(12); let nowTime = new Date().toLocaleString('vi-VN');
 document.getElementById('p-auditor').innerText = auditor; 
 document.getElementById('p-address').innerText = address; 
@@ -2162,14 +2164,16 @@ document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getE
 
 if(!masterData.printHistory) masterData.printHistory = [];
 masterData.printHistory.push({ date: printDate, time: nowTime, code: asciiCode, auditor: auditor, address: address });
-saveMaster(); renderPrintHistory(); window.print();
-}, 100);
+saveMaster(); renderPrintHistory(); 
+
+document.body.offsetHeight; // Force reflow before print
+window.print();
 }
 
 function printOldRecord(dateStr, codeStr) {
 let history = masterData.printHistory || []; let record = history.find(x => x.code === codeStr); if(!record) return;
 buildPrintLayout(dateStr);
-setTimeout(() => {
+
 document.getElementById('p-auditor').innerText = record.auditor; 
 document.getElementById('p-address').innerText = record.address; 
 document.getElementById('p-sign-name-1').innerText = ""; 
@@ -2182,8 +2186,9 @@ let dObj = new Date(dateStr);
 document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
 document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = record.time; document.getElementById('p-title').innerText = getDayName(dateStr); document.getElementById('p-ascii').innerText = codeStr;
 const copyBox = document.getElementById('p-copy-info'); copyBox.style.display = 'block'; copyBox.innerHTML = `BẢN SAO<br><span style="font-size:10px; font-weight:normal;">Thời gian in lại: ${new Date().toLocaleString('vi-VN')}</span>`;
+
+document.body.offsetHeight; // Force reflow before print
 window.print();
-}, 100);
 }
 
 function renderPrintHistory() {
