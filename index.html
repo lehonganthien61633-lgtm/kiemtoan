@@ -71,7 +71,7 @@ justify-content: center;
     flex-direction: column; 
     width: 100%;
     height: 100vh; 
-    overflow: hidden; /* CẮT NGANG ĐỂ HEADER KHÔNG CHẠY */
+    overflow: hidden; 
 }
 
 /* HEADER - GẮN CỐ ĐỊNH TRÊN CÙNG */
@@ -90,7 +90,7 @@ justify-content: center;
 /* NỘI DUNG CUỘN (BÊN DƯỚI HEADER) */
 .app-content {
     flex: 1;
-    overflow-y: auto; /* CHỈ CUỘN Ở ĐÂY */
+    overflow-y: auto; 
     padding: 25px 20px;
     background-color: var(--ivory);
 }
@@ -143,7 +143,6 @@ body.modal-open { overflow: hidden; }
     .hide-on-mobile { display: none !important; }
 }
 
-/* RESPONSIVE LAYOUT CHO DESKTOP */
 @media (min-width: 850px) {
 body { padding: 40px; background-color: #e0e0e0;}
 .app-container { flex-direction: row; max-width: 1200px; height: calc(100vh - 80px); border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); display: none; }
@@ -277,7 +276,6 @@ body * { visibility: hidden; }
         <div id="sheet-nh" class="page">
         <h2>Biên bản kiểm kê Tài Khoản Ngân Hàng</h2>
         <p style="font-size: 14px; color: #666; font-style: italic; text-align: center; margin-bottom: 20px;">* Cập nhật danh sách Ngân hàng trong mục Cài Đặt.</p>
-        <div style="text-align:right; margin-bottom:10px;"><button class="btn-sm" style="background:var(--accent); color:white;" onclick="openEditNH()">Chỉnh sửa số liệu</button></div>
         <table class="data-table"><thead><tr><th style="text-align:left">Ngân Hàng</th><th style="width:250px; text-align:right;">Số Dư Hiện Tại (VNĐ)</th><th style="width:60px">Chi tiết</th></tr></thead><tbody id="body-nh"></tbody></table>
         <div class="sub-total-box">LƯỢNG TIỀN TRONG NGÂN HÀNG: <br><span id="val-nh" style="font-size:32px; color:var(--primary)">0</span> đ</div>
         </div>
@@ -453,20 +451,32 @@ body * { visibility: hidden; }
 </div>
 </div>
 
-<div class="modal-overlay" id="modal-edit-nh">
-<div class="modal-content" style="max-width:750px;">
+<div class="modal-overlay" id="modal-edit-single-nh">
+<div class="modal-content" style="max-width:450px;">
 <div class="modal-title">ĐIỀU CHỈNH SỐ DƯ NGÂN HÀNG</div>
-<button class="btn-sm" style="background:var(--success); color:#fff; margin-bottom:15px;" onclick="addNHEditRow()">+ Thêm ngân hàng cần điều chỉnh</button>
-<div style="overflow-y:auto; max-height:300px;">
-    <table class="data-table" style="min-width:650px; margin-bottom:0;">
-        <thead><tr><th style="width:120px">Ngân hàng</th><th>Dư Cũ</th><th>Dư Mới</th><th>Thay Đổi</th><th style="width:160px">Lý do</th><th style="width:40px">Xóa</th></tr></thead>
-        <tbody id="edit-nh-tbody"></tbody>
-    </table>
+<div class="form-group"><label>Ngân hàng đang chọn</label><div class="readonly-text" style="text-align:left; color:var(--primary);" id="edit-single-nh-name"></div></div>
+<div class="form-group"><label>Số dư cũ (VNĐ)</label><div class="readonly-text" style="text-align:left; color:#666;" id="edit-single-nh-old">0 đ</div></div>
+<div class="form-group"><label>Số dư mới (VNĐ)</label><input type="text" id="edit-single-nh-new" oninput="formatInput(this); updateSingleNHDiff();" style="font-size:22px; font-weight:bold; color:var(--success)"></div>
+<div class="form-group"><label>Mức thay đổi</label><div class="readonly-text" style="text-align:left;" id="edit-single-nh-diff">0 đ</div></div>
+<div class="form-group"><label>Lý do điều chỉnh</label>
+    <div style="display:flex; gap:10px;">
+        <select id="sel-single-nh-reason" style="flex:1; padding: 10px;"></select>
+        <button class="btn-sm" style="background:#000; color:#fff;" onclick="openBankReasonManager()">[+] Quản lý</button>
+    </div>
 </div>
-<div style="display:flex; gap:15px; margin-top:20px;">
-<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-edit-nh')">HỦY</button>
-<button class="btn-main" style="flex:2" onclick="confirmEditNH()">LƯU ĐIỀU CHỈNH</button>
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-edit-single-nh')">HỦY BỎ</button>
+<button class="btn-main" style="flex:2" onclick="confirmSingleBankEdit()">LƯU ĐIỀU CHỈNH</button>
 </div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-bank-reasons" style="z-index: 100000;">
+<div class="modal-content" style="max-width:400px;">
+<div class="modal-title">QUẢN LÝ LÝ DO ĐIỀU CHỈNH NH</div>
+<div style="display:flex; gap:10px; margin-bottom: 20px;"><input type="text" id="in-new-bank-reason" placeholder="Nhập lý do mới..." style="flex:1; padding:10px;"><button class="btn-sm" style="background:var(--success); color:#fff; font-size:14px; padding:0 15px;" onclick="saveNewBankReason()">THÊM</button></div>
+<table class="data-table"><thead><tr style="background:#e9ecef"><th style="text-align:left">Tên Lý Do</th><th style="width:50px">Xóa</th></tr></thead><tbody id="body-bank-reasons-list"></tbody></table>
+<button class="btn-main" style="background:#000; color:#fff; border-color:#000;" onclick="closeBankReasonManager()">ĐÓNG</button>
 </div>
 </div>
 
@@ -484,7 +494,8 @@ body * { visibility: hidden; }
         <tbody id="info-bank-history"></tbody>
     </table>
 </div>
-<button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-bank-info')">ĐÓNG</button>
+<button class="btn-main" style="background:var(--accent); color:#fff; border-color:var(--accent); margin-top:20px;" onclick="openSingleBankEdit()">ĐIỀU CHỈNH SỐ DƯ</button>
+<button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:10px;" onclick="closeModal('modal-bank-info')">ĐÓNG</button>
 </div>
 </div>
 
@@ -650,7 +661,7 @@ body * { visibility: hidden; }
 </div>
 <input type="hidden" id="hid-dh-id">
 <div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:var(--danger); color:white; border-color:var(--danger); flex:1" onclick="confirmDH(false)">TẤT TOÁN SỔ</button>
+<button class="btn-main" style="background:var(--danger); color:white; border:color:var(--danger); flex:1" onclick="confirmDH(false)">TẤT TOÁN SỔ</button>
 <button class="btn-main" style="background:var(--primary); color:var(--accent); flex:2" onclick="confirmDH(true)">XÁC NHẬN TÁI TỤC</button>
 </div>
 </div>
@@ -816,6 +827,8 @@ const denoms = [500000, 200000, 100000, 50000, 20000, 10000, 5000, 2000, 1000, 5
 let pendingTMChanges = [];
 let pendingTMDiff = 0;
 let currentQuyDetailId = null;
+let currentEditBankShortName = "";
+let currentEditBankOldVal = 0;
 
 async function loadServerDB() {
     try {
@@ -828,7 +841,7 @@ async function loadServerDB() {
         if (!systemDB['0839578432']) {
             systemDB['0839578432'] = {
                 name: 'ADMINISTRATOR', dob: '', password: '123', role: 'admin', forgotPassword: false,
-                data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}], quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"], printHistory: [] }
+                data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}], quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
             };
             saveSystemDB(); 
         }
@@ -870,7 +883,7 @@ function handleLogin() {
     
     // Gán dữ liệu với màng bọc an toàn tránh undefined crash toàn hệ thống
     if (!systemDB[phone].data) {
-        systemDB[phone].data = { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], printHistory: [] };
+        systemDB[phone].data = { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] };
     }
     masterData = systemDB[phone].data;
 
@@ -899,7 +912,7 @@ function handleRegister() {
 
     systemDB[phone] = {
         name: name, dob: '', password: pass, role: 'user', forgotPassword: false,
-        data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], printHistory: [] }
+        data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
     };
     saveSystemDB();
     alert("Đăng ký thành công! Vui lòng đăng nhập.");
@@ -1108,6 +1121,7 @@ function initializeApp() {
 
     if(!masterData.banks) masterData.banks = [];
     if(!masterData.quyReasons) masterData.quyReasons = [];
+    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
     if(!masterData.printHistory) masterData.printHistory = [];
 
     refreshBankSettings();
@@ -1290,6 +1304,7 @@ function openBankInfo(fullName, shortName, balance) {
     document.getElementById('info-bank-full').innerText = fullName;
     document.getElementById('info-bank-short').innerText = shortName;
     document.getElementById('info-bank-balance').innerText = balance;
+    currentEditBankShortName = shortName;
     
     let tbody = document.getElementById('info-bank-history');
     tbody.innerHTML = '';
@@ -1312,154 +1327,159 @@ function openBankInfo(fullName, shortName, balance) {
     openModal('modal-bank-info');
 }
 
-function openEditNH() {
-    let tbody = document.getElementById('edit-nh-tbody');
-    tbody.innerHTML = '';
-    openModal('modal-edit-nh');
-}
-
-function addNHEditRow() {
-    let tbody = document.getElementById('edit-nh-tbody');
-    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản thanh toán", "Nhận tiền lương", "Rút tiền mặt"];
-    let reasonOptions = masterData.bankReasons.map(r => `<option value="${r}">${r}</option>`).join('');
-    let bankOptions = masterData.banks.map(b => `<option value="${b.short}">${b.short}</option>`).join('');
+function openSingleBankEdit() {
+    closeModal('modal-bank-info');
     
-    let tr = document.createElement('tr');
-    tr.innerHTML = `
-        <td><select class="sel-edit-nh-name" onchange="updateNHEditRow(this)">${bankOptions}</select></td>
-        <td class="nh-old-val" align="right" data-old="0">0 đ</td>
-        <td><input type="text" class="in-edit-nh-new" value="0" oninput="formatInput(this); updateNHEditRowDiff(this);" style="text-align:right; width:100px;"></td>
-        <td class="nh-diff-val" align="right" style="font-weight:bold;">0 đ</td>
-        <td>
-            <div style="display:flex; gap:5px;">
-                <select class="sel-edit-nh-reason" style="width:120px;">${reasonOptions}</select>
-                <button class="btn-sm" style="background:#000;color:#fff;" onclick="addBankReason(this)">+</button>
-            </div>
-        </td>
-        <td align="center"><button class="btn-sm" style="background:red;color:white;border:none;" onclick="this.closest('tr').remove();">X</button></td>
-    `;
-    tbody.appendChild(tr);
-    updateNHEditRow(tr.querySelector('.sel-edit-nh-name'));
+    let dataNH = masterData[currentDay].nh || [];
+    let oldValRaw = dataNH.find(x => x.n === currentEditBankShortName)?.v;
+    currentEditBankOldVal = oldValRaw ? cleanTien(oldValRaw) : 0;
+    
+    document.getElementById('edit-single-nh-name').innerText = currentEditBankShortName;
+    document.getElementById('edit-single-nh-old').innerText = formatTien(currentEditBankOldVal) + " đ";
+    document.getElementById('edit-single-nh-new').value = oldValRaw ? formatTien(currentEditBankOldVal) : "";
+    document.getElementById('edit-single-nh-diff').innerText = "0 đ";
+    document.getElementById('edit-single-nh-diff').style.color = "var(--primary)";
+
+    refreshBankReasonOptions();
+    openModal('modal-edit-single-nh');
 }
 
-function updateNHEditRow(sel) {
-    let tr = sel.closest('tr');
-    let bName = sel.value;
-    let oldValRaw = (masterData[currentDay].nh || []).find(x => x.n === bName)?.v;
-    let oldVal = oldValRaw ? cleanTien(oldValRaw) : 0;
-    tr.querySelector('.nh-old-val').innerText = formatTien(oldVal) + " đ";
-    tr.querySelector('.nh-old-val').setAttribute('data-old', oldVal);
-    updateNHEditRowDiff(tr.querySelector('.in-edit-nh-new'));
-}
-
-function updateNHEditRowDiff(inp) {
-    let tr = inp.closest('tr');
-    let oldVal = parseInt(tr.querySelector('.nh-old-val').getAttribute('data-old')) || 0;
-    let newValStr = inp.value;
+function updateSingleNHDiff() {
+    let newValStr = document.getElementById('edit-single-nh-new').value;
     let newVal = newValStr !== "" ? cleanTien(newValStr) : 0;
     
-    let bName = tr.querySelector('.sel-edit-nh-name').value;
     let linkedFundTotal = 0;
     if(masterData[currentDay].quy) {
         masterData[currentDay].quy.forEach(q => {
-            let s = q.storages.find(x => x.name === bName && x.isLinked === true);
+            let s = q.storages.find(x => x.name === currentEditBankShortName && x.isLinked === true);
             if(s) linkedFundTotal += s.v;
         });
     }
     
-    let effectiveOldGross = oldVal + linkedFundTotal;
+    let effectiveOldGross = currentEditBankOldVal + linkedFundTotal;
     let diff = newVal - effectiveOldGross;
     
-    let diffCell = tr.querySelector('.nh-diff-val');
+    let diffCell = document.getElementById('edit-single-nh-diff');
     let sign = diff > 0 ? '+' : '';
     diffCell.style.color = diff > 0 ? 'var(--success)' : (diff < 0 ? 'var(--danger)' : 'var(--primary)');
     diffCell.innerText = sign + formatTien(diff) + " đ";
 }
 
-function addBankReason(btn) {
-    let r = prompt("Nhập nguyên nhân điều chỉnh mới:");
-    if(r && r.trim() !== "") {
-        r = r.trim();
-        if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản thanh toán", "Nhận tiền lương", "Rút tiền mặt"];
-        if(!masterData.bankReasons.includes(r)) {
-            masterData.bankReasons.push(r);
-            saveMaster();
-            document.querySelectorAll('.sel-edit-nh-reason').forEach(sel => {
-                let opt = document.createElement('option');
-                opt.value = r; opt.innerText = r;
-                sel.appendChild(opt);
-            });
-        }
-        btn.previousElementSibling.value = r;
-    }
-}
-
-function confirmEditNH() {
+function confirmSingleBankEdit() {
     let newNHData = [...(masterData[currentDay].nh || [])];
     if(!masterData.nh_history) masterData.nh_history = [];
     let nowTime = new Date().toLocaleString('vi-VN');
+
+    let newValStr = document.getElementById('edit-single-nh-new').value;
+    let rawInputVal = newValStr !== "" ? cleanTien(newValStr) : null; 
     
-    document.querySelectorAll('#edit-nh-tbody tr').forEach((tr) => {
-        let bName = tr.querySelector('.sel-edit-nh-name').value;
-        let oldVal = parseInt(tr.querySelector('.nh-old-val').getAttribute('data-old')) || 0;
-        let newValStr = tr.querySelector('.in-edit-nh-new').value;
-        let rawInputVal = newValStr !== "" ? cleanTien(newValStr) : null; 
-        
-        let linkedFundTotal = 0;
+    let linkedFundTotal = 0;
+    if(masterData[currentDay].quy) {
+        masterData[currentDay].quy.forEach(q => {
+            let s = q.storages.find(x => x.name === currentEditBankShortName && x.isLinked === true);
+            if(s) linkedFundTotal += s.v;
+        });
+    }
+
+    let newVal = null;
+    let diff = 0;
+    let calcNewVal = 0;
+
+    if (rawInputVal !== null) {
+        newVal = rawInputVal - linkedFundTotal;
+        if (newVal < 0) newVal = 0;
+        calcNewVal = newVal;
+        let effectiveOldGross = currentEditBankOldVal + linkedFundTotal;
+        diff = rawInputVal - effectiveOldGross;
+    }
+
+    let reasonSelect = document.getElementById('sel-single-nh-reason').value;
+    
+    let idx = newNHData.findIndex(x => x.n === currentEditBankShortName);
+    if (idx > -1) {
+        if (newVal === null) newNHData[idx].v = ""; 
+        else newNHData[idx].v = newVal.toString();
+    }
+    else {
+        if (newVal !== null) newNHData.push({ n: currentEditBankShortName, v: newVal.toString() });
+    }
+    
+    if (rawInputVal !== null && diff !== 0) {
+        masterData.nh_history.push({ date: currentDay, time: nowTime, bank: currentEditBankShortName, oldVal: currentEditBankOldVal, newVal: calcNewVal, diff: diff, reason: reasonSelect });
+    }
+    
+    if (diff < 0) { 
+        let amountToDeduct = Math.abs(diff);
         if(masterData[currentDay].quy) {
             masterData[currentDay].quy.forEach(q => {
-                let s = q.storages.find(x => x.name === bName && x.isLinked === true);
-                if(s) linkedFundTotal += s.v;
+                let storageItem = q.storages.find(s => s.name === currentEditBankShortName && s.isLinked === true);
+                if (storageItem && amountToDeduct > 0) {
+                    let deduct = Math.min(storageItem.v, amountToDeduct);
+                    storageItem.v -= deduct;
+                    amountToDeduct -= deduct;
+                    if(!q.history) q.history = [];
+                    q.history.push({ d: currentDay, type: 'rut', amount: deduct, storage: currentEditBankShortName, reason: 'Trừ tự động do giảm NH: ' + reasonSelect });
+                }
             });
         }
-
-        let newVal = null;
-        let diff = 0;
-        let calcNewVal = 0;
-
-        if (rawInputVal !== null) {
-            newVal = rawInputVal - linkedFundTotal;
-            if (newVal < 0) newVal = 0;
-            calcNewVal = newVal;
-            let effectiveOldGross = oldVal + linkedFundTotal;
-            diff = rawInputVal - effectiveOldGross;
-        }
-
-        let reasonSelect = tr.querySelector('.sel-edit-nh-reason').value;
-        
-        let idx = newNHData.findIndex(x => x.n === bName);
-        if (idx > -1) {
-            if (newVal === null) newNHData[idx].v = ""; 
-            else newNHData[idx].v = newVal.toString();
-        }
-        else {
-            if (newVal !== null) newNHData.push({ n: bName, v: newVal.toString() });
-        }
-        
-        if (rawInputVal !== null && diff !== 0) {
-            masterData.nh_history.push({ date: currentDay, time: nowTime, bank: bName, oldVal: oldVal, newVal: calcNewVal, diff: diff, reason: reasonSelect });
-        }
-        
-        if (diff < 0) { 
-            let amountToDeduct = Math.abs(diff);
-            if(masterData[currentDay].quy) {
-                masterData[currentDay].quy.forEach(q => {
-                    let storageItem = q.storages.find(s => s.name === bName);
-                    if (storageItem && amountToDeduct > 0) {
-                        let deduct = Math.min(storageItem.v, amountToDeduct);
-                        storageItem.v -= deduct;
-                        amountToDeduct -= deduct;
-                        if(!q.history) q.history = [];
-                        q.history.push({ d: currentDay, type: 'rut', amount: deduct, storage: bName, reason: 'Trừ tự động do giảm NH: ' + reasonSelect });
-                    }
-                });
-            }
-        }
-    });
+    }
 
     masterData[currentDay].nh = newNHData;
-    saveMaster(); refreshBankSettings(); loadDay(); closeModal('modal-edit-nh');
-    alert("Đã cập nhật số liệu Ngân hàng và tự động đồng bộ Quỹ (nếu có giảm)!");
+    saveMaster(); loadDay(); closeModal('modal-edit-single-nh');
+    alert("Đã cập nhật số dư Ngân hàng!");
+}
+
+function refreshBankReasonOptions() {
+    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
+    let html = masterData.bankReasons.map(r => `<option value="${r}">${r}</option>`).join('');
+    let sel = document.getElementById('sel-single-nh-reason');
+    if(sel) {
+        let currentVal = sel.value;
+        sel.innerHTML = html;
+        if(masterData.bankReasons.includes(currentVal)) sel.value = currentVal;
+    }
+}
+
+function openBankReasonManager() {
+    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
+    document.getElementById('in-new-bank-reason').value = "";
+    renderBankReasonsList();
+    openModal('modal-bank-reasons');
+}
+
+function closeBankReasonManager() {
+    closeModal('modal-bank-reasons');
+    refreshBankReasonOptions();
+}
+
+function renderBankReasonsList() {
+    let listHtml = "";
+    masterData.bankReasons.forEach((r, i) => {
+        listHtml += `<tr><td style="font-weight:bold">${r}</td><td align="center"><span onclick="deleteBankReason(${i})" style="color:red; cursor:pointer; font-weight:bold;">✖</span></td></tr>`;
+    });
+    document.getElementById('body-bank-reasons-list').innerHTML = listHtml;
+}
+
+function saveNewBankReason() {
+    let reason = document.getElementById('in-new-bank-reason').value.trim();
+    if (reason !== "") {
+        if (!masterData.bankReasons.includes(reason)) { 
+            masterData.bankReasons.push(reason); 
+            saveMaster(); 
+            renderBankReasonsList(); 
+            document.getElementById('in-new-bank-reason').value = "";
+        } else { 
+            alert("Lý do này đã tồn tại!"); 
+        }
+    }
+}
+
+function deleteBankReason(index) { 
+    if(confirm("Xóa lý do này?")) { 
+        masterData.bankReasons.splice(index, 1); 
+        saveMaster(); 
+        renderBankReasonsList(); 
+    } 
 }
 
 
