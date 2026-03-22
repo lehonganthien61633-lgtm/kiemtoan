@@ -67,7 +67,7 @@ justify-content: center;
     flex-direction: column; 
     width: 100%;
     height: 100vh; 
-    overflow: hidden;
+    overflow: hidden; 
 }
 
 .header-main {
@@ -84,7 +84,7 @@ justify-content: center;
 
 .app-content {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: auto; 
     padding: 25px 20px;
     background-color: var(--ivory);
 }
@@ -204,7 +204,7 @@ body * { visibility: hidden; }
         <div class="auth-title">TẠO TÀI KHOẢN MỚI</div>
         <div class="form-group">
             <label>Họ và tên</label>
-            <input type="text" id="reg-name" placeholder="Họ và tên người sử dụng...">
+            <input type="text" id="reg-name" placeholder="HỌ VÀ TÊN NGƯỜI SỬ DỤNG..." oninput="this.value = this.value.toUpperCase()">
         </div>
         <div class="form-group">
             <label>Số điện thoại</label>
@@ -331,7 +331,7 @@ body * { visibility: hidden; }
         <div id="content-set-acc">
             <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
                 <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Thông Tin Cá Nhân</h3>
-                <div class="form-group"><label>Họ và tên tài khoản</label><input type="text" id="set-user-name"></div>
+                <div class="form-group"><label>Họ và tên tài khoản</label><input type="text" id="set-user-name" oninput="this.value = this.value.toUpperCase()"></div>
                 <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
                 <div class="form-group"><label>Số điện thoại</label><input type="tel" id="set-user-phone" readonly></div>
                 
@@ -447,8 +447,16 @@ body * { visibility: hidden; }
 <div class="modal-overlay" id="modal-edit-nh">
 <div class="modal-content" style="max-width:750px;">
 <div class="modal-title">ĐIỀU CHỈNH SỐ DƯ NGÂN HÀNG</div>
-<button class="btn-sm" style="background:var(--success); color:#fff; margin-bottom:15px;" onclick="addNHEditRow()">+ Thêm ngân hàng điều chỉnh</button>
-<div style="overflow-y:auto; max-height:350px;">
+<div id="admin-quick-add-bank" style="display:none; background:#f9f9f9; padding:10px; margin-bottom:15px; border-left:3px solid var(--danger);">
+    <div style="font-weight:bold; font-size:13px; color:var(--danger); margin-bottom:5px;">QUYỀN ADMIN: THÊM NHANH NGÂN HÀNG HỆ THỐNG</div>
+    <div style="display:flex; gap:10px;">
+        <input type="text" id="quick-bank-full" placeholder="Tên Đầy Đủ" style="flex:2">
+        <input type="text" id="quick-bank-short" placeholder="Viết Tắt" style="flex:1">
+        <input type="text" id="quick-bank-balance" placeholder="Dư ban đầu (VNĐ)" oninput="formatInput(this)" style="flex:1.5">
+    </div>
+</div>
+<button class="btn-sm" style="background:var(--success); color:#fff; margin-bottom:15px;" onclick="addNHEditRow()">+ Thêm ngân hàng cần điều chỉnh</button>
+<div style="overflow-y:auto; max-height:300px;">
     <table class="data-table" style="min-width:650px; margin-bottom:0;">
         <thead><tr><th style="width:120px">Ngân hàng</th><th>Dư Cũ</th><th>Dư Mới</th><th>Thay Đổi</th><th style="width:160px">Lý do</th><th style="width:40px">Xóa</th></tr></thead>
         <tbody id="edit-nh-tbody"></tbody>
@@ -462,12 +470,20 @@ body * { visibility: hidden; }
 </div>
 
 <div class="modal-overlay" id="modal-bank-info">
-<div class="modal-content" style="max-width:400px;">
+<div class="modal-content" style="max-width:500px;">
 <div class="modal-title">THÔNG TIN NGÂN HÀNG</div>
-<div class="form-group"><label>Tên Đầy Đủ</label><div class="readonly-text" style="text-align:left;" id="info-bank-full"></div></div>
-<div class="form-group"><label>Tên Viết Tắt</label><div class="readonly-text" style="text-align:left;" id="info-bank-short"></div></div>
+<div class="form-group" style="margin-bottom:10px;"><label>Tên Đầy Đủ</label><div class="readonly-text" style="text-align:left;" id="info-bank-full"></div></div>
+<div class="form-group" style="margin-bottom:10px;"><label>Tên Viết Tắt</label><div class="readonly-text" style="text-align:left;" id="info-bank-short"></div></div>
 <div class="form-group"><label>Số Dư Hiện Tại</label><div class="readonly-text" style="text-align:left; color:var(--danger); font-size:24px;" id="info-bank-balance"></div></div>
-<button class="btn-main" style="background:#000; color:#fff; border-color:#000;" onclick="closeModal('modal-bank-info')">ĐÓNG</button>
+
+<h3 style="margin-top: 25px; font-size: 16px; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">LỊCH SỬ ĐIỀU CHỈNH</h3>
+<div style="overflow-y:auto; max-height: 200px;">
+    <table class="data-table" style="font-size: 13px; margin-bottom: 0;">
+        <thead><tr style="background:#e9ecef"><th>Thời gian</th><th style="text-align:right">Biến động</th><th>Lý do</th></tr></thead>
+        <tbody id="info-bank-history"></tbody>
+    </table>
+</div>
+<button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-bank-info')">ĐÓNG</button>
 </div>
 </div>
 
@@ -552,6 +568,7 @@ body * { visibility: hidden; }
 <div class="p-sign">
 <div>Người kiểm đếm<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-1"></div></div>
 <div>Người nhận bàn giao<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-2"></div></div>
+<div>Giám đốc<br><span style="font-size:11px; font-style:italic;">(Ký và ghi rõ họ tên)</span><div class="p-sign-name" id="p-sign-name-3"></div></div>
 </div>
 <div class="p-absolute-footer">
 <div style="text-transform:uppercase; margin-bottom:10px; font-weight:bold;">PHIẾU KIỂM KÊ BẮT BUỘC PHẢI ĐƯỢC LƯU TRỮ - KHÔNG HỦY BỎ DƯỚI MỌI HÌNH THỨC</div>
@@ -578,7 +595,10 @@ body * { visibility: hidden; }
 <input type="text" id="in-print-address" placeholder="Đang xác định vị trí...">
 <button class="btn-sm" onclick="getLocation()" style="background:#000; color:#fff;">Lấy lại</button>
 </div>
-<p style="font-size:12px; color:#666; margin-top:5px; font-style:italic;">* Nếu trình duyệt chặn vị trí, bạn có thể tự nhập tay.</p>
+</div>
+<div class="form-group" id="grp-director-name" style="display:none;">
+<label>Tên Giám Đốc (Chỉ Admin Gốc)</label>
+<input type="text" id="in-director-name" placeholder="Nhập tên Giám đốc để in..." oninput="this.value = this.value.toUpperCase()">
 </div>
 <div style="display:flex; gap:15px; margin-top:30px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-print-setup')">HỦY BỎ</button>
@@ -596,7 +616,7 @@ body * { visibility: hidden; }
 </div>
 <div class="form-group">
     <label>Tên hiển thị mới</label>
-    <input type="text" id="admin-new-name" placeholder="Nhập họ và tên mới...">
+    <input type="text" id="admin-new-name" placeholder="Nhập họ và tên mới..." oninput="this.value = this.value.toUpperCase()">
 </div>
 <div style="display:flex; gap:15px; margin-top:30px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-admin-name')">HỦY BỎ</button>
@@ -632,8 +652,8 @@ async function loadServerDB() {
         
         if (!systemDB['0839578432']) {
             systemDB['0839578432'] = {
-                name: 'Administrator', dob: '', password: '123', role: 'admin', forgotPassword: false,
-                data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}], quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"], printHistory: [] }
+                name: 'ADMINISTRATOR', dob: '', password: '123', role: 'admin', forgotPassword: false,
+                data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}], quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"], printHistory: [], directorName: "" }
             };
             saveSystemDB(); 
         }
@@ -676,7 +696,7 @@ function handleLogin() {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'flex';
     
-    let userName = systemDB[phone].name || "Thành viên";
+    let userName = systemDB[phone].name || "THÀNH VIÊN";
     document.getElementById('display-user-phone').innerText = 'Xin chào, ' + userName + ' (' + phone + ')';
 
     if (systemDB[phone].role === 'admin') {
@@ -689,7 +709,7 @@ function handleLogin() {
 }
 
 function handleRegister() {
-    let name = document.getElementById('reg-name').value.trim();
+    let name = document.getElementById('reg-name').value.trim().toUpperCase();
     let phone = document.getElementById('reg-phone').value.trim();
     let pass = document.getElementById('reg-pass').value;
 
@@ -758,7 +778,7 @@ function confirmUserChangePass() {
 }
 
 function saveUserInfo() {
-    let newName = document.getElementById('set-user-name').value.trim();
+    let newName = document.getElementById('set-user-name').value.trim().toUpperCase();
     let newDob = document.getElementById('set-user-dob').value;
     if(!newName) { alert("Họ và tên không được để trống!"); return; }
     systemDB[activeUserPhone].name = newName;
@@ -840,7 +860,7 @@ function adminOpenChangeName(phone, currentName) {
 function adminConfirmChangeName() {
     let phone = document.getElementById('admin-target-user-name').value;
     if(phone === '0839578432' && activeUserPhone !== '0839578432') { alert("Bạn không có quyền chỉnh sửa Admin chính!"); return; }
-    let newName = document.getElementById('admin-new-name').value.trim();
+    let newName = document.getElementById('admin-new-name').value.trim().toUpperCase();
     if(!newName) { alert("Không được để trống tên!"); return; }
 
     if(systemDB[phone]) {
@@ -910,7 +930,6 @@ function initializeApp() {
     if(!masterData.printHistory) masterData.printHistory = [];
 
     refreshBankSettings();
-    toggleCalcType();
     renderPrintHistory();
     loadDay(); 
     showSheet('sheet-tm', document.querySelector('.nav-item.active'));
@@ -919,50 +938,52 @@ function initializeApp() {
 }
 
 function loadDay() {
-if(isPrinting) return;
+    if(isPrinting) return;
 
-if (!masterData[currentDay]) {
-    masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
-    let pastDates = Object.keys(masterData).filter(d => d < currentDay && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
+    if (!masterData[currentDay]) {
+        masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
+    }
     
+    let data = masterData[currentDay];
+    
+    let pastDates = Object.keys(masterData).filter(d => d < currentDay && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
     if (pastDates.length > 0) {
         let prevDate = pastDates[0];
-        if(masterData[prevDate].tm) masterData[currentDay].tm = JSON.parse(JSON.stringify(masterData[prevDate].tm));
-        if(masterData[prevDate].nh) masterData[currentDay].nh = JSON.parse(JSON.stringify(masterData[prevDate].nh));
-        if(masterData[prevDate].quy) masterData[currentDay].quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
-        if(masterData[prevDate].stk) masterData[currentDay].stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
+        if((!data.tm || data.tm.length === 0) && masterData[prevDate].tm) data.tm = JSON.parse(JSON.stringify(masterData[prevDate].tm));
+        if((!data.nh || data.nh.length === 0) && masterData[prevDate].nh) data.nh = JSON.parse(JSON.stringify(masterData[prevDate].nh));
+        if((!data.quy || data.quy.length === 0) && masterData[prevDate].quy) data.quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
+        if((!data.stk || data.stk.length === 0) && masterData[prevDate].stk) data.stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
     }
     saveMaster();
-}
 
-let data = masterData[currentDay];
+    let tmData = data.tm || [];
+    const tbTM = document.getElementById('body-tm'); tbTM.innerHTML = "";
+    denoms.forEach((m, i) => {
+        let tr = document.createElement('tr');
+        let rawVal = tmData[i];
+        let hasVal = rawVal !== undefined && rawVal !== "" && rawVal !== null;
+        let qty = hasVal ? parseInt(rawVal) : 0;
+        let val = qty * m;
+        
+        let qtyDisplay = hasVal ? qty : '-'; 
+        let valDisplay = hasVal ? (val === 0 ? '0 đ' : formatTien(val) + ' đ') : '-'; 
+        tr.innerHTML = `<td style="font-weight:bold">${formatTien(m)}</td><td align="center" style="font-weight:bold; color:var(--info)">${qtyDisplay}</td><td id="val-tm-${i}" style="color:#666; text-align:right; font-weight:bold;">${valDisplay}</td>`;
+        tbTM.appendChild(tr);
+    });
 
-const tbTM = document.getElementById('body-tm'); tbTM.innerHTML = "";
-denoms.forEach((m, i) => {
-    let tr = document.createElement('tr');
-    let rawVal = data.tm[i];
-    let hasVal = rawVal !== undefined && rawVal !== "" && rawVal !== null;
-    let qty = hasVal ? parseInt(rawVal) : 0;
-    let val = qty * m;
-    
-    let qtyDisplay = hasVal ? qty : '-'; 
-    let valDisplay = hasVal ? (val === 0 ? '0 đ' : formatTien(val) + ' đ') : '-'; 
-    tr.innerHTML = `<td style="font-weight:bold">${formatTien(m)}</td><td align="center" style="font-weight:bold; color:var(--info)">${qtyDisplay}</td><td id="val-tm-${i}" style="color:#666; text-align:right; font-weight:bold;">${valDisplay}</td>`;
-    tbTM.appendChild(tr);
-});
+    let nhData = data.nh || [];
+    const bodyNH = document.getElementById('body-nh'); bodyNH.innerHTML = "";
+    masterData.banks.forEach((bank) => {
+        let savedVal = nhData.find(x => x.n === bank.short)?.v;
+        let hasVal = savedVal !== undefined && savedVal !== "" && savedVal !== null;
+        let valDisplay = hasVal ? formatTien(cleanTien(savedVal)) + ' đ' : '-';
+        let rawBalance = hasVal ? savedVal : '0';
+        bodyNH.innerHTML += `<tr><td style="font-weight:bold">${bank.short}</td><td align="right" style="color:var(--primary); font-weight:bold; font-size:16px;">${valDisplay}</td><td align="center"><button class="btn-sm" style="border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-weight:bold;" onclick="openBankInfo('${bank.full}', '${bank.short}', '${rawBalance !== '0' ? formatTien(cleanTien(rawBalance)) + ' đ' : '0 đ'}')">i</button></td></tr>`;
+    });
 
-const bodyNH = document.getElementById('body-nh'); bodyNH.innerHTML = "";
-masterData.banks.forEach((bank) => {
-    let savedVal = (data.nh || []).find(x => x.n === bank.short)?.v;
-    let hasVal = savedVal !== undefined && savedVal !== "" && savedVal !== null;
-    let valDisplay = hasVal ? formatTien(cleanTien(savedVal)) + ' đ' : '-';
-    let rawBalance = hasVal ? savedVal : '0';
-    bodyNH.innerHTML += `<tr><td style="font-weight:bold">${bank.short}</td><td align="right" style="color:var(--primary); font-weight:bold; font-size:16px;">${valDisplay}</td><td align="center"><button class="btn-sm" style="border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-weight:bold;" onclick="openBankInfo('${bank.full}', '${bank.short}', '${rawBalance !== '0' ? formatTien(cleanTien(rawBalance)) + ' đ' : '0 đ'}')">i</button></td></tr>`;
-});
-
-renderQuy(data.quy || []);
-renderSTK(data.stk || []);
-calcTotal();
+    renderQuy(data.quy || []);
+    renderSTK(data.stk || []);
+    calcTotal();
 }
 
 // =====================================
@@ -1010,7 +1031,6 @@ function updateTMEditRowTotal(inp) {
     let i = tr.querySelector('.sel-tm-denom').value;
     let m = denoms[i];
     let newQtyStr = inp.value;
-    // Kiểm tra nếu rỗng thì coi như là 0 để tính toán nội bộ
     let newQty = (newQtyStr !== "") ? parseInt(newQtyStr) : 0;
     tr.querySelector('.tm-new-total').innerText = formatTien(m * newQty) + " đ";
     calcEditTMDiff();
@@ -1036,8 +1056,6 @@ function proceedEditTM() {
     document.querySelectorAll('#edit-tm1-tbody tr').forEach(tr => {
         let i = tr.querySelector('.sel-tm-denom').value;
         let newQty = tr.querySelector('.in-tm-new-qty').value;
-        // Nếu người dùng chủ động xóa trống -> Lưu thành "" (để hiển thị dấu -)
-        // Nếu người dùng gõ số 0 -> Lưu thành "0" (để hiển thị 0)
         pendingTMChanges[i] = newQty;
     });
     
@@ -1080,7 +1098,6 @@ function confirmEditTM() {
         alert(`Tổng số tiền giải trình (${formatTien(sum)}đ) phải BẰNG số tiền chênh lệch (${formatTien(Math.abs(pendingTMDiff))}đ)!`);
         return;
     }
-    // Xác nhận lưu
     masterData[currentDay].tm = pendingTMChanges;
     saveMaster(); loadDay(); closeModal('modal-edit-tm2');
     alert("Cập nhật số liệu Tiền Mặt thành công!");
@@ -1093,12 +1110,38 @@ function openBankInfo(fullName, shortName, balance) {
     document.getElementById('info-bank-full').innerText = fullName;
     document.getElementById('info-bank-short').innerText = shortName;
     document.getElementById('info-bank-balance').innerText = balance;
+    
+    let tbody = document.getElementById('info-bank-history');
+    tbody.innerHTML = '';
+    let history = masterData.nh_history || [];
+    let bankHist = history.filter(h => h.bank === shortName).reverse();
+    if(bankHist.length > 0) {
+        bankHist.forEach(h => {
+            let color = h.diff > 0 ? 'var(--success)' : (h.diff < 0 ? 'var(--danger)' : '#333');
+            let sign = h.diff > 0 ? '+' : '';
+            tbody.innerHTML += `<tr>
+                <td align="center">${vnDate(h.date)} <br> <span style="font-size:11px;">${h.time.split(' ')[1]}</span></td>
+                <td align="right" style="color:${color}; font-weight:bold;">${sign}${formatTien(h.diff)} đ</td>
+                <td>${h.reason}</td>
+            </tr>`;
+        });
+    } else {
+        tbody.innerHTML = `<tr><td colspan="3" align="center" style="color:#888; font-style:italic; padding:15px;">Chưa có lịch sử điều chỉnh</td></tr>`;
+    }
+    
     openModal('modal-bank-info');
 }
 
 function openEditNH() {
     let tbody = document.getElementById('edit-nh-tbody');
     tbody.innerHTML = '';
+    
+    if (activeUserPhone === '0839578432' || systemDB[activeUserPhone].role === 'admin') {
+        document.getElementById('admin-quick-add-bank').style.display = 'block';
+    } else {
+        document.getElementById('admin-quick-add-bank').style.display = 'none';
+    }
+    
     openModal('modal-edit-nh');
 }
 
@@ -1168,18 +1211,33 @@ function addBankReason(btn) {
 
 function confirmEditNH() {
     let newNHData = [...(masterData[currentDay].nh || [])];
+    if(!masterData.nh_history) masterData.nh_history = [];
+    let nowTime = new Date().toLocaleString('vi-VN');
+    
+    // Xử lý Thêm nhanh ngân hàng (Admin)
+    let qbFull = document.getElementById('quick-bank-full') ? document.getElementById('quick-bank-full').value.trim() : '';
+    let qbShort = document.getElementById('quick-bank-short') ? document.getElementById('quick-bank-short').value.trim() : '';
+    if (!qbShort && qbFull) qbShort = qbFull;
+    let qbBal = document.getElementById('quick-bank-balance') ? cleanTien(document.getElementById('quick-bank-balance').value) : 0;
+    
+    if (qbFull !== "") {
+        if(!masterData.banks.find(b => b.short === qbShort)) {
+            masterData.banks.push({full: qbFull, short: qbShort});
+            newNHData.push({ n: qbShort, v: qbBal.toString() });
+            masterData.nh_history.push({ date: currentDay, time: nowTime, bank: qbShort, oldVal: 0, newVal: qbBal, diff: qbBal, reason: "Admin thêm mới NH" });
+        }
+    }
     
     document.querySelectorAll('#edit-nh-tbody tr').forEach((tr) => {
         let bName = tr.querySelector('.sel-edit-nh-name').value;
         let oldVal = parseInt(tr.querySelector('.nh-old-val').getAttribute('data-old')) || 0;
         let newValStr = tr.querySelector('.in-edit-nh-new').value;
-        
-        // Nếu để trống thì newVal = null để hiển thị dấu -
         let newVal = newValStr !== "" ? cleanTien(newValStr) : null; 
+        let reasonSelect = tr.querySelector('.sel-edit-nh-reason').value;
         
         let idx = newNHData.findIndex(x => x.n === bName);
         if (idx > -1) {
-            if (newVal === null) newNHData[idx].v = ""; // Chuyển thành rỗng để in ra -
+            if (newVal === null) newNHData[idx].v = ""; 
             else newNHData[idx].v = newVal.toString();
         }
         else {
@@ -1189,10 +1247,12 @@ function confirmEditNH() {
         let calcNewVal = newVal !== null ? newVal : 0;
         let diff = calcNewVal - oldVal;
         
+        if (diff !== 0) {
+            masterData.nh_history.push({ date: currentDay, time: nowTime, bank: bName, oldVal: oldVal, newVal: calcNewVal, diff: diff, reason: reasonSelect });
+        }
+        
         if (diff < 0) { 
             let amountToDeduct = Math.abs(diff);
-            let reasonSelect = tr.querySelector('.sel-edit-nh-reason').value;
-            
             if(masterData[currentDay].quy) {
                 masterData[currentDay].quy.forEach(q => {
                     let storageItem = q.storages.find(s => s.name === bName);
@@ -1201,16 +1261,20 @@ function confirmEditNH() {
                         storageItem.v -= deduct;
                         amountToDeduct -= deduct;
                         if(!q.history) q.history = [];
-                        q.history.push({ d: currentDay, type: 'rut', amount: deduct, storage: bName, reason: 'Trừ do điều chỉnh giảm NH: ' + reasonSelect });
+                        q.history.push({ d: currentDay, type: 'rut', amount: deduct, storage: bName, reason: 'Trừ tự động do giảm NH: ' + reasonSelect });
                     }
                 });
             }
         }
     });
     
+    if (document.getElementById('quick-bank-full')) document.getElementById('quick-bank-full').value = "";
+    if (document.getElementById('quick-bank-short')) document.getElementById('quick-bank-short').value = "";
+    if (document.getElementById('quick-bank-balance')) document.getElementById('quick-bank-balance').value = "";
+
     masterData[currentDay].nh = newNHData;
-    saveMaster(); loadDay(); closeModal('modal-edit-nh');
-    alert("Đã cập nhật số liệu Ngân hàng và tự động đồng bộ Quỹ (nếu có giảm)!");
+    saveMaster(); refreshBankSettings(); loadDay(); closeModal('modal-edit-nh');
+    alert("Đã cập nhật số liệu Ngân hàng và đồng bộ thành công!");
 }
 
 
@@ -1670,8 +1734,21 @@ function generateASCII(length) { let result = ''; const chars = 'ABCDEFGHIJKLMNO
 function openPrintSetup() {
 let printDate = document.getElementById('in-print-date').value;
 if(!printDate) { alert("Vui lòng chọn ngày in!"); return; }
+
 let userName = systemDB[activeUserPhone]?.name || "";
 document.getElementById('in-auditor-name').value = userName;
+
+let rootAdmin = systemDB['0839578432'];
+let dirName = (rootAdmin && rootAdmin.data && rootAdmin.data.directorName) ? rootAdmin.data.directorName : "";
+
+if (activeUserPhone === '0839578432') {
+    document.getElementById('grp-director-name').style.display = 'block';
+    document.getElementById('in-director-name').value = dirName;
+} else {
+    document.getElementById('grp-director-name').style.display = 'none';
+    document.getElementById('in-director-name').value = dirName;
+}
+
 openModal('modal-print-setup');
 getLocation();
 }
@@ -1681,11 +1758,29 @@ let printDate = document.getElementById('in-print-date').value;
 let auditor = document.getElementById('in-auditor-name').value.trim() || "Chưa nhập";
 let address = document.getElementById('in-print-address').value.trim() || "Chưa nhập";
 
+if (activeUserPhone === '0839578432') {
+    let dName = document.getElementById('in-director-name').value.trim().toUpperCase();
+    if(systemDB['0839578432']) {
+        if(!systemDB['0839578432'].data) systemDB['0839578432'].data = {};
+        systemDB['0839578432'].data.directorName = dName;
+        saveSystemDB();
+    }
+}
+
 closeModal('modal-print-setup'); buildPrintLayout(printDate);
 
 setTimeout(() => {
 let asciiCode = generateASCII(12); let nowTime = new Date().toLocaleString('vi-VN');
-document.getElementById('p-auditor').innerText = auditor; document.getElementById('p-address').innerText = address; document.getElementById('p-sign-name-1').innerText = auditor;
+
+document.getElementById('p-auditor').innerText = auditor; 
+document.getElementById('p-address').innerText = address; 
+
+document.getElementById('p-sign-name-1').innerText = ""; 
+document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
+
+let dirName = systemDB['0839578432']?.data?.directorName || "";
+document.getElementById('p-sign-name-3').innerText = dirName;
+
 let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(printDate + 'T00:00:00');
 let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
 document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
@@ -1703,7 +1798,12 @@ function printOldRecord(dateStr, codeStr) {
 let history = masterData.printHistory || []; let record = history.find(x => x.code === codeStr); if(!record) return;
 buildPrintLayout(dateStr);
 setTimeout(() => {
-document.getElementById('p-auditor').innerText = record.auditor; document.getElementById('p-address').innerText = record.address; document.getElementById('p-sign-name-1').innerText = record.auditor;
+document.getElementById('p-auditor').innerText = record.auditor; document.getElementById('p-address').innerText = record.address; 
+document.getElementById('p-sign-name-1').innerText = "";
+document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
+let dirName = systemDB['0839578432']?.data?.directorName || "";
+document.getElementById('p-sign-name-3').innerText = dirName;
+
 let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(dateStr + 'T00:00:00'); let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
 document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
 let dObj = new Date(dateStr);
