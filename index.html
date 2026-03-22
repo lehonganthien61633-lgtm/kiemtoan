@@ -457,14 +457,6 @@ body * { visibility: hidden; }
 <div class="modal-overlay" id="modal-edit-nh">
 <div class="modal-content" style="max-width:750px;">
 <div class="modal-title">ĐIỀU CHỈNH SỐ DƯ NGÂN HÀNG</div>
-<div id="admin-quick-add-bank" style="display:none; background:#f9f9f9; padding:10px; margin-bottom:15px; border-left:3px solid var(--danger);">
-    <div style="font-weight:bold; font-size:13px; color:var(--danger); margin-bottom:5px;">QUYỀN ADMIN: THÊM NHANH NGÂN HÀNG HỆ THỐNG</div>
-    <div style="display:flex; gap:10px;">
-        <input type="text" id="quick-bank-full" placeholder="Tên Đầy Đủ" style="flex:2">
-        <input type="text" id="quick-bank-short" placeholder="Viết Tắt" style="flex:1">
-        <input type="text" id="quick-bank-balance" placeholder="Dư ban đầu (VNĐ)" oninput="formatInput(this)" style="flex:1.5">
-    </div>
-</div>
 <button class="btn-sm" style="background:var(--success); color:#fff; margin-bottom:15px;" onclick="addNHEditRow()">+ Thêm ngân hàng cần điều chỉnh</button>
 <div style="overflow-y:auto; max-height:300px;">
     <table class="data-table" style="min-width:650px; margin-bottom:0;">
@@ -494,186 +486,6 @@ body * { visibility: hidden; }
     </table>
 </div>
 <button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-bank-info')">ĐÓNG</button>
-</div>
-</div>
-
-
-<div class="modal-overlay" id="modal-stk-add">
-<div class="modal-content">
-<div class="modal-title">LẬP SỔ TIẾT KIỆM</div>
-<div class="form-group"><label>Tên khoản tiết kiệm</label><input type="text" id="in-stk-name" placeholder="VD: Gửi tiết kiệm mua xe"></div>
-<div class="form-group"><label>Ngân hàng quản lý</label><select id="sel-stk-nh"></select></div>
-<div style="display:flex; gap:15px;">
-<div class="form-group" style="flex:1"><label>Hình thức gửi</label><select id="sel-stk-type"><option value="ky-han">Kỳ hạn cố định</option><option value="tich-luy">Gửi góp tích lũy</option></select></div>
-<div class="form-group" style="flex:1"><label>Lãi suất (%/năm)</label><input type="number" id="in-stk-ls" step="any" placeholder="Ví dụ: 5.5"></div>
-</div>
-<div class="form-group"><label>Số tiền gốc ban đầu</label><input type="text" id="in-stk-amt" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)" value="0"></div>
-<div style="background: #fafafa; border: 1px solid #ddd; padding: 20px; border-radius: 4px; margin-bottom: 20px;">
-<div style="display:flex; gap:15px;">
-<div class="form-group" style="flex:1"><label>Ngày gửi</label><input type="date" id="in-stk-start" onchange="autoCalcEnd()"></div>
-<div class="form-group" style="flex:1"><label>Cách tính hạn</label><select id="sel-calc-type" onchange="toggleCalcType()"><option value="month">Tự động (Tháng)</option><option value="day">Nhập tay</option></select></div>
-</div>
-<div id="box-stk-mo" class="form-group"><label>Số tháng gửi</label><input type="number" id="in-stk-mo" oninput="autoCalcEnd()"></div>
-<div class="form-group" style="margin-bottom:0;"><label>Ngày đáo hạn</label><input type="date" id="in-stk-end"></div>
-</div>
-<div style="display:flex; gap:15px;">
-<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-stk-add')">HỦY BỎ</button>
-<button class="btn-main" style="flex:2" onclick="saveNewSTK()">LƯU VÀO HỆ THỐNG</button>
-</div>
-</div>
-</div>
-
-<div class="modal-overlay" id="modal-quy-add">
-<div class="modal-content">
-<div class="modal-title">THIẾT LẬP QUỸ MỚI</div>
-<div class="form-group"><label>Tên Quỹ</label><input type="text" id="in-quy-name" placeholder="VD: Quỹ du lịch, Quỹ dự phòng..."></div>
-<div class="form-group"><label>Ngày thành lập</label><input type="date" id="in-quy-date"></div>
-<div class="form-group"><label>Số tiền khởi tạo</label><input type="text" id="in-quy-amt" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)" value="0"></div>
-<div class="form-group"><label>Nơi lưu trữ tiền quỹ ban đầu</label><select id="sel-quy-storage" style="width: 100%; padding: 10px;"></select></div>
-<div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-add')">HỦY BỎ</button>
-<button class="btn-main" style="flex:2; background:var(--accent); color:white; border-color:var(--accent)" onclick="saveNewQuy()">TẠO QUỸ</button>
-</div>
-</div>
-</div>
-
-<div class="modal-overlay" id="modal-quy-edit-storage">
-<div class="modal-content" style="max-width:450px">
-<div class="modal-title">PHÂN BỔ LƯU TRỮ QUỸ</div>
-<div class="form-group"><label>Nơi lưu trữ (Tiền mặt/Ngân hàng)</label><select id="sel-quy-edit-storage" style="width: 100%; padding: 10px;"></select></div>
-<div class="form-group"><label>Số tiền phân bổ (VNĐ)</label><input type="text" id="in-quy-edit-amt" oninput="formatInput(this)" style="font-size:20px; font-weight:bold; color:var(--success)"></div>
-<input type="hidden" id="hid-quy-edit-id">
-<div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-edit-storage')">HỦY</button>
-<button class="btn-main" style="flex:1; background:var(--info); border-color:var(--info); color:white;" onclick="confirmEditQuyStorage()">CẬP NHẬT</button>
-</div>
-</div>
-</div>
-
-<div class="modal-overlay" id="modal-quy-detail">
-<div class="modal-content" style="max-width:700px;">
-<div class="modal-title">CHI TIẾT & LỊCH SỬ QUỸ</div>
-<div id="quy-detail-summary" style="background:#f4f9f4; padding:15px; border:1px solid var(--accent); margin-bottom:20px; font-size:16px; line-height:1.6;"></div>
-<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-    <label style="font-weight:bold;">Lọc theo kho lưu trữ:</label>
-    <select id="quy-detail-filter" style="width:auto; padding:5px;" onchange="filterQuyHistory()"></select>
-</div>
-<table class="data-table" style="margin-bottom: 10px;"><thead><tr style="background:#e9ecef"><th>Nơi cất giữ</th><th>Số dư (VNĐ)</th></tr></thead><tbody id="quy-detail-tbody"></tbody></table>
-
-<h3 style="margin-top: 25px; font-size: 16px; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">LỊCH SỬ GIAO DỊCH</h3>
-<div style="overflow-x:auto; max-height: 250px;">
-    <table class="data-table" style="font-size: 13px; margin-bottom: 0;">
-        <thead><tr style="background:#e9ecef"><th>Ngày</th><th>Loại</th><th>Số tiền</th><th>Kho lưu trữ</th><th>Ghi chú</th></tr></thead>
-        <tbody id="quy-history-tbody"></tbody>
-    </table>
-</div>
-
-<button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-quy-detail')">ĐÓNG</button>
-</div>
-</div>
-
-<div class="modal-overlay" id="modal-quy-nop">
-<div class="modal-content" style="max-width:400px;">
-<div class="modal-title">NỘP THÊM VÀO QUỸ</div>
-<div class="form-group"><label>SỐ TIỀN NỘP (VNĐ)</label><input type="text" id="in-quy-nop-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div>
-<div class="form-group"><label>Ngày nộp</label><input type="date" id="in-quy-nop-date"></div>
-<div class="form-group"><label>Nạp vào nơi lưu trữ nào?</label><select id="sel-quy-nop-storage" style="width: 100%; padding: 10px;"></select></div>
-<input type="hidden" id="hid-quy-nop-id">
-<div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-nop')">HỦY BỎ</button>
-<button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2" onclick="confirmNopQuy()">XÁC NHẬN NỘP</button>
-</div>
-</div>
-</div>
-
-<div class="modal-overlay" id="modal-quy-rut">
-<div class="modal-content" style="max-width:450px;">
-<div class="modal-title">RÚT TIỀN TỪ QUỸ</div>
-<div class="form-group"><label>Số tiền rút (VNĐ)</label><input type="text" id="in-quy-rut-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)"></div>
-<div class="form-group"><label>Ngày rút</label><input type="date" id="in-quy-rut-date"></div>
-<div class="form-group"><label>Rút từ nơi lưu trữ nào?</label><select id="sel-quy-rut-storage" style="width: 100%; padding: 10px;"></select></div>
-<div class="form-group"><label>Nguyên do rút tiền</label><div style="display:flex; gap:10px;"><select id="sel-quy-rut-reason" style="flex:1; padding: 10px;"></select><button class="btn-sm" style="background:#000; color:#fff;" onclick="openReasonManager()">[+] Quản lý</button></div></div>
-<input type="hidden" id="hid-quy-rut-id">
-<div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-rut')">HỦY BỎ</button>
-<button class="btn-main" style="background:var(--danger); color:#fff; border-color:var(--danger); flex:2" onclick="confirmRutQuy()">XÁC NHẬN RÚT</button>
-</div>
-</div>
-</div>
-
-<div class="modal-overlay" id="modal-quy-reasons" style="z-index: 100000;">
-<div class="modal-content" style="max-width:400px;">
-<div class="modal-title">QUẢN LÝ LÝ DO RÚT</div>
-<div style="display:flex; gap:10px; margin-bottom: 20px;"><input type="text" id="in-new-reason" placeholder="Nhập nguyên do mới..." style="flex:1; padding:10px;"><button class="btn-sm" style="background:var(--success); color:#fff; font-size:14px; padding:0 15px;" onclick="saveNewReason()">THÊM</button></div>
-<table class="data-table"><thead><tr style="background:#e9ecef"><th style="text-align:left">Tên Nguyên Do</th><th style="width:50px">Xóa</th></tr></thead><tbody id="body-reasons-list"></tbody></table>
-<button class="btn-main" style="background:#000; color:#fff; border-color:#000;" onclick="closeReasonManager()">ĐÓNG</button>
-</div>
-</div>
-
-<div class="modal-overlay" id="modal-bank-add-settings">
-<div class="modal-content" style="max-width:450px;">
-<div class="modal-title">THÊM NGÂN HÀNG MỚI</div>
-<div class="form-group"><label>Tên Đầy Đủ Ngân Hàng</label><input type="text" id="set-bnk-full" placeholder="Ngân hàng TMCP Ngoại Thương Việt Nam"></div>
-<div class="form-group"><label>Tên Giao Dịch (Viết Tắt)</label><input type="text" id="set-bnk-short" placeholder="Vietcombank"></div>
-<div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-bank-add-settings')">HỦY</button>
-<button class="btn-main" style="flex:1" onclick="saveBankToSystem()">LƯU NGÂN HÀNG</button>
-</div>
-</div>
-</div>
-
-<div class="modal-overlay" id="modal-stk-nop">
-<div class="modal-content" style="max-width:400px;">
-<div class="modal-title">NỘP TIỀN TÍCH LŨY</div>
-<div class="form-group"><label>SỐ TIỀN NỘP THÊM (VNĐ)</label><input type="text" id="in-nop-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div>
-<div class="form-group"><label>Ngày nộp</label><input type="date" id="in-stk-nop-date"></div>
-<div class="form-group"><label>LÃI SUẤT ÁP DỤNG (%)</label><input type="number" id="in-nop-ls" step="any"></div>
-<input type="hidden" id="hid-nop-id">
-<div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-stk-nop')">HỦY BỎ</button>
-<button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2" onclick="confirmNop()">XÁC NHẬN NỘP</button>
-</div>
-</div>
-</div>
-
-<div class="modal-overlay" id="modal-stk-rut">
-<div class="modal-content" style="max-width:400px;">
-<div class="modal-title">LỆNH RÚT TIỀN SỔ TIẾT KIỆM</div>
-<div class="form-group"><label>SỐ TIỀN MUỐN RÚT (VNĐ)</label><input type="text" id="in-rut-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)"></div>
-<div class="form-group"><label>Ngày rút</label><input type="date" id="in-stk-rut-date"></div>
-<p id="stk-rut-warning" style="color:var(--danger); font-size:13px; font-style:italic; margin-top:5px;"></p>
-<input type="hidden" id="hid-rut-id">
-<div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1;" onclick="closeModal('modal-stk-rut')">KHÔNG RÚT</button>
-<button class="btn-main" style="background:var(--danger); color:#fff; border-color:var(--danger); flex:1" onclick="confirmRut()">XÁC NHẬN RÚT</button>
-</div>
-</div>
-</div>
-
-<div class="modal-overlay" id="modal-stk-dh">
-<div class="modal-content" style="max-width:450px;">
-<div class="modal-title">ĐÁO HẠN VÀ TÁI TỤC</div>
-<div class="form-group"><label>LÃI THỰC NHẬN ĐỢT NÀY</label><input type="text" id="in-dh-lai" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div>
-<div style="display:flex; gap:15px; background:#f4f4f4; padding:15px; border:1px solid #ccc;">
-<div class="form-group" style="margin-bottom:0; flex:1"><label>LÃI SUẤT VÒNG TỚI</label><input type="number" id="in-dh-ls" step="any"></div>
-<div class="form-group" style="margin-bottom:0; flex:1"><label>KỲ HẠN TỚI (THÁNG)</label><input type="number" id="in-dh-mo" placeholder="Trống = Kế thừa cũ"></div>
-</div>
-<input type="hidden" id="hid-dh-id">
-<div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:var(--danger); color:white; border-color:var(--danger); flex:1" onclick="confirmDH(false)">TẤT TOÁN SỔ</button>
-<button class="btn-main" style="background:var(--primary); color:var(--accent); flex:2" onclick="confirmDH(true)">XÁC NHẬN TÁI TỤC</button>
-</div>
-</div>
-</div>
-
-<div class="modal-overlay" id="modal-stk-detail">
-<div class="modal-content" style="max-width:750px;">
-<div class="modal-title">BIÊN BẢN GIAO DỊCH SỔ</div>
-<div id="detail-summary" style="background:#f4f9f4; padding:20px; border:1px solid var(--success); margin-bottom:20px; font-size:15px; line-height:1.6;"></div>
-<div style="overflow-x:auto;">
-<table class="data-table"><thead><tr style="background:#e9ecef"><th>Ngày GD</th><th>Nội Dung</th><th>Lãi Suất</th><th>Số Ngày Gửi</th><th>Lãi Ước Tính</th><th>Biến Động Nợ</th></tr></thead><tbody id="detail-tbody"></tbody></table>
-</div>
-<button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-stk-detail')">ĐÓNG BIÊN BẢN</button>
 </div>
 </div>
 
@@ -1122,6 +934,7 @@ function initializeApp() {
     if(!masterData.printHistory) masterData.printHistory = [];
 
     refreshBankSettings();
+    toggleCalcType();
     renderPrintHistory();
     loadDay(); 
     showSheet('sheet-tm', document.querySelector('.nav-item.active'));
@@ -1325,13 +1138,6 @@ function openBankInfo(fullName, shortName, balance) {
 function openEditNH() {
     let tbody = document.getElementById('edit-nh-tbody');
     tbody.innerHTML = '';
-    
-    if (activeUserPhone === '0839578432' || systemDB[activeUserPhone].role === 'admin') {
-        document.getElementById('admin-quick-add-bank').style.display = 'block';
-    } else {
-        document.getElementById('admin-quick-add-bank').style.display = 'none';
-    }
-    
     openModal('modal-edit-nh');
 }
 
@@ -1374,7 +1180,19 @@ function updateNHEditRowDiff(inp) {
     let oldVal = parseInt(tr.querySelector('.nh-old-val').getAttribute('data-old')) || 0;
     let newValStr = inp.value;
     let newVal = newValStr !== "" ? cleanTien(newValStr) : 0;
-    let diff = newVal - oldVal;
+    
+    let bName = tr.querySelector('.sel-edit-nh-name').value;
+    let linkedFundTotal = 0;
+    if(masterData[currentDay].quy) {
+        masterData[currentDay].quy.forEach(q => {
+            let s = q.storages.find(x => x.name === bName && x.isLinked === true);
+            if(s) linkedFundTotal += s.v;
+        });
+    }
+    
+    let effectiveOldGross = oldVal + linkedFundTotal;
+    let diff = newVal - effectiveOldGross;
+    
     let diffCell = tr.querySelector('.nh-diff-val');
     let sign = diff > 0 ? '+' : '';
     diffCell.style.color = diff > 0 ? 'var(--success)' : (diff < 0 ? 'var(--danger)' : 'var(--primary)');
@@ -1404,25 +1222,32 @@ function confirmEditNH() {
     if(!masterData.nh_history) masterData.nh_history = [];
     let nowTime = new Date().toLocaleString('vi-VN');
     
-    let qbFull = document.getElementById('quick-bank-full') ? document.getElementById('quick-bank-full').value.trim() : '';
-    let qbShort = document.getElementById('quick-bank-short') ? document.getElementById('quick-bank-short').value.trim() : '';
-    if (!qbShort && qbFull) qbShort = qbFull;
-    let qbBalStr = document.getElementById('quick-bank-balance') ? document.getElementById('quick-bank-balance').value : '';
-    let qbBal = qbBalStr !== "" ? cleanTien(qbBalStr) : null;
-    
-    if (qbFull !== "" && qbBal !== null) {
-        if(!masterData.banks.find(b => b.short === qbShort)) {
-            masterData.banks.push({full: qbFull, short: qbShort});
-            newNHData.push({ n: qbShort, v: qbBal.toString() });
-            masterData.nh_history.push({ date: currentDay, time: nowTime, bank: qbShort, oldVal: 0, newVal: qbBal, diff: qbBal, reason: "Admin thêm mới NH" });
-        }
-    }
-    
     document.querySelectorAll('#edit-nh-tbody tr').forEach((tr) => {
         let bName = tr.querySelector('.sel-edit-nh-name').value;
         let oldVal = parseInt(tr.querySelector('.nh-old-val').getAttribute('data-old')) || 0;
         let newValStr = tr.querySelector('.in-edit-nh-new').value;
-        let newVal = newValStr !== "" ? cleanTien(newValStr) : null; 
+        let rawInputVal = newValStr !== "" ? cleanTien(newValStr) : null; 
+        
+        let linkedFundTotal = 0;
+        if(masterData[currentDay].quy) {
+            masterData[currentDay].quy.forEach(q => {
+                let s = q.storages.find(x => x.name === bName && x.isLinked === true);
+                if(s) linkedFundTotal += s.v;
+            });
+        }
+
+        let newVal = null;
+        let diff = 0;
+        let calcNewVal = 0;
+
+        if (rawInputVal !== null) {
+            newVal = rawInputVal - linkedFundTotal;
+            if (newVal < 0) newVal = 0;
+            calcNewVal = newVal;
+            let effectiveOldGross = oldVal + linkedFundTotal;
+            diff = rawInputVal - effectiveOldGross;
+        }
+
         let reasonSelect = tr.querySelector('.sel-edit-nh-reason').value;
         
         let idx = newNHData.findIndex(x => x.n === bName);
@@ -1434,10 +1259,7 @@ function confirmEditNH() {
             if (newVal !== null) newNHData.push({ n: bName, v: newVal.toString() });
         }
         
-        let calcNewVal = newVal !== null ? newVal : 0;
-        let diff = calcNewVal - oldVal;
-        
-        if (diff !== 0) {
+        if (rawInputVal !== null && diff !== 0) {
             masterData.nh_history.push({ date: currentDay, time: nowTime, bank: bName, oldVal: oldVal, newVal: calcNewVal, diff: diff, reason: reasonSelect });
         }
         
@@ -1457,10 +1279,6 @@ function confirmEditNH() {
             }
         }
     });
-    
-    if (document.getElementById('quick-bank-full')) document.getElementById('quick-bank-full').value = "";
-    if (document.getElementById('quick-bank-short')) document.getElementById('quick-bank-short').value = "";
-    if (document.getElementById('quick-bank-balance')) document.getElementById('quick-bank-balance').value = "";
 
     masterData[currentDay].nh = newNHData;
     saveMaster(); refreshBankSettings(); loadDay(); closeModal('modal-edit-nh');
@@ -1498,8 +1316,8 @@ masterData.banks.splice(index, 1); saveMaster(); refreshBankSettings(); loadDay(
 
 function toggleCalcType() {
 const type = document.getElementById('sel-calc-type').value, box = document.getElementById('box-stk-mo'), inEnd = document.getElementById('in-stk-end');
-if (type === 'month') { box.style.display = 'block'; inEnd.readOnly = true; autoCalcEnd(); }
-else { box.style.display = 'none'; inEnd.readOnly = false; }
+if (type === 'month') { box.style.display = 'block'; inEnd.readOnly = true; inEnd.style.pointerEvents = 'none'; inEnd.style.background = '#e9ecef'; autoCalcEnd(); }
+else { box.style.display = 'none'; inEnd.readOnly = false; inEnd.style.pointerEvents = 'auto'; inEnd.style.background = '#fff'; }
 }
 
 function autoCalcEnd() {
@@ -1563,13 +1381,27 @@ let filterSel = document.getElementById('quy-detail-filter');
 filterSel.innerHTML = `<option value="all">Tất cả tài khoản</option>`;
 
 q.storages.forEach((s) => {
-    b.innerHTML += `<tr><td style="font-weight:bold">${s.name}</td><td align="right" style="color:var(--success); font-weight:bold; font-size:16px;">${formatTien(s.v)} đ</td></tr>`;
+    let isLinkedChecked = s.isLinked ? "checked" : "";
+    let linkToggle = s.name !== 'Tiền mặt' ? `<br><label style="font-size:11px; font-weight:normal; cursor:pointer; display:inline-block; margin-top:4px;"><input type="checkbox" onchange="toggleQuyLink(${q.id}, '${s.name}', this.checked)" ${isLinkedChecked}> Lưu trữ chung với NH này</label>` : '';
+    
+    b.innerHTML += `<tr><td style="font-weight:bold">${s.name}${linkToggle}</td><td align="right" style="color:var(--success); font-weight:bold; font-size:16px;">${formatTien(s.v)} đ</td></tr>`;
     filterSel.innerHTML += `<option value="${s.name}">${s.name}</option>`;
 });
 
 filterQuyHistory();
 openModal('modal-quy-detail');
 }
+
+window.toggleQuyLink = function(quyId, storageName, isChecked) {
+    let q = masterData[currentDay].quy.find(x => x.id === quyId);
+    if(q) {
+        let s = q.storages.find(x => x.name === storageName);
+        if(s) {
+            s.isLinked = isChecked;
+            saveMaster();
+        }
+    }
+};
 
 function filterQuyHistory() {
     let q = masterData[currentDay].quy.find(x => x.id === currentQuyDetailId); if(!q) return;
