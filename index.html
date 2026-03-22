@@ -1228,7 +1228,7 @@ function adminDeleteUser(phone) {
 // KHỞI CHẠY APP
 // =====================================
 function initializeApp() {
-    let today = new Date().toISOString().split('T')[0];
+    let today = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
     document.getElementById('header-date-picker').max = today; 
     document.getElementById('header-date-picker').value = currentDay;
     document.getElementById('in-print-date').value = currentDay;
@@ -1476,7 +1476,7 @@ function updateSingleNHDiff() {
 function confirmSingleBankEdit() {
     let newNHData = [...(masterData[currentDay].nh || [])];
     if(!masterData.nh_history) masterData.nh_history = [];
-    let nowTime = new Date().toLocaleString('vi-VN');
+    let nowTime = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
 
     let newValStr = document.getElementById('edit-single-nh-new').value;
     let rawInputVal = newValStr !== "" ? cleanTien(newValStr) : null; 
@@ -1762,7 +1762,7 @@ let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
 document.getElementById('hid-quy-nop-id').value = id;
 document.getElementById('in-quy-nop-val').value = "";
 document.getElementById('in-quy-nop-date').value = currentDay; 
-document.getElementById('in-quy-nop-date').max = new Date().toISOString().split('T')[0];
+document.getElementById('in-quy-nop-date').max = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
 let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
 document.getElementById('sel-quy-nop-storage').innerHTML = storageHtml;
 openModal('modal-quy-nop');
@@ -1815,7 +1815,7 @@ let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
 document.getElementById('hid-quy-rut-id').value = id;
 document.getElementById('in-quy-rut-val').value = "";
 document.getElementById('in-quy-rut-date').value = currentDay;
-document.getElementById('in-quy-rut-date').max = new Date().toISOString().split('T')[0];
+document.getElementById('in-quy-rut-date').max = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
 let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
 document.getElementById('sel-quy-rut-storage').innerHTML = storageHtml;
 refreshQuyReasons();
@@ -1926,7 +1926,7 @@ if(type === 'tich-luy') { alert("Không áp dụng cho sổ tích lũy."); retur
 document.getElementById('hid-rut-id').value = id;
 document.getElementById('in-rut-val').value = "";
 document.getElementById('in-stk-rut-date').value = currentDay;
-document.getElementById('in-stk-rut-date').max = new Date().toISOString().split('T')[0];
+document.getElementById('in-stk-rut-date').max = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
 let warning = document.getElementById('stk-rut-warning');
 if (type === 'ky-han') { warning.innerText = "* Rút sổ Kỳ Hạn: Rút tối thiểu 100k và Gốc còn lại >= 100k."; }
 openModal('modal-stk-rut');
@@ -1965,7 +1965,7 @@ function openNop(id) {
     document.getElementById('hid-nop-id').value = id; 
     document.getElementById('in-nop-val').value = ""; 
     document.getElementById('in-stk-nop-date').value = currentDay;
-    document.getElementById('in-stk-nop-date').max = new Date().toISOString().split('T')[0];
+    document.getElementById('in-stk-nop-date').max = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
     openModal('modal-stk-nop'); 
 }
 
@@ -2120,7 +2120,7 @@ let address = document.getElementById('in-print-address').value.trim() || "Chưa
 closeModal('modal-print-setup'); buildPrintLayout(printDate);
 
 setTimeout(() => {
-let asciiCode = generateASCII(12); let nowTime = new Date().toLocaleString('vi-VN');
+let asciiCode = generateASCII(12); let nowTime = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
 document.getElementById('p-auditor').innerText = auditor; 
 document.getElementById('p-address').innerText = address; 
 
@@ -2154,7 +2154,7 @@ document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).p
 let dObj = new Date(dateStr);
 document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
 document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = record.time; document.getElementById('p-title').innerText = getDayName(dateStr); document.getElementById('p-ascii').innerText = codeStr;
-const copyBox = document.getElementById('p-copy-info'); copyBox.style.display = 'block'; copyBox.innerHTML = `BẢN SAO<br><span style="font-size:10px; font-weight:normal;">Thời gian in lại: ${new Date().toLocaleString('vi-VN')}</span>`;
+const copyBox = document.getElementById('p-copy-info'); copyBox.style.display = 'block'; copyBox.innerHTML = `BẢN SAO<br><span style="font-size:10px; font-weight:normal;">Thời gian in lại: ${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}</span>`;
 window.print();
 }, 100);
 }
