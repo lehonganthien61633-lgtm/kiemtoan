@@ -23,12 +23,11 @@ background-color: #f0f0f0;
 color: #222;
 margin: 0;
 min-height: 100vh;
-overflow: hidden; /* NGĂN CUỘN TOÀN TRANG, CHỈ CUỘN VÙNG CONTENT */
+overflow: hidden; 
 display: flex;
 justify-content: center;
 }
 
-/* === CSS HỆ THỐNG AUTH === */
 .auth-wrapper {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: url('https://images.unsplash.com/photo-1616075133610-8dc0388cdce8?q=80&w=2000&auto=format&fit=crop') center/cover;
@@ -48,13 +47,11 @@ justify-content: center;
 .badge-notif { background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 12px; margin-left: 5px; font-weight: bold; display: inline-block; animation: pulse 1.5s infinite; }
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-/* Cấu trúc Layout Chính */
 .app-container {
     width: 100%; background-color: var(--ivory); height: 100vh;
     display: none; flex-direction: column; position: relative; overflow: hidden;
 }
 
-/* SIDEBAR */
 .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 150; backdrop-filter: blur(5px); }
 .sidebar-overlay.active { display: block; }
 .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background-color: var(--ivory); z-index: 200; transition: transform 0.4s ease; border-right: 5px solid var(--primary); display: flex; flex-direction: column;}
@@ -64,17 +61,15 @@ justify-content: center;
 .nav-item:hover { color: var(--accent); padding-left: 30px; }
 .nav-item.active { background-color: var(--primary); color: var(--accent); }
 
-/* VÙNG NỘI DUNG CHÍNH (BÊN PHẢI) */
 .main-wrapper { 
     flex: 1; 
     display: flex; 
     flex-direction: column; 
     width: 100%;
     height: 100vh; 
-    overflow: hidden; /* CẮT NGANG ĐỂ HEADER KHÔNG CHẠY */
+    overflow: hidden;
 }
 
-/* HEADER - GẮN CỐ ĐỊNH TRÊN CÙNG */
 .header-main {
     display: flex; align-items: center; justify-content: space-between;
     background-color: var(--primary); padding: 15px 25px; color: white;
@@ -87,10 +82,9 @@ justify-content: center;
 .header-title { font-size: 20px; font-weight: bold; letter-spacing: 1px; font-variant: small-caps; }
 #header-date-picker { background: #fff; border: 1px solid var(--accent); padding: 8px 12px; font-family: "Times New Roman"; font-weight: bold; border-radius: 4px; font-size: 16px; cursor: pointer; }
 
-/* NỘI DUNG CUỘN (BÊN DƯỚI HEADER) */
 .app-content {
     flex: 1;
-    overflow-y: auto; /* CHỈ CUỘN Ở ĐÂY */
+    overflow-y: auto;
     padding: 25px 20px;
     background-color: var(--ivory);
 }
@@ -101,13 +95,13 @@ justify-content: center;
 
 h2 { font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 30px; text-transform: uppercase; border-bottom: 1px solid var(--accent); padding-bottom: 15px; }
 
-/* TABLES & COMPONENTS */
 .data-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 .data-table th { background: #f4f4f4; border: 1px solid #ddd; padding: 15px 10px; font-size: 14px; text-align: center; text-transform: uppercase; }
 .data-table td { border: 1px solid #eee; padding: 12px 10px; }
 input, select { border: 1px solid #ccc; padding: 10px; font-family: "Times New Roman"; font-size: 16px; width: 100%; border-radius: 4px; box-sizing: border-box; }
 input:focus, select:focus { border-color: var(--accent); outline: none; background: #fffdf9; }
 input:read-only { background-color: #e9ecef; color: #555; cursor: not-allowed; }
+.readonly-text { font-weight:bold; font-size:16px; display:inline-block; width:100%; text-align:right;}
 
 .stk-card, .quy-card { background: #fff; border: 1px solid var(--border); padding: 25px; margin-bottom: 25px; position: relative; border-top: 6px solid var(--primary); box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: 0.3s; }
 .stk-card:hover, .quy-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
@@ -142,18 +136,16 @@ body.modal-open { overflow: hidden; }
     .hide-on-mobile { display: none !important; }
 }
 
-/* RESPONSIVE LAYOUT CHO DESKTOP */
 @media (min-width: 850px) {
 body { padding: 40px; background-color: #e0e0e0;}
-.app-container { flex-direction: row; max-width: 1200px; height: calc(100vh - 80px); border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); display: none; }
+.app-container { flex-direction: row; max-width: 1200px; height: calc(100vh - 80px); border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); display: none; }
 .sidebar { position: static; left: 0; width: 280px; height: 100%; border-right: 1px solid var(--primary); }
 .hamburger-btn { display: none; }
-.sidebar-overlay { display: none !important; }
 .main-wrapper { height: 100%; border-radius: 0 8px 8px 0; }
 .app-content { padding: 40px 50px; }
+.sidebar-overlay { display: none !important; }
 }
 
-/* KHU VỰC IN ẤN ĐẶC BIỆT (PRINT CSS) */
 #print-area { display: none; }
 @media print {
 body { background: #fff; padding: 0; margin: 0; overflow: auto; }
@@ -268,6 +260,7 @@ body * { visibility: hidden; }
     <div class="app-content">
         <div id="sheet-tm" class="page active">
         <h2>Biên Bản Kiểm Kê Tiền Mặt</h2>
+        <div style="text-align:right; margin-bottom:10px;"><button class="btn-sm" style="background:var(--accent); color:white;" onclick="openEditTM()">Chỉnh sửa số liệu</button></div>
         <table class="data-table"><thead><tr><th style="text-align: left;">Mệnh giá</th><th style="width:120px">Số lượng</th><th style="text-align:right">Thành tiền</th></tr></thead><tbody id="body-tm"></tbody></table>
         <div class="sub-total-box">TỔNG TIỀN MẶT: <br><span id="val-tm" style="font-size:32px; color:var(--primary)">0</span> đ</div>
         </div>
@@ -275,7 +268,8 @@ body * { visibility: hidden; }
         <div id="sheet-nh" class="page">
         <h2>Biên bản kiểm kê Tài Khoản Ngân Hàng</h2>
         <p style="font-size: 14px; color: #666; font-style: italic; text-align: center; margin-bottom: 20px;">* Cập nhật danh sách Ngân hàng trong mục Cài Đặt.</p>
-        <table class="data-table"><thead><tr><th style="text-align:left">Ngân Hàng</th><th style="width:250px">Số Dư Hiện Tại (VNĐ)</th></tr></thead><tbody id="body-nh"></tbody></table>
+        <div style="text-align:right; margin-bottom:10px;"><button class="btn-sm" style="background:var(--accent); color:white;" onclick="openEditNH()">Chỉnh sửa số liệu</button></div>
+        <table class="data-table"><thead><tr><th style="text-align:left">Ngân Hàng</th><th style="width:250px">Số Dư Hiện Tại (VNĐ)</th><th style="width:60px">Chi tiết</th></tr></thead><tbody id="body-nh"></tbody></table>
         <div class="sub-total-box">LƯỢNG TIỀN TRONG NGÂN HÀNG: <br><span id="val-nh" style="font-size:32px; color:var(--primary)">0</span> đ</div>
         </div>
 
@@ -307,7 +301,6 @@ body * { visibility: hidden; }
         <div style="display:flex; justify-content:space-between; margin-bottom:25px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>4. Tiết kiệm:</span><strong><span id="fin-stk">0</span> đ</strong></div>
         <div style="display:flex; justify-content:space-between; font-size:28px; border-top:4px double #000; padding-top:20px; color:var(--success)"><span>TỔNG GIÁ TRỊ:</span><strong><span id="fin-total">0</span> đ</strong></div>
         </div>
-        <button class="btn-main" style="background:#eee; color:#000; margin-top:30px; border-color:#ccc" onclick="clearDayData()">XOÁ TOÀN BỘ DỮ LIỆU NGÀY NÀY</button>
         </div>
 
         <div id="sheet-print" class="page">
@@ -416,6 +409,63 @@ body * { visibility: hidden; }
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-admin-pass')">HỦY BỎ</button>
 <button class="btn-main" style="background:var(--danger); color:#fff; border-color:var(--danger); flex:2" onclick="adminConfirmChangePass()">CẬP NHẬT</button>
 </div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-edit-tm1">
+<div class="modal-content" style="max-width:550px;">
+<div class="modal-title">CHỈNH SỬA TIỀN MẶT</div>
+<div style="overflow-y:auto; max-height:350px;">
+<table class="data-table">
+    <thead><tr><th style="text-align:left">Mệnh giá</th><th style="width:90px">SL Đầu</th><th style="width:110px">SL Mới</th></tr></thead>
+    <tbody id="edit-tm1-tbody"></tbody>
+</table>
+</div>
+<div class="sub-total-box" style="margin-top:10px; padding:15px;">Chênh lệch: <span id="edit-tm1-diff" style="color:var(--primary); font-size:22px;">0</span> đ</div>
+<div style="display:flex; gap:15px; margin-top:20px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-edit-tm1')">HỦY BỎ</button>
+<button class="btn-main" style="background:var(--info); color:#fff; border-color:var(--info); flex:2" onclick="proceedEditTM()">TIẾP TỤC</button>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-edit-tm2">
+<div class="modal-content" style="max-width:500px;">
+<div class="modal-title">CHI TIẾT CHÊNH LỆCH TIỀN MẶT</div>
+<div style="font-weight:bold; margin-bottom:15px; text-align:center; font-size:16px;">Số tiền cần giải trình: <span id="edit-tm2-target" style="color:var(--danger); font-size:22px;">0</span> đ</div>
+<div id="tm2-rows-container"></div>
+<button class="btn-sm" style="background:var(--success); color:#fff; margin-top:10px; margin-bottom:20px;" onclick="addTM2Row()">+ Thêm nội dung</button>
+<div style="font-weight:bold; text-align:right;">Đã nhập: <span id="edit-tm2-current" style="color:var(--info); font-size:18px;">0</span> đ</div>
+<div style="display:flex; gap:15px; margin-top:20px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-edit-tm2')">HỦY</button>
+<button class="btn-main" style="flex:2" onclick="confirmEditTM()">LƯU KẾT QUẢ</button>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-edit-nh">
+<div class="modal-content" style="max-width:650px;">
+<div class="modal-title">ĐIỀU CHỈNH SỐ DƯ NGÂN HÀNG</div>
+<div style="overflow-x:auto;">
+    <table class="data-table" style="min-width:600px;">
+        <thead><tr><th style="width:120px">Ngân hàng</th><th>Dư Cũ</th><th>Dư Mới</th><th style="width:160px">Lý do</th></tr></thead>
+        <tbody id="edit-nh-tbody"></tbody>
+    </table>
+</div>
+<div style="display:flex; gap:15px; margin-top:10px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-edit-nh')">HỦY</button>
+<button class="btn-main" style="flex:2" onclick="confirmEditNH()">LƯU ĐIỀU CHỈNH</button>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-bank-info">
+<div class="modal-content" style="max-width:400px;">
+<div class="modal-title">THÔNG TIN NGÂN HÀNG</div>
+<div class="form-group"><label>Tên Đầy Đủ</label><div class="readonly-text" style="text-align:left;" id="info-bank-full"></div></div>
+<div class="form-group"><label>Tên Viết Tắt</label><div class="readonly-text" style="text-align:left;" id="info-bank-short"></div></div>
+<div class="form-group"><label>Số Dư Hiện Tại</label><div class="readonly-text" style="text-align:left; color:var(--danger); font-size:24px;" id="info-bank-balance"></div></div>
+<button class="btn-main" style="background:#000; color:#fff; border-color:#000;" onclick="closeModal('modal-bank-info')">ĐÓNG</button>
 </div>
 </div>
 
@@ -539,7 +589,7 @@ body * { visibility: hidden; }
 <div class="modal-content">
 <div class="modal-title">LẬP SỔ TIẾT KIỆM</div>
 <div class="form-group"><label>Tên khoản tiết kiệm</label><input type="text" id="in-stk-name" placeholder="VD: Gửi tiết kiệm mua xe"></div>
-<div class="form-group"><label>Ngân hàng quản lý</label><select id="sel-stk-nh"></select></div>
+<div class="form-group"><label>Ng ngân hàng quản lý</label><select id="sel-stk-nh"></select></div>
 <div style="display:flex; gap:15px;">
 <div class="form-group" style="flex:1"><label>Hình thức gửi</label><select id="sel-stk-type"><option value="ky-han">Kỳ hạn cố định</option><option value="tich-luy">Gửi góp tích lũy</option></select></div>
 <div class="form-group" style="flex:1"><label>Lãi suất (%/năm)</label><input type="number" id="in-stk-ls" step="any" placeholder="Ví dụ: 5.5"></div>
@@ -591,6 +641,10 @@ body * { visibility: hidden; }
 <div class="modal-content" style="max-width:700px;">
 <div class="modal-title">CHI TIẾT & LỊCH SỬ QUỸ</div>
 <div id="quy-detail-summary" style="background:#f4f9f4; padding:15px; border:1px solid var(--accent); margin-bottom:20px; font-size:16px; line-height:1.6;"></div>
+<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+    <label style="font-weight:bold;">Lọc theo kho lưu trữ:</label>
+    <select id="quy-detail-filter" style="width:auto; padding:5px;" onchange="filterQuyHistory()"></select>
+</div>
 <table class="data-table" style="margin-bottom: 10px;"><thead><tr style="background:#e9ecef"><th>Nơi cất giữ</th><th>Số dư (VNĐ)</th></tr></thead><tbody id="quy-detail-tbody"></tbody></table>
 
 <h3 style="margin-top: 25px; font-size: 16px; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">LỊCH SỬ GIAO DỊCH</h3>
@@ -674,24 +728,6 @@ body * { visibility: hidden; }
 <div class="modal-overlay" id="modal-stk-dh"><div class="modal-content" style="max-width:450px;"><div class="modal-title">ĐÁO HẠN VÀ TÁI TỤC</div><div class="form-group"><label>LÃI THỰC NHẬN ĐỢT NÀY</label><input type="text" id="in-dh-lai" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div><div style="display:flex; gap:15px; background:#f4f4f4; padding:15px; border:1px solid #ccc;"><div class="form-group" style="margin-bottom:0; flex:1"><label>LÃI SUẤT VÒNG TỚI</label><input type="number" id="in-dh-ls" step="any"></div><div class="form-group" style="margin-bottom:0; flex:1"><label>KỲ HẠN TỚI (THÁNG)</label><input type="number" id="in-dh-mo" placeholder="Trống = Kế thừa cũ"></div></div><input type="hidden" id="hid-dh-id"><div style="display:flex; gap:15px; margin-top:30px;"><button class="btn-main" style="background:var(--danger); color:white; border:color:var(--danger); flex:1" onclick="confirmDH(false)">TẤT TOÁN SỔ</button><button class="btn-main" style="background:var(--primary); color:var(--accent); flex:2" onclick="confirmDH(true)">XÁC NHẬN TÁI TỤC</button></div></div></div>
 <div class="modal-overlay" id="modal-stk-detail"><div class="modal-content" style="max-width:750px;"><div class="modal-title">BIÊN BẢN GIAO DỊCH SỔ</div><div id="detail-summary" style="background:#f4f9f4; padding:20px; border:1px solid var(--success); margin-bottom:20px; font-size:15px; line-height:1.6;"></div><div style="overflow-x:auto;"><table class="data-table"><thead><tr style="background:#e9ecef"><th>Ngày GD</th><th>Nội Dung</th><th>Lãi Suất</th><th>Số Ngày Gửi</th><th>Lãi Ước Tính</th><th>Biến Động Nợ</th></tr></thead><tbody id="detail-tbody"></tbody></table></div><button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-stk-detail')">ĐÓNG BIÊN BẢN</button></div></div>
 
-<div class="modal-overlay" id="modal-admin-name">
-<div class="modal-content" style="max-width:400px;">
-<div class="modal-title">ĐỔI TÊN NGƯỜI DÙNG</div>
-<div class="form-group">
-    <label>Tài khoản (SĐT)</label>
-    <input type="text" id="admin-target-user-name" readonly style="background:#eee;">
-</div>
-<div class="form-group">
-    <label>Tên hiển thị mới</label>
-    <input type="text" id="admin-new-name" placeholder="Nhập họ và tên mới...">
-</div>
-<div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-admin-name')">HỦY BỎ</button>
-<button class="btn-main" style="background:var(--info); color:#fff; border-color:var(--info); flex:2" onclick="adminConfirmChangeName()">CẬP NHẬT</button>
-</div>
-</div>
-</div>
-
 <script>
 // =====================================
 // HỆ THỐNG XÁC THỰC & CƠ SỞ DỮ LIỆU ĐÁM MÂY
@@ -705,6 +741,9 @@ let masterData = {};
 let currentDay = new Date().toISOString().split('T')[0];
 let isPrinting = false;
 const denoms = [500000, 200000, 100000, 50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100];
+let pendingTMChanges = [];
+let pendingTMDiff = 0;
+let currentQuyDetailId = null;
 
 // Hàm tải dữ liệu từ Server Firebase về
 async function loadServerDB() {
@@ -715,19 +754,10 @@ async function loadServerDB() {
             systemDB = data;
         }
         
-        // Tạo mặc định tài khoản Admin gốc (không thể bị xóa/hạ quyền)
         if (!systemDB['0839578432']) {
             systemDB['0839578432'] = {
-                name: 'Administrator',
-                dob: '',
-                password: '123',
-                role: 'admin',
-                forgotPassword: false,
-                data: {
-                    banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}],
-                    quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"],
-                    printHistory: []
-                }
+                name: 'Administrator', dob: '', password: '123', role: 'admin', forgotPassword: false,
+                data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}], quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"], printHistory: [] }
             };
             saveSystemDB(); 
         }
@@ -740,11 +770,7 @@ async function loadServerDB() {
 loadServerDB();
 
 function saveSystemDB() {
-    fetch(FIREBASE_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(systemDB)
-    });
+    fetch(FIREBASE_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(systemDB) });
 }
 
 function saveMaster() { 
@@ -783,7 +809,6 @@ function handleLogin() {
         document.getElementById('nav-admin').style.display = 'none';
     }
 
-    // Nạp lại dữ liệu cho từng ngày để đảm bảo Tiền Mặt luôn trống trừ khi đã lưu ở ngày đó
     initializeApp();
 }
 
@@ -796,16 +821,8 @@ function handleRegister() {
     if (systemDB[phone]) { alert("Số điện thoại này đã được đăng ký!"); return; }
 
     systemDB[phone] = {
-        name: name,
-        dob: '',
-        password: pass,
-        role: 'user',
-        forgotPassword: false,
-        data: {
-            banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}],
-            quyReasons: ["Chi tiêu", "Đầu tư"],
-            printHistory: []
-        }
+        name: name, dob: '', password: pass, role: 'user', forgotPassword: false,
+        data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], printHistory: [] }
     };
     saveSystemDB();
     alert("Đăng ký thành công! Vui lòng đăng nhập.");
@@ -818,7 +835,6 @@ function handleForgotPassword() {
     if (!phone) { alert("Vui lòng nhập số điện thoại!"); return; }
     if (!systemDB[phone]) { alert("Số điện thoại này không tồn tại trong hệ thống!"); return; }
 
-    // Nếu là Admin thì tự reset luôn về 123
     if (systemDB[phone].role === 'admin') {
         systemDB[phone].password = '123';
         systemDB[phone].forgotPassword = false;
@@ -829,7 +845,6 @@ function handleForgotPassword() {
         saveSystemDB();
         alert("Yêu cầu của bạn đã được gửi đến Ban Quản Trị. Vui lòng chờ Admin đổi mật khẩu mới cho bạn.");
     }
-    
     switchAuth('login');
 }
 
@@ -856,17 +871,9 @@ function confirmUserChangePass() {
     let newPass = document.getElementById('user-new-pass').value;
     let confirmPass = document.getElementById('user-confirm-pass').value;
 
-    if(!curPass || !newPass || !confirmPass) {
-        alert("Vui lòng điền đầy đủ thông tin!"); return;
-    }
-
-    if(systemDB[activeUserPhone].password !== curPass) {
-        alert("Mật khẩu hiện tại không đúng!"); return;
-    }
-
-    if(newPass !== confirmPass) {
-        alert("Mật khẩu mới và Nhập lại mật khẩu không khớp!"); return;
-    }
+    if(!curPass || !newPass || !confirmPass) { alert("Vui lòng điền đầy đủ thông tin!"); return; }
+    if(systemDB[activeUserPhone].password !== curPass) { alert("Mật khẩu hiện tại không đúng!"); return; }
+    if(newPass !== confirmPass) { alert("Mật khẩu mới và Nhập lại mật khẩu không khớp!"); return; }
 
     systemDB[activeUserPhone].password = newPass;
     saveSystemDB();
@@ -877,31 +884,22 @@ function confirmUserChangePass() {
 function saveUserInfo() {
     let newName = document.getElementById('set-user-name').value.trim();
     let newDob = document.getElementById('set-user-dob').value;
-    
     if(!newName) { alert("Họ và tên không được để trống!"); return; }
-    
     systemDB[activeUserPhone].name = newName;
     systemDB[activeUserPhone].dob = newDob;
     saveSystemDB();
-    
     document.getElementById('display-user-phone').innerText = 'Xin chào, ' + newName + ' (' + activeUserPhone + ')';
     alert("Cập nhật thông tin thành công!");
 }
 
 function deleteMyAccount() {
-    if(activeUserPhone === '0839578432') {
-        alert("Lỗi: Không thể xóa tài khoản Admin gốc của hệ thống!");
-        return;
-    }
-    
+    if(activeUserPhone === '0839578432') { alert("Lỗi: Không thể xóa tài khoản Admin gốc của hệ thống!"); return; }
     if(confirm("CẢNH BÁO TỐI THƯỢNG: Hành động này sẽ XÓA VĨNH VIỄN toàn bộ dữ liệu, quỹ, sổ tiết kiệm và tài khoản của bạn. Không thể khôi phục! Bạn có thực sự muốn tiếp tục?")) {
         let verify = prompt("Vui lòng nhập 'XAC NHAN XOA' để thực hiện:");
         if (verify === 'XAC NHAN XOA') {
-            delete systemDB[activeUserPhone];
-            saveSystemDB();
+            delete systemDB[activeUserPhone]; saveSystemDB();
             alert("Tài khoản của bạn đã bị xóa vĩnh viễn khỏi hệ thống.");
-            activeUserPhone = null;
-            masterData = {};
+            activeUserPhone = null; masterData = {};
             document.getElementById('auth-screen').style.display = 'flex';
             document.getElementById('main-app').style.display = 'none';
         }
@@ -912,17 +910,8 @@ function deleteMyAccount() {
 function checkAdminNotifications() {
     let notifCount = 0;
     for (const p in systemDB) { if (systemDB[p].forgotPassword) notifCount++; }
-    
-    let badge = document.getElementById('admin-notif-badge');
-    let bell = document.getElementById('admin-bell');
-    
-    if (notifCount > 0) {
-        badge.style.display = 'inline-block';
-        bell.style.display = 'inline-block';
-    } else {
-        badge.style.display = 'none';
-        bell.style.display = 'none';
-    }
+    document.getElementById('admin-notif-badge').style.display = notifCount > 0 ? 'inline-block' : 'none';
+    document.getElementById('admin-bell').style.display = notifCount > 0 ? 'inline-block' : 'none';
 }
 
 function renderAdminPanel() {
@@ -933,34 +922,22 @@ function renderAdminPanel() {
         let isRoot = (phone === '0839578432');
         let role = systemDB[phone].role;
         let isForgot = systemDB[phone].forgotPassword;
-        
         let roleHtml = role === 'admin' ? '<span class="admin-badge">ADMIN</span>' : 'USER';
         let displayName = systemDB[phone].name || 'Chưa cập nhật';
-        
         let rowStyle = isForgot ? 'style="background-color: #ffe6e6;"' : '';
         let warningIcon = isForgot ? '<span style="color:red; font-weight:bold; margin-left:5px;">(!) Yêu cầu Pass</span>' : '';
         
-        let promoteBtn = '';
-        let delBtn = '';
+        let promoteBtn = ''; let delBtn = '';
         let editNameBtn = `<button class="btn-sm" style="background:var(--info); color:white; border:none;" onclick="adminOpenChangeName('${phone}', '${displayName}')">Tên</button>`;
         let editPassBtn = `<button class="btn-sm" style="background:var(--primary); color:white; border:none;" onclick="adminOpenChangePass('${phone}')">Pass</button>`;
         
-        // Cấp/hạ quyền và Xóa: Chỉ hiện khi người đang đăng nhập là Root Admin (0839578432)
         if (activeUserPhone === '0839578432' && !isRoot) {
             promoteBtn = `<button class="btn-sm" style="background:${role==='admin'?'#555':'var(--success)'}; color:white; border:none;" onclick="adminToggleRole('${phone}')">${role==='admin'?'Hạ Quyền':'Cấp Admin'}</button>`;
             delBtn = `<button class="btn-sm" style="background:var(--danger); color:white; border:none;" onclick="adminDeleteUser('${phone}')">Xóa</button>`;
         }
         
-        // Khóa hoàn toàn Admin phụ không cho sửa Admin chính
-        if (isRoot && activeUserPhone !== '0839578432') {
-             editNameBtn = ''; 
-             editPassBtn = '';
-        }
-        // Admin chính tự xem dòng của mình thì ko có nút Cấp quyền/Xóa
-        if (isRoot && activeUserPhone === '0839578432') {
-             promoteBtn = ''; 
-             delBtn = '';
-        }
+        if (isRoot && activeUserPhone !== '0839578432') { editNameBtn = ''; editPassBtn = ''; }
+        if (isRoot && activeUserPhone === '0839578432') { promoteBtn = ''; delBtn = ''; }
         
         tbody.innerHTML += `
         <tr ${rowStyle}>
@@ -970,10 +947,7 @@ function renderAdminPanel() {
             <td align="center">${roleHtml}</td>
             <td align="center">
                 <div style="display:flex; gap:5px; justify-content:center; flex-wrap:wrap;">
-                    ${editNameBtn}
-                    ${editPassBtn}
-                    ${promoteBtn}
-                    ${delBtn}
+                    ${editNameBtn} ${editPassBtn} ${promoteBtn} ${delBtn}
                 </div>
             </td>
         </tr>`;
@@ -989,22 +963,14 @@ function adminOpenChangeName(phone, currentName) {
 
 function adminConfirmChangeName() {
     let phone = document.getElementById('admin-target-user-name').value;
-    
-    // Bảo vệ ngầm
-    if(phone === '0839578432' && activeUserPhone !== '0839578432') {
-        alert("Bạn không có quyền chỉnh sửa Admin chính!");
-        return;
-    }
-    
+    if(phone === '0839578432' && activeUserPhone !== '0839578432') { alert("Bạn không có quyền chỉnh sửa Admin chính!"); return; }
     let newName = document.getElementById('admin-new-name').value.trim();
     if(!newName) { alert("Không được để trống tên!"); return; }
 
     if(systemDB[phone]) {
-        systemDB[phone].name = newName;
-        saveSystemDB();
+        systemDB[phone].name = newName; saveSystemDB();
         alert("Đã đổi tên thành công cho tài khoản: " + phone);
-        closeModal('modal-admin-name');
-        renderAdminPanel();
+        closeModal('modal-admin-name'); renderAdminPanel();
     }
 }
 
@@ -1013,70 +979,52 @@ function adminOpenChangePass(phone) {
     document.getElementById('admin-new-pass').value = '';
     let confirmInput = document.getElementById('admin-confirm-new-pass');
     if (confirmInput) confirmInput.value = '';
-    
     openModal('modal-admin-pass');
 }
 
 function adminConfirmChangePass() {
     let phone = document.getElementById('admin-target-user').value;
-    
-    // Bảo vệ ngầm
-    if(phone === '0839578432' && activeUserPhone !== '0839578432') {
-        alert("Bạn không có quyền chỉnh sửa Admin chính!");
-        return;
-    }
-    
+    if(phone === '0839578432' && activeUserPhone !== '0839578432') { alert("Bạn không có quyền chỉnh sửa Admin chính!"); return; }
     let newPass = document.getElementById('admin-new-pass').value;
-    let confirmPass = document.getElementById('admin-confirm-new-pass').value; // Lấy giá trị xác nhận
+    let confirmPass = document.getElementById('admin-confirm-new-pass').value;
     
     if(!newPass || !confirmPass) { alert("Không được để trống mật khẩu!"); return; }
     if(newPass !== confirmPass) { alert("Mật khẩu mới và phần Nhập lại không khớp nhau!"); return; }
 
     if(systemDB[phone]) {
-        systemDB[phone].password = newPass;
-        systemDB[phone].forgotPassword = false; // Tắt cờ quên mật khẩu khi đã đổi
-        saveSystemDB();
+        systemDB[phone].password = newPass; systemDB[phone].forgotPassword = false; saveSystemDB();
         alert("Đã đổi mật khẩu thành công cho số: " + phone);
-        closeModal('modal-admin-pass');
-        renderAdminPanel();
+        closeModal('modal-admin-pass'); renderAdminPanel();
     }
 }
 
 function adminToggleRole(phone) {
-    if(activeUserPhone !== '0839578432') {
-        alert("Bạn không có quyền thực hiện thao tác này!"); return;
-    }
+    if(activeUserPhone !== '0839578432') { alert("Bạn không có quyền thực hiện thao tác này!"); return; }
     if(phone === '0839578432') return;
     let currentRole = systemDB[phone].role;
     if(confirm(`Bạn có chắc chắn muốn ${currentRole === 'admin' ? 'HẠ QUYỀN user này xuống thường' : 'CẤP QUYỀN Admin phụ cho user này'}?`)) {
         systemDB[phone].role = currentRole === 'admin' ? 'user' : 'admin';
-        saveSystemDB();
-        renderAdminPanel();
+        saveSystemDB(); renderAdminPanel();
     }
 }
 
 function adminDeleteUser(phone) {
-    if(activeUserPhone !== '0839578432') {
-        alert("Bạn không có quyền xóa người dùng!"); return;
-    }
+    if(activeUserPhone !== '0839578432') { alert("Bạn không có quyền xóa người dùng!"); return; }
     if(phone === '0839578432') return;
     if(confirm("Bạn có chắc chắn muốn XÓA VĨNH VIỄN người dùng này khỏi hệ thống? Dữ liệu của họ sẽ mất toàn bộ!")) {
-        delete systemDB[phone];
-        saveSystemDB();
-        renderAdminPanel();
+        delete systemDB[phone]; saveSystemDB(); renderAdminPanel();
     }
 }
 
 // =====================================
-// KHỞI CHẠY APP SAU KHI ĐĂNG NHẬP
+// KHỞI CHẠY APP
 // =====================================
 function initializeApp() {
-    // Chỉ set ngày mặc định khi mới mở web
+    let today = new Date().toISOString().split('T')[0];
+    document.getElementById('header-date-picker').max = today; // KHÔNG THỂ CHỌN NGÀY TƯƠNG LAI
     document.getElementById('header-date-picker').value = currentDay;
-    document.getElementById('in-quy-date').value = currentDay;
     document.getElementById('in-print-date').value = currentDay;
     
-    // Tải thông tin cá nhân lên form Cài đặt
     document.getElementById('set-user-name').value = systemDB[activeUserPhone].name || "";
     document.getElementById('set-user-dob').value = systemDB[activeUserPhone].dob || "";
     document.getElementById('set-user-phone').value = activeUserPhone;
@@ -1085,30 +1033,207 @@ function initializeApp() {
     if(!masterData.quyReasons) masterData.quyReasons = [];
     if(!masterData.printHistory) masterData.printHistory = [];
 
-    initTM(); // Vẽ khung Tiền Mặt
     refreshBankSettings();
     toggleCalcType();
     renderPrintHistory();
-    
-    // Ép hệ thống đọc lại dữ liệu theo biến currentDay
-    loadDay();
-    
+    loadDay(); // SẼ LUÂN CHUYỂN DỮ LIỆU CŨ SANG
     showSheet('sheet-tm', document.querySelector('.nav-item.active'));
     
-    if (systemDB[activeUserPhone].role === 'admin') { 
-        renderAdminPanel(); 
-        checkAdminNotifications();
-    }
+    if (systemDB[activeUserPhone].role === 'admin') { renderAdminPanel(); checkAdminNotifications(); }
 }
 
-function initTM() {
-const tb = document.getElementById('body-tm'); tb.innerHTML = "";
-denoms.forEach((m, i) => {
-let tr = document.createElement('tr');
-tr.innerHTML = `<td style="font-weight:bold">${formatTien(m)}</td><td><input type="text" inputmode="numeric" class="in-tm-val" oninput="formatSoLuong(this); syncData_NoLoad();" id="tm-${i}" style="text-align:right"></td><td id="val-tm-${i}" style="color:#666; text-align:right">0 đ</td>`;
-tb.appendChild(tr);
-});
+function loadDay() {
+if(isPrinting) return;
+
+if (!masterData[currentDay]) {
+    // TỰ ĐỘNG LUÂN CHUYỂN DỮ LIỆU (TIỀN MẶT, NGÂN HÀNG, QUỸ, SỔ) TỪ NGÀY GẦN NHẤT
+    let pastDates = Object.keys(masterData).filter(d => d < currentDay && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort();
+    if (pastDates.length > 0) {
+        let prevDate = pastDates[pastDates.length - 1];
+        masterData[currentDay] = JSON.parse(JSON.stringify(masterData[prevDate]));
+    } else {
+        masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
+    }
+    saveMaster();
 }
+
+let data = masterData[currentDay];
+
+// VẼ BẢNG TIỀN MẶT READONLY
+const tbTM = document.getElementById('body-tm'); tbTM.innerHTML = "";
+denoms.forEach((m, i) => {
+    let tr = document.createElement('tr');
+    let qty = data.tm[i] ? parseInt(data.tm[i]) : 0;
+    let val = qty * m;
+    let qtyDisplay = qty === 0 ? '' : qty; // KO NHẬP THÌ RỖNG
+    let valDisplay = val === 0 ? '0 đ' : formatTien(val) + ' đ'; // SỐ LƯỢNG 0 THÌ HIỂN THỊ 0
+    tr.innerHTML = `<td style="font-weight:bold">${formatTien(m)}</td><td align="center" style="font-weight:bold; color:var(--info)">${qtyDisplay}</td><td id="val-tm-${i}" style="color:#666; text-align:right; font-weight:bold;">${valDisplay}</td>`;
+    tbTM.appendChild(tr);
+});
+
+// VẼ BẢNG NGÂN HÀNG READONLY
+const bodyNH = document.getElementById('body-nh'); bodyNH.innerHTML = "";
+masterData.banks.forEach((bank) => {
+    let savedVal = (data.nh || []).find(x => x.n === bank.short)?.v || "";
+    let valDisplay = savedVal ? formatTien(cleanTien(savedVal)) + ' đ' : '0 đ';
+    bodyNH.innerHTML += `<tr><td style="font-weight:bold">${bank.short}</td><td align="right" style="color:var(--primary); font-weight:bold; font-size:16px;">${valDisplay}</td><td align="center"><button class="btn-sm" style="border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-weight:bold;" onclick="openBankInfo('${bank.full}', '${bank.short}', '${valDisplay}')">i</button></td></tr>`;
+});
+
+renderQuy(data.quy || []);
+renderSTK(data.stk || []);
+calcTotal();
+}
+
+// =====================================
+// CHỈNH SỬA TIỀN MẶT
+// =====================================
+function openEditTM() {
+    let data = masterData[currentDay].tm || [];
+    let tbody = document.getElementById('edit-tm1-tbody');
+    tbody.innerHTML = '';
+    denoms.forEach((m, i) => {
+        let oldQty = data[i] ? parseInt(data[i]) : 0;
+        tbody.innerHTML += `<tr>
+            <td style="font-weight:bold">${formatTien(m)}</td>
+            <td align="center">${oldQty}</td>
+            <td><input type="text" inputmode="numeric" class="in-edit-tm-new" data-idx="${i}" data-old="${oldQty}" data-m="${m}" value="${oldQty === 0 ? '' : oldQty}" oninput="formatSoLuong(this); calcEditTMDiff();" style="text-align:right"></td>
+        </tr>`;
+    });
+    calcEditTMDiff();
+    openModal('modal-edit-tm1');
+}
+
+function calcEditTMDiff() {
+    let diff = 0;
+    document.querySelectorAll('.in-edit-tm-new').forEach(inp => {
+        let oldQty = parseInt(inp.getAttribute('data-old')) || 0;
+        let m = parseInt(inp.getAttribute('data-m'));
+        let newQty = parseInt(inp.value) || 0;
+        diff += (newQty - oldQty) * m;
+    });
+    pendingTMDiff = diff;
+    let sign = diff > 0 ? '+' : (diff < 0 ? '-' : '');
+    let color = diff > 0 ? 'var(--success)' : (diff < 0 ? 'var(--danger)' : 'var(--primary)');
+    document.getElementById('edit-tm1-diff').innerHTML = `<span style="color:${color}">${sign}${formatTien(Math.abs(diff))}</span>`;
+}
+
+function proceedEditTM() {
+    pendingTMChanges = [];
+    document.querySelectorAll('.in-edit-tm-new').forEach(inp => {
+        pendingTMChanges[inp.getAttribute('data-idx')] = inp.value;
+    });
+    
+    if (pendingTMDiff === 0) {
+        masterData[currentDay].tm = pendingTMChanges;
+        saveMaster(); loadDay(); closeModal('modal-edit-tm1');
+        return;
+    }
+    
+    document.getElementById('edit-tm2-target').innerText = formatTien(Math.abs(pendingTMDiff));
+    document.getElementById('edit-tm2-target').style.color = pendingTMDiff > 0 ? 'var(--success)' : 'var(--danger)';
+    document.getElementById('tm2-rows-container').innerHTML = '';
+    document.getElementById('edit-tm2-current').innerText = '0';
+    addTM2Row();
+    closeModal('modal-edit-tm1');
+    openModal('modal-edit-tm2');
+}
+
+function addTM2Row() {
+    let div = document.createElement('div');
+    div.style.display = 'flex'; div.style.gap = '10px'; div.style.marginBottom = '10px';
+    div.innerHTML = `
+        <input type="text" placeholder="Nội dung/Lý do..." class="in-tm2-reason" style="flex:2">
+        <input type="text" placeholder="Số tiền..." class="in-tm2-amount" oninput="formatInput(this); calcTM2Total();" style="flex:1; text-align:right">
+        <button class="btn-sm" style="background:var(--danger); color:#fff; border:none; margin:0;" onclick="this.parentElement.remove(); calcTM2Total();">X</button>
+    `;
+    document.getElementById('tm2-rows-container').appendChild(div);
+}
+
+function calcTM2Total() {
+    let sum = 0;
+    document.querySelectorAll('.in-tm2-amount').forEach(inp => { sum += cleanTien(inp.value); });
+    document.getElementById('edit-tm2-current').innerText = formatTien(sum);
+    return sum;
+}
+
+function confirmEditTM() {
+    let sum = calcTM2Total();
+    if (sum !== Math.abs(pendingTMDiff)) {
+        alert(`Tổng số tiền giải trình (${formatTien(sum)}đ) phải BẰNG số tiền chênh lệch (${formatTien(Math.abs(pendingTMDiff))}đ)!`);
+        return;
+    }
+    // Xác nhận lưu
+    masterData[currentDay].tm = pendingTMChanges;
+    saveMaster(); loadDay(); closeModal('modal-edit-tm2');
+    alert("Cập nhật số liệu Tiền Mặt thành công!");
+}
+
+// =====================================
+// CHỈNH SỬA NGÂN HÀNG
+// =====================================
+function openBankInfo(fullName, shortName, balance) {
+    document.getElementById('info-bank-full').innerText = fullName;
+    document.getElementById('info-bank-short').innerText = shortName;
+    document.getElementById('info-bank-balance').innerText = balance;
+    openModal('modal-bank-info');
+}
+
+function openEditNH() {
+    let dataNH = masterData[currentDay].nh || [];
+    let tbody = document.getElementById('edit-nh-tbody');
+    tbody.innerHTML = '';
+    
+    // Tải danh sách lý do NH (dùng chung list quyReasons cho nhanh, hoặc bạn có thể làm mảng riêng)
+    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản thanh toán", "Nhận tiền lương", "Rút tiền mặt"];
+    let reasonOptions = masterData.bankReasons.map(r => `<option value="${r}">${r}</option>`).join('');
+    
+    masterData.banks.forEach(bank => {
+        let oldVal = dataNH.find(x => x.n === bank.short)?.v || "0";
+        tbody.innerHTML += `<tr>
+            <td style="font-weight:bold">${bank.short}</td>
+            <td align="right">${formatTien(cleanTien(oldVal))} đ</td>
+            <td><input type="text" class="in-edit-nh-new" data-name="${bank.short}" data-old="${cleanTien(oldVal)}" value="${cleanTien(oldVal)===0?'':formatTien(cleanTien(oldVal))}" oninput="formatInput(this)" style="text-align:right; width:120px;"></td>
+            <td><select class="sel-edit-nh-reason" style="width:120px;">${reasonOptions}</select></td>
+        </tr>`;
+    });
+    openModal('modal-edit-nh');
+}
+
+function confirmEditNH() {
+    let newNHData = [];
+    let hasError = false;
+    
+    document.querySelectorAll('.in-edit-nh-new').forEach((inp, idx) => {
+        let bName = inp.getAttribute('data-name');
+        let oldVal = parseInt(inp.getAttribute('data-old'));
+        let newVal = cleanTien(inp.value);
+        newNHData.push({ n: bName, v: newVal.toString() });
+        
+        let diff = newVal - oldVal;
+        if (diff < 0) { // GIẢM NGÂN HÀNG -> TRỪ QUỸ NẾU CÓ
+            let amountToDeduct = Math.abs(diff);
+            let reasonSelect = document.querySelectorAll('.sel-edit-nh-reason')[idx].value;
+            
+            if(masterData[currentDay].quy) {
+                masterData[currentDay].quy.forEach(q => {
+                    let storageItem = q.storages.find(s => s.name === bName);
+                    if (storageItem && amountToDeduct > 0) {
+                        let deduct = Math.min(storageItem.v, amountToDeduct);
+                        storageItem.v -= deduct;
+                        amountToDeduct -= deduct;
+                        if(!q.history) q.history = [];
+                        q.history.push({ d: currentDay, type: 'rut', amount: deduct, storage: bName, reason: 'Tự trừ do điều chỉnh giảm NH: ' + reasonSelect });
+                    }
+                });
+            }
+        }
+    });
+    
+    masterData[currentDay].nh = newNHData;
+    saveMaster(); loadDay(); closeModal('modal-edit-nh');
+    alert("Đã cập nhật số liệu Ngân hàng và tự động đồng bộ Quỹ (nếu có giảm)!");
+}
+
 
 function refreshBankSettings() {
 const bodySet = document.getElementById('body-settings-bank'); bodySet.innerHTML = "";
@@ -1122,8 +1247,6 @@ document.getElementById('sel-stk-nh').innerHTML = bankOptionsHtml;
 let quyStorageHtml = `<option value="Tiền mặt">Tiền mặt / Két sắt</option>` + bankOptionsHtml;
 document.getElementById('sel-quy-storage').innerHTML = quyStorageHtml;
 document.getElementById('sel-quy-edit-storage').innerHTML = quyStorageHtml;
-
-// LoadDay() sẽ cập nhật các select options xong mới điền số liệu ngân hàng
 }
 
 function saveBankToSystem() {
@@ -1142,8 +1265,8 @@ masterData.banks.splice(index, 1); saveMaster(); refreshBankSettings(); loadDay(
 
 function toggleCalcType() {
 const type = document.getElementById('sel-calc-type').value, box = document.getElementById('box-stk-mo'), inEnd = document.getElementById('in-stk-end');
-if (type === 'month') { box.style.display = 'block'; inEnd.readOnly = true; inEnd.style.background = '#f2f2f7'; autoCalcEnd(); }
-else { box.style.display = 'none'; inEnd.readOnly = false; inEnd.style.background = '#fff'; }
+if (type === 'month') { box.style.display = 'block'; inEnd.readOnly = true; autoCalcEnd(); }
+else { box.style.display = 'none'; inEnd.readOnly = false; }
 }
 
 function autoCalcEnd() {
@@ -1156,65 +1279,7 @@ document.getElementById('in-stk-end').value = d.toISOString().split('T')[0];
 }
 }
 
-function loadDay() {
-if(isPrinting) return;
-
-// Tạo dữ liệu rỗng cho ngày mới nếu chưa có
-if (!masterData[currentDay]) {
-    masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
-}
-let data = masterData[currentDay];
-
-// Điền số lượng Tiền Mặt của ngày hiện tại (nếu là mảng trống sẽ điền giá trị rỗng)
-document.querySelectorAll('.in-tm-val').forEach((inp, i) => inp.value = data.tm[i] || "");
-
-// Hiển thị lại số dư Ngân hàng
-const bodyNH = document.getElementById('body-nh'); bodyNH.innerHTML = "";
-masterData.banks.forEach((bank) => {
-let savedVal = (data.nh || []).find(x => x.n === bank.short)?.v || "";
-bodyNH.innerHTML += `<tr><td style="font-weight:bold">${bank.short}</td><td><input type="text" inputmode="numeric" class="in-nh-val" data-name="${bank.short}" value="${savedVal?formatTien(cleanTien(savedVal)):''}" oninput="formatInput(this); syncData_NoLoad();" style="text-align:right; border:none; background:transparent; font-weight:bold; width:100%; color:var(--primary);"></td></tr>`;
-});
-
-// Logic copy tồn Quỹ và Sổ Tiết kiệm từ ngày gần nhất nếu ngày hiện tại trống
-if (!data.quy || data.quy.length === 0) {
-    let prevDate = Object.keys(masterData).sort().reverse().find(d => d < currentDay && !['banks', 'quyReasons', 'printHistory'].includes(d) && masterData[d].quy && masterData[d].quy.length > 0);
-    if (prevDate) data.quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
-    else data.quy = [];
-}
-renderQuy(data.quy);
-
-if (!data.stk || data.stk.length === 0) {
-    let prevDate = Object.keys(masterData).sort().reverse().find(d => d < currentDay && !['banks', 'quyReasons', 'printHistory'].includes(d) && masterData[d].stk && masterData[d].stk.length > 0);
-    if (prevDate) data.stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
-    else data.stk = [];
-}
-renderSTK(data.stk);
-
-calcTotal();
-}
-
-function syncData(forceSave = true) {
-if(isPrinting) return;
-
-if (!masterData[currentDay]) masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
-if (!masterData[currentDay].quy) masterData[currentDay].quy = [];
-if (!masterData[currentDay].stk) masterData[currentDay].stk = [];
-
-masterData[currentDay].tm = Array.from(document.querySelectorAll('.in-tm-val')).map(inp => inp.value);
-masterData[currentDay].nh = Array.from(document.querySelectorAll('.in-nh-val')).map(inp => ({n: inp.dataset.name, v: inp.value}));
-
-if(forceSave) saveMaster();
-calcTotal();
-}
-
-function syncData_NoLoad() { syncData(false); }
-
-// =====================================
-// QUẢN LÝ QUỸ
-// =====================================
-function getQuyTotalAmt(quy) {
-return (quy.storages || []).reduce((sum, item) => sum + (item.v || 0), 0);
-}
+function getQuyTotalAmt(quy) { return (quy.storages || []).reduce((sum, item) => sum + (item.v || 0), 0); }
 
 function renderQuy(list) {
 const cont = document.getElementById('quy-container');
@@ -1243,60 +1308,64 @@ cont.innerHTML = htmlContent;
 }
 
 function saveNewQuy() {
-syncData(true);
 let name = document.getElementById('in-quy-name').value || "Quỹ mới",
 date = document.getElementById('in-quy-date').value,
 amt = cleanTien(document.getElementById('in-quy-amt').value),
 storage = document.getElementById('sel-quy-storage').value;
-
 if (amt < 0 || !date || name.trim() === "") { alert("Vui lòng nhập đủ Tên quỹ, Ngày và Số tiền khởi tạo!"); return; }
-
-let quyObj = { 
-    id: Date.now(), 
-    name: name, 
-    date: date, 
-    storages: [{name: storage, v: amt}],
-    history: [{ d: date, type: 'init', amount: amt, storage: storage, reason: 'Khởi tạo quỹ' }] 
-};
-
+let quyObj = { id: Date.now(), name: name, date: date, storages: [{name: storage, v: amt}], history: [{ d: date, type: 'init', amount: amt, storage: storage, reason: 'Khởi tạo quỹ' }] };
 if(!masterData[currentDay].quy) masterData[currentDay].quy = [];
 masterData[currentDay].quy.push(quyObj);
-
-saveMaster(); closeModal('modal-quy-add'); renderQuy(masterData[currentDay].quy); calcTotal();
+saveMaster(); closeModal('modal-quy-add'); loadDay();
 document.getElementById('in-quy-name').value = ""; document.getElementById('in-quy-amt').value = "0";
 }
 
 function openDetailQuy(id) {
 let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
+currentQuyDetailId = id;
 document.getElementById('quy-detail-summary').innerHTML = `Tên Quỹ: <b>${q.name}</b><br>Ngày lập: <b>${vnDate(q.date)}</b><br>Tổng tài sản quỹ: <b style="color:var(--danger)">${formatTien(getQuyTotalAmt(q))} đ</b>`;
 
 let b = document.getElementById('quy-detail-tbody'); b.innerHTML = "";
+let filterSel = document.getElementById('quy-detail-filter');
+filterSel.innerHTML = `<option value="all">Tất cả tài khoản</option>`;
+
 q.storages.forEach((s) => {
-b.innerHTML += `<tr><td style="font-weight:bold">${s.name}</td><td align="right" style="color:var(--success); font-weight:bold; font-size:16px;">${formatTien(s.v)} đ</td></tr>`;
+    b.innerHTML += `<tr><td style="font-weight:bold">${s.name}</td><td align="right" style="color:var(--success); font-weight:bold; font-size:16px;">${formatTien(s.v)} đ</td></tr>`;
+    filterSel.innerHTML += `<option value="${s.name}">${s.name}</option>`;
 });
 
-// Render Lịch Sử Giao Dịch
-let hBody = document.getElementById('quy-history-tbody');
-hBody.innerHTML = "";
-if (q.history && q.history.length > 0) {
-    let sortedHistory = [...q.history].reverse(); // Đảo ngược để hiển thị mới nhất lên đầu
-    sortedHistory.forEach(h => {
-        let typeText = h.type === 'init' ? 'Khởi tạo' : (h.type === 'nop' ? 'Nộp thêm' : 'Rút ra');
-        let color = h.type === 'rut' ? 'var(--danger)' : 'var(--success)';
-        let sign = h.type === 'rut' ? '-' : '+';
-        hBody.innerHTML += `<tr>
-            <td align="center">${vnDate(h.d)}</td>
-            <td align="center" style="font-weight:bold; color:${color}">${typeText}</td>
-            <td align="right" style="font-weight:bold; color:${color}">${sign}${formatTien(h.amount)} đ</td>
-            <td>${h.storage}</td>
-            <td>${h.reason || ''}</td>
-        </tr>`;
-    });
-} else {
-    hBody.innerHTML = `<tr><td colspan="5" align="center" style="color:#888; font-style:italic; padding:15px;">Chưa có lịch sử giao dịch nào được ghi nhận.</td></tr>`;
+filterQuyHistory();
+openModal('modal-quy-detail');
 }
 
-openModal('modal-quy-detail');
+function filterQuyHistory() {
+    let q = masterData[currentDay].quy.find(x => x.id === currentQuyDetailId); if(!q) return;
+    let filterVal = document.getElementById('quy-detail-filter').value;
+    let hBody = document.getElementById('quy-history-tbody');
+    hBody.innerHTML = "";
+    
+    let historyToRender = q.history || [];
+    if (filterVal !== 'all') {
+        historyToRender = historyToRender.filter(h => h.storage === filterVal);
+    }
+    
+    if (historyToRender.length > 0) {
+        let sortedHistory = [...historyToRender].reverse();
+        sortedHistory.forEach(h => {
+            let typeText = h.type === 'init' ? 'Khởi tạo' : (h.type === 'nop' ? 'Nộp thêm' : 'Rút ra');
+            let color = h.type === 'rut' ? 'var(--danger)' : 'var(--success)';
+            let sign = h.type === 'rut' ? '-' : '+';
+            hBody.innerHTML += `<tr>
+                <td align="center">${vnDate(h.d)}</td>
+                <td align="center" style="font-weight:bold; color:${color}">${typeText}</td>
+                <td align="right" style="font-weight:bold; color:${color}">${sign}${formatTien(h.amount)} đ</td>
+                <td>${h.storage}</td>
+                <td>${h.reason || ''}</td>
+            </tr>`;
+        });
+    } else {
+        hBody.innerHTML = `<tr><td colspan="5" align="center" style="color:#888; font-style:italic; padding:15px;">Chưa có lịch sử giao dịch nào ở tài khoản này.</td></tr>`;
+    }
 }
 
 function openEditQuyStorage(id) {
@@ -1307,51 +1376,42 @@ openModal('modal-quy-edit-storage');
 }
 
 function confirmEditQuyStorage() {
-syncData(true);
 let id = parseInt(document.getElementById('hid-quy-edit-id').value), newStorage = document.getElementById('sel-quy-edit-storage').value, amount = cleanTien(document.getElementById('in-quy-edit-amt').value);
 let q = masterData[currentDay].quy.find(x => x.id === id);
 if(q) {
 let existingStorage = q.storages.find(s => s.name === newStorage);
 if(existingStorage) { existingStorage.v += amount; } else { q.storages.push({name: newStorage, v: amount}); }
-
 if(!q.history) q.history = [];
 q.history.push({ d: currentDay, type: 'nop', amount: amount, storage: newStorage, reason: 'Phân bổ thêm kho lưu trữ' });
-
-saveMaster(); closeModal('modal-quy-edit-storage'); renderQuy(masterData[currentDay].quy); calcTotal();
+saveMaster(); closeModal('modal-quy-edit-storage'); loadDay();
 }
 }
 
 function openNopQuy(id) {
-syncData(true);
 let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
 document.getElementById('hid-quy-nop-id').value = id;
 document.getElementById('in-quy-nop-val').value = "";
-document.getElementById('in-quy-nop-date').value = currentDay; // Set ngày mặc định
-
+document.getElementById('in-quy-nop-date').value = currentDay; 
+document.getElementById('in-quy-nop-date').max = new Date().toISOString().split('T')[0];
 let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
 document.getElementById('sel-quy-nop-storage').innerHTML = storageHtml;
 openModal('modal-quy-nop');
 }
 
 function confirmNopQuy() {
-syncData(true);
 let id = parseInt(document.getElementById('hid-quy-nop-id').value), 
     val = cleanTien(document.getElementById('in-quy-nop-val').value), 
     storageName = document.getElementById('sel-quy-nop-storage').value,
     nopDate = document.getElementById('in-quy-nop-date').value;
-
 if (val <= 0 || !nopDate) { alert("Vui lòng nhập số tiền và ngày nộp hợp lệ!"); return; }
-
 let q = masterData[currentDay].quy.find(x => x.id === id);
 if (q) {
     let storageIndex = q.storages.findIndex(s => s.name === storageName);
     if (storageIndex > -1) {
         q.storages[storageIndex].v += val;
-        
         if(!q.history) q.history = [];
         q.history.push({ d: nopDate, type: 'nop', amount: val, storage: storageName, reason: 'Nộp thêm tiền' });
-        
-        saveMaster(); closeModal('modal-quy-nop'); renderQuy(masterData[currentDay].quy); calcTotal();
+        saveMaster(); closeModal('modal-quy-nop'); loadDay();
     }
 }
 }
@@ -1360,7 +1420,6 @@ function refreshQuyReasons() {
 if (!masterData.quyReasons) masterData.quyReasons = ["Chi tiêu sinh hoạt", "Đầu tư", "Sự kiện / Quà cáp"];
 let html = masterData.quyReasons.map(r => `<option value="${r}">${r}</option>`).join('');
 document.getElementById('sel-quy-rut-reason').innerHTML = html;
-
 let listHtml = "";
 masterData.quyReasons.forEach((r, i) => {
 listHtml += `<tr><td style="font-weight:bold">${r}</td><td align="center"><span onclick="deleteReason(${i})" style="color:red; cursor:pointer; font-weight:bold;">✖</span></td></tr>`;
@@ -1368,96 +1427,72 @@ listHtml += `<tr><td style="font-weight:bold">${r}</td><td align="center"><span 
 document.getElementById('body-reasons-list').innerHTML = listHtml;
 }
 
-function openReasonManager() {
-refreshQuyReasons();
-document.getElementById('in-new-reason').value = "";
-openModal('modal-quy-reasons');
-}
-
+function openReasonManager() { refreshQuyReasons(); document.getElementById('in-new-reason').value = ""; openModal('modal-quy-reasons'); }
 function closeReasonManager() { closeModal('modal-quy-reasons'); refreshQuyReasons(); }
 
 function saveNewReason() {
 let reason = document.getElementById('in-new-reason').value.trim();
 if (reason !== "") {
-if (!masterData.quyReasons.includes(reason)) {
-masterData.quyReasons.push(reason); saveMaster(); refreshQuyReasons();
-document.getElementById('in-new-reason').value = "";
+if (!masterData.quyReasons.includes(reason)) { masterData.quyReasons.push(reason); saveMaster(); refreshQuyReasons(); document.getElementById('in-new-reason').value = "";
 } else { alert("Nguyên do này đã tồn tại!"); }
 }
 }
 
-function deleteReason(index) {
-if(confirm("Xóa nguyên do này?")) { masterData.quyReasons.splice(index, 1); saveMaster(); refreshQuyReasons(); }
-}
+function deleteReason(index) { if(confirm("Xóa nguyên do này?")) { masterData.quyReasons.splice(index, 1); saveMaster(); refreshQuyReasons(); } }
 
 function openRutQuy(id) {
-syncData(true);
 let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
 document.getElementById('hid-quy-rut-id').value = id;
 document.getElementById('in-quy-rut-val').value = "";
-document.getElementById('in-quy-rut-date').value = currentDay; // Set ngày mặc định
-
+document.getElementById('in-quy-rut-date').value = currentDay;
+document.getElementById('in-quy-rut-date').max = new Date().toISOString().split('T')[0];
 let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
 document.getElementById('sel-quy-rut-storage').innerHTML = storageHtml;
-
 refreshQuyReasons();
 openModal('modal-quy-rut');
 }
 
 function confirmRutQuy() {
-syncData(true);
 let id = parseInt(document.getElementById('hid-quy-rut-id').value), 
     val = cleanTien(document.getElementById('in-quy-rut-val').value), 
     storageName = document.getElementById('sel-quy-rut-storage').value,
     reason = document.getElementById('sel-quy-rut-reason').value,
     rutDate = document.getElementById('in-quy-rut-date').value;
-
 if (val <= 0 || !rutDate) { alert("Vui lòng nhập số tiền và ngày rút hợp lệ!"); return; }
-
 let q = masterData[currentDay].quy.find(x => x.id === id);
 if (q) {
     let storageIndex = q.storages.findIndex(s => s.name === storageName);
     if (storageIndex > -1) {
-        if (q.storages[storageIndex].v < val) {
-            alert("Lỗi: Số tiền rút lớn hơn số dư hiện có trong Nơi lưu trữ này (" + formatTien(q.storages[storageIndex].v) + "đ)!");
-            return;
-        }
+        if (q.storages[storageIndex].v < val) { alert("Lỗi: Số dư không đủ!"); return; }
         q.storages[storageIndex].v -= val;
-        
         if(!q.history) q.history = [];
         q.history.push({ d: rutDate, type: 'rut', amount: val, storage: storageName, reason: reason });
-
-        saveMaster(); closeModal('modal-quy-rut'); renderQuy(masterData[currentDay].quy); calcTotal();
+        saveMaster(); closeModal('modal-quy-rut'); loadDay();
     }
 }
 }
 
 function deleteQuy(id) {
-if(confirm("Bạn có chắc chắn muốn xóa quỹ này không? Dữ liệu sẽ không thể khôi phục.")) {
-syncData(true); masterData[currentDay].quy = masterData[currentDay].quy.filter(x => x.id !== id);
-saveMaster(); renderQuy(masterData[currentDay].quy); calcTotal();
+if(confirm("Bạn có chắc chắn muốn xóa quỹ này không?")) {
+masterData[currentDay].quy = masterData[currentDay].quy.filter(x => x.id !== id);
+saveMaster(); loadDay();
 }
 }
 
 // =====================================
-// 5. QUẢN LÝ SỔ TIẾT KIỆM
+// SỔ TIẾT KIỆM
 // =====================================
 function saveNewSTK() {
-syncData(true);
 let name = document.getElementById('in-stk-name').value || "Sổ tiết kiệm", nh = document.getElementById('sel-stk-nh').value,
 amt = cleanTien(document.getElementById('in-stk-amt').value), ls = parseFloat(document.getElementById('in-stk-ls').value)||0,
 start = document.getElementById('in-stk-start').value, end = document.getElementById('in-stk-end').value,
 type = document.getElementById('sel-stk-type').value, mo = parseInt(document.getElementById('in-stk-mo').value)||0;
 
 if (amt < 0 || !end) { alert("Vui lòng nhập Ngày đáo hạn hợp lệ."); return; }
-
 let stkObj = { id: Date.now(), name, nh, amt, ls, start, end, type, mo, history: [{id: Date.now(), d: start, n: "Mở sổ ban đầu", v: amt, ls: ls}] };
-
 if (!masterData[currentDay].stk) masterData[currentDay].stk = [];
 masterData[currentDay].stk.push(stkObj);
-
-saveMaster(); closeModal('modal-stk-add'); renderSTK(masterData[currentDay].stk); calcTotal();
-
+saveMaster(); closeModal('modal-stk-add'); loadDay();
 document.getElementById('in-stk-name').value = ""; document.getElementById('in-stk-amt').value = "0"; document.getElementById('in-stk-ls').value = "";
 }
 
@@ -1490,38 +1525,25 @@ ${s.type==='ky-han'?`<button class="btn-sm" style="background:var(--danger); col
 }
 
 function openRut(id, type) {
-if(type === 'tich-luy') {
-    alert("Tính năng rút tiền không áp dụng cho sổ tích lũy.");
-    return;
-}
+if(type === 'tich-luy') { alert("Không áp dụng cho sổ tích lũy."); return; }
 document.getElementById('hid-rut-id').value = id;
 document.getElementById('in-rut-val').value = "";
 document.getElementById('in-stk-rut-date').value = currentDay;
+document.getElementById('in-stk-rut-date').max = new Date().toISOString().split('T')[0];
 let warning = document.getElementById('stk-rut-warning');
 if (type === 'ky-han') { warning.innerText = "* Rút sổ Kỳ Hạn: Rút tối thiểu 100k và Gốc còn lại >= 100k."; }
 openModal('modal-stk-rut');
 }
 
 function confirmRut() {
-syncData(true);
-let id = parseInt(document.getElementById('hid-rut-id').value), 
-    v = cleanTien(document.getElementById('in-rut-val').value), 
-    rutDate = document.getElementById('in-stk-rut-date').value,
-    s = masterData[currentDay].stk.find(x => x.id === id);
-
+let id = parseInt(document.getElementById('hid-rut-id').value), v = cleanTien(document.getElementById('in-rut-val').value), rutDate = document.getElementById('in-stk-rut-date').value, s = masterData[currentDay].stk.find(x => x.id === id);
 if (!rutDate) { alert("Vui lòng chọn ngày rút!"); return; }
 if (!s) return;
-
 if (s.type === 'ky-han') {
 if(v >= 100000 && (s.amt - v >= 100000 || s.amt - v === 0)) {
 s.amt -= v; s.history.push({id: Date.now(), d: rutDate, n: "Rút tiền một phần", v: -v, ls: s.ls});
-saveMaster(); closeModal('modal-stk-rut'); renderSTK(masterData[currentDay].stk); calcTotal();
-} else { alert("Sổ Kỳ Hạn: Rút tối thiểu 100k và Số gốc còn lại phải >= 100k (hoặc rút toàn bộ)!"); }
-} else {
-if(v > 0 && s.amt >= v) {
-s.amt -= v; s.history.push({id: Date.now(), d: rutDate, n: "Rút tiền", v: -v, ls: s.ls});
-saveMaster(); closeModal('modal-stk-rut'); renderSTK(masterData[currentDay].stk); calcTotal();
-} else { alert("Số tiền rút không hợp lệ hoặc lớn hơn số gốc hiện có trong sổ!"); }
+saveMaster(); closeModal('modal-stk-rut'); loadDay();
+} else { alert("Sổ Kỳ Hạn: Rút tối thiểu 100k và Gốc còn lại phải >= 100k!"); }
 }
 }
 
@@ -1546,27 +1568,18 @@ function openNop(id) {
     document.getElementById('hid-nop-id').value = id; 
     document.getElementById('in-nop-val').value = ""; 
     document.getElementById('in-stk-nop-date').value = currentDay;
+    document.getElementById('in-stk-nop-date').max = new Date().toISOString().split('T')[0];
     openModal('modal-stk-nop'); 
 }
 
 function confirmNop() {
-syncData(true);
-let id = parseInt(document.getElementById('hid-nop-id').value), 
-    v = cleanTien(document.getElementById('in-nop-val').value), 
-    ls = parseFloat(document.getElementById('in-nop-ls').value)||0, 
-    nopDate = document.getElementById('in-stk-nop-date').value,
-    s = masterData[currentDay].stk.find(x => x.id === id);
-
+let id = parseInt(document.getElementById('hid-nop-id').value), v = cleanTien(document.getElementById('in-nop-val').value), ls = parseFloat(document.getElementById('in-nop-ls').value)||0, nopDate = document.getElementById('in-stk-nop-date').value, s = masterData[currentDay].stk.find(x => x.id === id);
 if (!nopDate) { alert("Vui lòng chọn ngày nộp!"); return; }
-
-if(s && v > 0) {
-s.amt += v; s.history.push({id: Date.now(), d: nopDate, n: "Nộp thêm", v, ls});
-saveMaster(); closeModal('modal-stk-nop'); renderSTK(masterData[currentDay].stk); calcTotal();
-} else { alert("Vui lòng nhập số tiền hợp lệ!"); }
+if(s && v > 0) { s.amt += v; s.history.push({id: Date.now(), d: nopDate, n: "Nộp thêm", v, ls}); saveMaster(); closeModal('modal-stk-nop'); loadDay(); }
 }
 
 function openDH(id) {
-syncData(true); let s = masterData[currentDay].stk.find(x => x.id === id); if(!s) return;
+let s = masterData[currentDay].stk.find(x => x.id === id); if(!s) return;
 let lai = s.history.reduce((a,h)=>a+(h.v>0?calcH(h,s.end).lai:0),0);
 document.getElementById('hid-dh-id').value = id; document.getElementById('in-dh-lai').value = formatTien(lai);
 document.getElementById('in-dh-ls').value = s.ls; document.getElementById('in-dh-mo').value = "";
@@ -1575,88 +1588,37 @@ openModal('modal-stk-dh');
 function confirmDH(isRenew) {
 let id = parseInt(document.getElementById('hid-dh-id').value);
 if (!isRenew) {
-if(confirm("Tất toán sổ sẽ xóa toàn bộ số dư và lịch sử giao dịch khỏi mục Tiết Kiệm. Bạn chắc chắn muốn xóa?")) {
-masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id);
-} else return;
+if(confirm("Tất toán sổ sẽ xóa toàn bộ số dư khỏi hệ thống?")) { masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id); } else return;
 } else {
 let s = masterData[currentDay].stk.find(x => x.id === id), lai = cleanTien(document.getElementById('in-dh-lai').value), ls = parseFloat(document.getElementById('in-dh-ls').value)||0, mo = parseInt(document.getElementById('in-dh-mo').value)||s.mo||1;
 s.amt += lai; s.ls = ls; s.mo = mo; s.start = s.end;
 let d = new Date(s.start); d.setMonth(d.getMonth() + mo);
 while(d.getDay()===0 || d.getDay()===6) d.setDate(d.getDate()+1);
 s.end = d.toISOString().split('T')[0];
-s.history = [{id: Date.now(), d: s.start, n: `Tái tục vòng mới (Cộng ${formatTien(lai)}đ tiền lãi)`, v: s.amt, ls: ls}];
+s.history = [{id: Date.now(), d: s.start, n: `Tái tục (Cộng ${formatTien(lai)}đ)`, v: s.amt, ls: ls}];
 }
-saveMaster(); closeModal('modal-stk-dh'); renderSTK(masterData[currentDay].stk); calcTotal();
+saveMaster(); closeModal('modal-stk-dh'); loadDay();
 }
-
-// =====================================
-// 6. IN ẤN & TỔNG KẾT
-// =====================================
 
 function getLocation() {
-const addrInput = document.getElementById('in-print-address');
-addrInput.value = "Đang tìm vị trí...";
+const addrInput = document.getElementById('in-print-address'); addrInput.value = "Đang tìm vị trí...";
 if (navigator.geolocation) {
 navigator.geolocation.getCurrentPosition((position) => {
-const lat = position.coords.latitude;
-const lon = position.coords.longitude;
-fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
-.then(res => res.json())
-.then(data => { addrInput.value = data.display_name || "Không lấy được địa chỉ chi tiết"; })
+fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+.then(res => res.json()).then(data => { addrInput.value = data.display_name || "Không lấy được"; })
 .catch(err => { addrInput.value = "Hồ Chí Minh, Việt Nam (Mặc định)"; });
-}, () => { addrInput.value = "Chưa cấp quyền vị trí, vui lòng nhập tay"; });
+}, () => { addrInput.value = "Chưa cấp quyền vị trí, tự nhập tay"; });
 } else { addrInput.value = "Trình duyệt không hỗ trợ"; }
 }
 
-function getWeekNumber(d) {
-d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-let yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
-}
-
-function getDayName(d) {
-let day = new Date(d).getDay();
-if (day === 1) return "KIỂM KÊ ĐẦU TUẦN";
-if (day === 0) return "KIỂM KÊ CUỐI TUẦN";
-return "KIỂM KÊ TRONG TUẦN";
-}
-
-function docTien(so) {
-if (so === 0) return "KHÔNG ĐỒNG";
-let chuSo = ["KHÔNG", "MỘT", "HAI", "BA", "BỐN", "NĂM", "SÁU", "BẢY", "TÁM", "CHÍN"];
-let donVi = ["", "NGHÌN", "TRIỆU", "TỶ"];
-function docBlock(so, dayDu) {
-let chuoi = ""; let tram = Math.floor(so / 100); let chuc = Math.floor((so % 100) / 10); let donvi = so % 10;
-if (dayDu || tram > 0) { chuoi += chuSo[tram] + " TRĂM "; chuoi += (chuc === 0 && donvi > 0) ? "LẺ " : ""; }
-if (chuc === 1) chuoi += "MƯỜI "; if (chuc > 1) chuoi += chuSo[chuc] + " MƯƠI ";
-if (donvi === 1 && chuc > 1) chuoi += "MỐT "; else if (donvi === 5 && chuc > 0) chuoi += "LĂM "; else if (donvi === 4 && chuc > 1) chuoi += "TƯ "; else if (donvi > 0) chuoi += chuSo[donvi] + " ";
-return chuoi.trim();
-}
-let strSo = so.toString(); let blocks = [];
-while (strSo.length > 0) { blocks.push(strSo.slice(-3)); strSo = strSo.slice(0, -3); }
-let result = "";
-for (let i = 0; i < blocks.length; i++) {
-let blockVal = parseInt(blocks[i]);
-if (blockVal > 0 || (i === 0 && blocks.length === 1)) {
-let doc = docBlock(blockVal, i < blocks.length - 1);
-if(doc) result = doc + " " + donVi[i] + " " + result;
-}
-}
-return result.trim().replace(/\s+/g, ' ') + " ĐỒNG";
-}
+function getWeekNumber(d) { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7)); let yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1)); return Math.ceil((((d - yearStart) / 86400000) + 1)/7); }
+function getDayName(d) { let day = new Date(d).getDay(); if (day === 1) return "KIỂM KÊ ĐẦU TUẦN"; if (day === 0) return "KIỂM KÊ CUỐI TUẦN"; return "KIỂM KÊ TRONG TUẦN"; }
+function docTien(so) { if (so === 0) return "KHÔNG ĐỒNG"; let chuSo = ["KHÔNG", "MỘT", "HAI", "BA", "BỐN", "NĂM", "SÁU", "BẢY", "TÁM", "CHÍN"]; let donVi = ["", "NGHÌN", "TRIỆU", "TỶ"]; function docBlock(so, dayDu) { let chuoi = ""; let tram = Math.floor(so / 100); let chuc = Math.floor((so % 100) / 10); let donvi = so % 10; if (dayDu || tram > 0) { chuoi += chuSo[tram] + " TRĂM "; chuoi += (chuc === 0 && donvi > 0) ? "LẺ " : ""; } if (chuc === 1) chuoi += "MƯỜI "; if (chuc > 1) chuoi += chuSo[chuc] + " MƯƠI "; if (donvi === 1 && chuc > 1) chuoi += "MỐT "; else if (donvi === 5 && chuc > 0) chuoi += "LĂM "; else if (donvi === 4 && chuc > 1) chuoi += "TƯ "; else if (donvi > 0) chuoi += chuSo[donvi] + " "; return chuoi.trim(); } let strSo = so.toString(); let blocks = []; while (strSo.length > 0) { blocks.push(strSo.slice(-3)); strSo = strSo.slice(0, -3); } let result = ""; for (let i = 0; i < blocks.length; i++) { let blockVal = parseInt(blocks[i]); if (blockVal > 0 || (i === 0 && blocks.length === 1)) { let doc = docBlock(blockVal, i < blocks.length - 1); if(doc) result = doc + " " + donVi[i] + " " + result; } } return result.trim().replace(/\s+/g, ' ') + " ĐỒNG"; }
 
 function calcTotal() {
 if(isPrinting) return;
 let data = masterData[currentDay] || {tm:[], nh:[], quy:[], stk:[]};
-
-let tTM = 0; denoms.forEach((m, i) => { 
-    let v = (parseInt(data.tm[i])||0); 
-    let val = v*m;
-    tTM += val; 
-    let cell = document.getElementById(`val-tm-${i}`);
-    if(cell) cell.innerText = formatTien(val)+' đ'; 
-});
+let tTM = 0; denoms.forEach((m, i) => { let v = (parseInt(data.tm[i])||0); let val = v*m; tTM += val; });
 let tNH = (data.nh || []).reduce((s,x)=>s+cleanTien(x.v),0);
 let tQuy = (data.quy || []).reduce((s,q)=>s+getQuyTotalAmt(q),0);
 let tSTK = (data.stk || []).reduce((s,x)=>s+(x.amt||0),0);
@@ -1688,65 +1650,41 @@ document.getElementById('p-final-total-2').innerText = formatTien(finalT) + " đ
 document.getElementById('p-text-total').innerText = docTien(finalT);
 
 let printCells = [null, null, denoms[0], denoms[1], denoms[2], denoms[3], denoms[4], denoms[5], denoms[6], denoms[7], denoms[8], denoms[9], denoms[10], denoms[11], null];
-
 let tmPrintHtml = "";
 for(let i=0; i<5; i++) {
 tmPrintHtml += `<tr>`;
 for(let j=0; j<3; j++) {
 let cellVal = printCells[i * 3 + j];
-if (cellVal === null) {
-tmPrintHtml += `<td class="tm-empty"></td><td class="tm-empty"></td><td class="tm-empty"></td>`;
+if (cellVal === null) { tmPrintHtml += `<td class="tm-empty"></td><td class="tm-empty"></td><td class="tm-empty"></td>`;
 } else {
-let originIdx = denoms.indexOf(cellVal);
-let slg = (data.tm && data.tm[originIdx]) ? parseInt(data.tm[originIdx]) : 0;
-let tong = cellVal * slg;
+let originIdx = denoms.indexOf(cellVal); let slg = (data.tm && data.tm[originIdx]) ? parseInt(data.tm[originIdx]) : 0; let tong = cellVal * slg;
 tmPrintHtml += `<td class="tm-val">${formatTien(cellVal)}</td><td class="tm-sl">${slg === 0 ? '' : slg}</td><td>${tong > 0 ? formatTien(tong) : '-'}</td>`;
-}
-}
-tmPrintHtml += `</tr>`;
-}
+} } tmPrintHtml += `</tr>`; }
 document.getElementById('p-tm-grid-tbody').innerHTML = tmPrintHtml;
 
 let nhPrintHtml = "";
-(data.nh || []).forEach(n => {
-    let rawVal = cleanTien(n.v);
-    if(rawVal > 0) nhPrintHtml += `<tr><td style="text-align:left;">${n.n}</td><td align="right">${formatTien(rawVal)} đ</td></tr>`;
-});
+(data.nh || []).forEach(n => { let rawVal = cleanTien(n.v); if(rawVal > 0) nhPrintHtml += `<tr><td style="text-align:left;">${n.n}</td><td align="right">${formatTien(rawVal)} đ</td></tr>`; });
 document.querySelector('#p-nh-table tbody').innerHTML = nhPrintHtml;
 document.getElementById('p-nh-total').innerText = formatTien(tNH) + " đ";
 
 let stkPrintHtml = "";
-(data.stk || []).forEach(s => {
-if(s.amt > 0) stkPrintHtml += `<tr><td style="text-align:left;">[Sổ] ${s.name} (${s.nh})</td><td align="right">${formatTien(s.amt)} đ</td></tr>`;
-});
+(data.stk || []).forEach(s => { if(s.amt > 0) stkPrintHtml += `<tr><td style="text-align:left;">[Sổ] ${s.name} (${s.nh})</td><td align="right">${formatTien(s.amt)} đ</td></tr>`; });
 document.querySelector('#p-stk-table tbody').innerHTML = stkPrintHtml;
 document.getElementById('p-stk-total-print').innerText = formatTien(tSTK) + " đ";
 
 let quyPrintHtml = "";
-(data.quy || []).forEach(q => {
-let t = getQuyTotalAmt(q);
-if(t > 0) quyPrintHtml += `<tr><td style="text-align:left;">${q.name}</td><td align="right">${formatTien(t)} đ</td></tr>`;
-});
+(data.quy || []).forEach(q => { let t = getQuyTotalAmt(q); if(t > 0) quyPrintHtml += `<tr><td style="text-align:left;">${q.name}</td><td align="right">${formatTien(t)} đ</td></tr>`; });
 document.querySelector('#p-quy-table tbody').innerHTML = quyPrintHtml;
 document.getElementById('p-quy-total-print').innerText = formatTien(tQuy) + " đ";
 }
 
-function generateASCII(length) {
-    let result = '';
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charsLength = chars.length;
-    for (let i = 0; i < length; i++) result += chars.charAt(Math.floor(Math.random() * charsLength));
-    return result;
-}
+function generateASCII(length) { let result = ''; const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; for (let i = 0; i < length; i++) result += chars.charAt(Math.floor(Math.random() * chars.length)); return result; }
 
 function openPrintSetup() {
 let printDate = document.getElementById('in-print-date').value;
 if(!printDate) { alert("Vui lòng chọn ngày in!"); return; }
-
-// AUTO TỰ ĐIỀN TÊN KIỂM TOÁN LÀ TÊN CỦA USER HIỆN TẠI
 let userName = systemDB[activeUserPhone]?.name || "";
 document.getElementById('in-auditor-name').value = userName;
-
 openModal('modal-print-setup');
 getLocation();
 }
@@ -1756,92 +1694,46 @@ let printDate = document.getElementById('in-print-date').value;
 let auditor = document.getElementById('in-auditor-name').value.trim() || "Chưa nhập";
 let address = document.getElementById('in-print-address').value.trim() || "Chưa nhập";
 
-closeModal('modal-print-setup');
-buildPrintLayout(printDate);
+closeModal('modal-print-setup'); buildPrintLayout(printDate);
 
 setTimeout(() => {
-let asciiCode = generateASCII(12);
-let nowTime = new Date().toLocaleString('vi-VN');
-
-document.getElementById('p-auditor').innerText = auditor;
-document.getElementById('p-address').innerText = address;
-document.getElementById('p-sign-name-1').innerText = auditor;
-
-let startDate = new Date('2026-01-01T00:00:00');
-let targetDate = new Date(printDate + 'T00:00:00');
+let asciiCode = generateASCII(12); let nowTime = new Date().toLocaleString('vi-VN');
+document.getElementById('p-auditor').innerText = auditor; document.getElementById('p-address').innerText = address; document.getElementById('p-sign-name-1').innerText = auditor;
+let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(printDate + 'T00:00:00');
 let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
 document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
-
 let dObj = new Date(printDate);
-document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0');
-document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0');
-document.getElementById('p-y').innerText = dObj.getFullYear();
-
-document.getElementById('p-tuan').innerText = getWeekNumber(dObj);
-document.getElementById('p-time').innerText = nowTime;
-document.getElementById('p-title').innerText = getDayName(printDate);
-document.getElementById('p-ascii').innerText = asciiCode;
-document.getElementById('p-copy-info').style.display = 'none';
+document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
+document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = nowTime; document.getElementById('p-title').innerText = getDayName(printDate); document.getElementById('p-ascii').innerText = asciiCode; document.getElementById('p-copy-info').style.display = 'none';
 
 if(!masterData.printHistory) masterData.printHistory = [];
 masterData.printHistory.push({ date: printDate, time: nowTime, code: asciiCode, auditor: auditor, address: address });
-
-saveMaster(); renderPrintHistory();
-window.print();
+saveMaster(); renderPrintHistory(); window.print();
 }, 100);
 }
 
 function printOldRecord(dateStr, codeStr) {
-let history = masterData.printHistory || [];
-let record = history.find(x => x.code === codeStr);
-if(!record) return;
-
+let history = masterData.printHistory || []; let record = history.find(x => x.code === codeStr); if(!record) return;
 buildPrintLayout(dateStr);
-
 setTimeout(() => {
-document.getElementById('p-auditor').innerText = record.auditor;
-document.getElementById('p-address').innerText = record.address;
-document.getElementById('p-sign-name-1').innerText = record.auditor;
-
-let startDate = new Date('2026-01-01T00:00:00');
-let targetDate = new Date(dateStr + 'T00:00:00');
-let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+document.getElementById('p-auditor').innerText = record.auditor; document.getElementById('p-address').innerText = record.address; document.getElementById('p-sign-name-1').innerText = record.auditor;
+let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(dateStr + 'T00:00:00'); let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
 document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
-
 let dObj = new Date(dateStr);
-document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0');
-document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0');
-document.getElementById('p-y').innerText = dObj.getFullYear();
-
-document.getElementById('p-tuan').innerText = getWeekNumber(dObj);
-document.getElementById('p-time').innerText = record.time;
-document.getElementById('p-title').innerText = getDayName(dateStr);
-document.getElementById('p-ascii').innerText = codeStr;
-
-const copyBox = document.getElementById('p-copy-info');
-copyBox.style.display = 'block';
-copyBox.innerHTML = `BẢN SAO<br><span style="font-size:10px; font-weight:normal;">Thời gian in lại: ${new Date().toLocaleString('vi-VN')}</span>`;
-
+document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
+document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = record.time; document.getElementById('p-title').innerText = getDayName(dateStr); document.getElementById('p-ascii').innerText = codeStr;
+const copyBox = document.getElementById('p-copy-info'); copyBox.style.display = 'block'; copyBox.innerHTML = `BẢN SAO<br><span style="font-size:10px; font-weight:normal;">Thời gian in lại: ${new Date().toLocaleString('vi-VN')}</span>`;
 window.print();
 }, 100);
 }
 
 function renderPrintHistory() {
-const tbody = document.getElementById('body-print-history');
-tbody.innerHTML = "";
-let history = masterData.printHistory || [];
+const tbody = document.getElementById('body-print-history'); tbody.innerHTML = ""; let history = masterData.printHistory || [];
 history.slice().reverse().forEach((record, index) => {
-tbody.innerHTML += `
-<tr>
-<td align="center">${index + 1}</td>
-<td style="font-weight:bold">${record.time} <br> <span style="font-size:12px; color:#666; font-weight:normal;">(Ngày QT: ${vnDate(record.date)})</span></td>
-<td style="font-family:monospace; font-size:16px;">${record.code}</td>
-<td align="center"><button class="btn-sm" style="background:var(--primary); color:var(--accent);" onclick="printOldRecord('${record.date}', '${record.code}')">In lại</button></td>
-</tr>`;
+tbody.innerHTML += `<tr><td align="center">${index + 1}</td><td style="font-weight:bold">${record.time} <br> <span style="font-size:12px; color:#666; font-weight:normal;">(Ngày QT: ${vnDate(record.date)})</span></td><td style="font-family:monospace; font-size:16px;">${record.code}</td><td align="center"><button class="btn-sm" style="background:var(--primary); color:var(--accent);" onclick="printOldRecord('${record.date}', '${record.code}')">In lại</button></td></tr>`;
 });
 }
 
-// --- UTILS ---
 function showSheet(id, el) {
 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1850,29 +1742,13 @@ if(el) el.classList.add('active');
 document.getElementById('current-title').innerText = el ? (el.innerText.split('. ')[1] || el.innerText.replace('🖨️ ', '').replace('⚙️ ', '').replace('🛡️ ', '')) : "Quyết Toán";
 if (window.innerWidth < 850) toggleMenu();
 if(id === 'sheet-print') renderPrintHistory();
+document.querySelector('.app-content').scrollTop = 0; // FIX LỖI CUỘN BỊ DÍNH Ở LAPTOP
 }
 
 function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('active'); }
-
-// THAY ĐỔI: Hàm switch tab có thêm reset màu để tránh lỗi dính CSS
-function switchInternalTab(tab) { 
-    document.getElementById('content-stk').style.display = (tab === 'stk' ? 'block' : 'none'); 
-    document.getElementById('content-quy').style.display = (tab === 'quy' ? 'block' : 'none'); 
-    document.getElementById('btn-tab-stk').classList.remove('active');
-    document.getElementById('btn-tab-quy').classList.remove('active');
-    document.getElementById('btn-tab-' + tab).classList.add('active'); 
-}
-
-function switchSettingsTab(tab) { 
-    document.getElementById('content-set-acc').style.display = (tab === 'acc' ? 'block' : 'none'); 
-    document.getElementById('content-set-bank').style.display = (tab === 'bank' ? 'block' : 'none'); 
-    document.getElementById('btn-tab-set-acc').classList.remove('active');
-    document.getElementById('btn-tab-set-bank').classList.remove('active');
-    document.getElementById('btn-tab-set-' + tab).classList.add('active'); 
-}
-
-function deleteSTK(id) { if(confirm("Xóa bỏ hoàn toàn sổ tiết kiệm này?")) { syncData(true); masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id); saveMaster(); renderSTK(masterData[currentDay].stk); calcTotal(); } }
-
+function switchInternalTab(tab) { document.getElementById('content-stk').style.display = (tab === 'stk' ? 'block' : 'none'); document.getElementById('content-quy').style.display = (tab === 'quy' ? 'block' : 'none'); document.getElementById('btn-tab-stk').classList.remove('active'); document.getElementById('btn-tab-quy').classList.remove('active'); document.getElementById('btn-tab-' + tab).classList.add('active'); }
+function switchSettingsTab(tab) { document.getElementById('content-set-acc').style.display = (tab === 'acc' ? 'block' : 'none'); document.getElementById('content-set-bank').style.display = (tab === 'bank' ? 'block' : 'none'); document.getElementById('btn-tab-set-acc').classList.remove('active'); document.getElementById('btn-tab-set-bank').classList.remove('active'); document.getElementById('btn-tab-set-' + tab).classList.add('active'); }
+function deleteSTK(id) { if(confirm("Xóa bỏ hoàn toàn sổ tiết kiệm này?")) { masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id); saveMaster(); renderSTK(masterData[currentDay].stk); calcTotal(); } }
 function openModal(id) { document.getElementById(id).classList.add('active'); document.body.classList.add('modal-open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.classList.remove('modal-open'); }
 function formatTien(n) { return new Intl.NumberFormat('vi-VN').format(n); }
@@ -1880,13 +1756,7 @@ function cleanTien(s) { return s ? parseInt(s.toString().replace(/\D/g, '')) || 
 function formatInput(i) { let v = i.value.replace(/\D/g, ''); i.value = v ? formatTien(v) : ""; }
 function formatSoLuong(i) { i.value = i.value.replace(/\D/g, ''); }
 function vnDate(s) { if(!s) return "--"; let p = s.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
-
-// THAY ĐỔI: Hàm changeDate gọi loadDay thay vì reload lại toàn bộ
-function changeDate() { 
-    currentDay = document.getElementById('header-date-picker').value; 
-    loadDay(); 
-}
-
+function changeDate() { currentDay = document.getElementById('header-date-picker').value; loadDay(); }
 function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạch dữ liệu Tiền mặt, Ngân hàng, Quỹ và Sổ tiết kiệm của ngày hiển thị. Bạn chắc chắn?")) { delete masterData[currentDay]; saveMaster(); loadDay(); } }
 </script>
 </body>
