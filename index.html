@@ -23,23 +23,23 @@ background-color: #f0f0f0;
 color: #222;
 margin: 0;
 min-height: 100vh;
-overflow: hidden; 
+overflow: hidden; 
 display: flex;
 justify-content: center;
 }
 
 /* === CSS HỆ THỐNG AUTH === */
 .auth-wrapper {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: url('https://images.unsplash.com/photo-1616075133610-8dc0388cdce8?q=80&w=2000&auto=format&fit=crop') center/cover;
-    display: flex; justify-content: center; align-items: center; z-index: 100000;
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: url('https://images.unsplash.com/photo-1616075133610-8dc0388cdce8?q=80&w=2000&auto=format&fit=crop') center/cover;
+    display: flex; justify-content: center; align-items: center; z-index: 100000;
 }
 .auth-overlay {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
 }
 .auth-box {
-    background: var(--ivory); padding: 40px; border-radius: 8px; border-top: 5px solid var(--accent);
-    width: 90%; max-width: 400px; position: relative; z-index: 2; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    background: var(--ivory); padding: 40px; border-radius: 8px; border-top: 5px solid var(--accent);
+    width: 90%; max-width: 400px; position: relative; z-index: 2; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 .auth-title { text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 25px; text-transform: uppercase; color: var(--primary); }
 .auth-switch { text-align: center; margin-top: 15px; font-size: 14px; cursor: pointer; color: var(--info); font-style: italic; }
@@ -50,8 +50,8 @@ justify-content: center;
 
 /* Cấu trúc Layout Chính */
 .app-container {
-    width: 100%; background-color: var(--ivory); height: 100vh;
-    display: none; flex-direction: column; position: relative; overflow: hidden;
+    width: 100%; background-color: var(--ivory); height: 100vh;
+    display: none; flex-direction: column; position: relative; overflow: hidden;
 }
 
 /* SIDEBAR */
@@ -65,21 +65,21 @@ justify-content: center;
 .nav-item.active { background-color: var(--primary); color: var(--accent); }
 
 /* VÙNG NỘI DUNG CHÍNH (BÊN PHẢI) */
-.main-wrapper { 
-    flex: 1; 
-    display: flex; 
-    flex-direction: column; 
-    width: 100%;
-    height: 100vh; 
-    overflow: hidden; 
+.main-wrapper { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    width: 100%;
+    height: 100vh; 
+    overflow: hidden; 
 }
 
 /* HEADER - GẮN CỐ ĐỊNH TRÊN CÙNG */
 .header-main {
-    display: flex; align-items: center; justify-content: space-between;
-    background-color: var(--primary); padding: 15px 25px; color: white;
-    border-bottom: 3px solid var(--accent);
-    flex-shrink: 0; z-index: 50; width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    background-color: var(--primary); padding: 15px 25px; color: white;
+    border-bottom: 3px solid var(--accent);
+    flex-shrink: 0; z-index: 50; width: 100%;
 }
 
 .header-left { display: flex; align-items: center; gap: 15px; }
@@ -89,12 +89,12 @@ justify-content: center;
 
 /* NỘI DUNG CUỘN (BÊN DƯỚI HEADER) */
 .app-content {
-    flex: 1;
-    overflow-y: auto; 
-    padding: 25px 20px;
-    background-color: var(--ivory);
-    display: flex;
-    flex-direction: column;
+    flex: 1;
+    overflow-y: auto; 
+    padding: 25px 20px;
+    background-color: var(--ivory);
+    display: flex;
+    flex-direction: column;
 }
 
 .page { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 40px; width: 100%; }
@@ -150,7 +150,7 @@ input:checked + .slider:before { transform: translateX(16px); }
 body.modal-open { overflow: hidden; }
 
 @media (max-width: 849px) {
-    .hide-on-mobile { display: none !important; }
+    .hide-on-mobile { display: none !important; }
 }
 
 /* RESPONSIVE LAYOUT CHO DESKTOP */
@@ -201,213 +201,213 @@ body * { visibility: hidden; }
 <body>
 
 <div id="auth-screen" class="auth-wrapper">
-    <div class="auth-overlay"></div>
-    <div class="auth-box" id="login-box">
-        <div class="auth-title">HỆ THỐNG KIỂM TOÁN</div>
-        <div class="form-group">
-            <label>Số điện thoại</label>
-            <input type="tel" id="login-phone" placeholder="Nhập số điện thoại...">
-        </div>
-        <div class="form-group">
-            <label>Mật khẩu</label>
-            <input type="password" id="login-pass" placeholder="Nhập mật khẩu...">
-        </div>
-        <div class="form-group">
-            <label>Mã xác nhận (Captcha)</label>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <canvas id="captchaCanvas" width="130" height="42" style="border: 1px solid #ccc; border-radius: 4px; cursor: pointer; background: #fff;" onclick="generateCaptcha()" title="Bấm để đổi mã mới"></canvas>
-                <input type="text" id="login-captcha" placeholder="Nhập mã..." style="flex: 1;" onkeydown="if(event.key === 'Enter') handleLogin()">
-            </div>
-            <div style="font-size: 11px; color: #666; margin-top: 5px; font-style: italic;">* Bấm vào ảnh để đổi mã mới</div>
-        </div>
-        <div style="text-align:right; margin-top:-10px; margin-bottom:15px;">
-            <span style="font-size:13px; color:var(--danger); cursor:pointer; font-style:italic;" onclick="switchAuth('forgot')">Quên mật khẩu?</span>
-        </div>
-        <button class="btn-main" onclick="handleLogin()">VÀO HỆ THỐNG</button>
-        <div class="auth-switch" onclick="switchAuth('register')">Chưa có tài khoản? Tạo mới ngay.</div>
-    </div>
+    <div class="auth-overlay"></div>
+    <div class="auth-box" id="login-box">
+        <div class="auth-title">HỆ THỐNG KIỂM TOÁN</div>
+        <div class="form-group">
+            <label>Số điện thoại</label>
+            <input type="tel" id="login-phone" placeholder="Nhập số điện thoại...">
+        </div>
+        <div class="form-group">
+            <label>Mật khẩu</label>
+            <input type="password" id="login-pass" placeholder="Nhập mật khẩu...">
+        </div>
+        <div class="form-group">
+            <label>Mã xác nhận (Captcha)</label>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <canvas id="captchaCanvas" width="130" height="42" style="border: 1px solid #ccc; border-radius: 4px; cursor: pointer; background: #fff;" onclick="generateCaptcha()" title="Bấm để đổi mã mới"></canvas>
+                <input type="text" id="login-captcha" placeholder="Nhập mã..." style="flex: 1;" onkeydown="if(event.key === 'Enter') handleLogin()">
+            </div>
+            <div style="font-size: 11px; color: #666; margin-top: 5px; font-style: italic;">* Bấm vào ảnh để đổi mã mới</div>
+        </div>
+        <div style="text-align:right; margin-top:-10px; margin-bottom:15px;">
+            <span style="font-size:13px; color:var(--danger); cursor:pointer; font-style:italic;" onclick="switchAuth('forgot')">Quên mật khẩu?</span>
+        </div>
+        <button class="btn-main" onclick="handleLogin()">VÀO HỆ THỐNG</button>
+        <div class="auth-switch" onclick="switchAuth('register')">Chưa có tài khoản? Tạo mới ngay.</div>
+    </div>
 
-    <div class="auth-box" id="register-box" style="display:none;">
-        <div class="auth-title">TẠO TÀI KHOẢN MỚI</div>
-        <div class="form-group">
-            <label>Họ và tên</label>
-            <input type="text" id="reg-name" placeholder="HỌ VÀ TÊN NGƯỜI SỬ DỤNG..." oninput="this.value = this.value.toUpperCase()">
-        </div>
-        <div class="form-group">
-            <label>Số điện thoại</label>
-            <input type="tel" id="reg-phone" placeholder="Số điện thoại của bạn...">
-        </div>
-        <div class="form-group">
-            <label>Mật khẩu</label>
-            <input type="password" id="reg-pass" placeholder="Tạo mật khẩu...">
-        </div>
-        <button class="btn-main" style="background:var(--accent); color:white;" onclick="handleRegister()">ĐĂNG KÝ</button>
-        <div class="auth-switch" onclick="switchAuth('login')">Đã có tài khoản? Quay lại đăng nhập.</div>
-    </div>
+    <div class="auth-box" id="register-box" style="display:none;">
+        <div class="auth-title">TẠO TÀI KHOẢN MỚI</div>
+        <div class="form-group">
+            <label>Họ và tên</label>
+            <input type="text" id="reg-name" placeholder="HỌ VÀ TÊN NGƯỜI SỬ DỤNG..." oninput="this.value = this.value.toUpperCase()">
+        </div>
+        <div class="form-group">
+            <label>Số điện thoại</label>
+            <input type="tel" id="reg-phone" placeholder="Số điện thoại của bạn...">
+        </div>
+        <div class="form-group">
+            <label>Mật khẩu</label>
+            <input type="password" id="reg-pass" placeholder="Tạo mật khẩu...">
+        </div>
+        <button class="btn-main" style="background:var(--accent); color:white;" onclick="handleRegister()">ĐĂNG KÝ</button>
+        <div class="auth-switch" onclick="switchAuth('login')">Đã có tài khoản? Quay lại đăng nhập.</div>
+    </div>
 
-    <div class="auth-box" id="forgot-box" style="display:none;">
-        <div class="auth-title">QUÊN MẬT KHẨU</div>
-        <p style="font-size:14px; text-align:center; margin-bottom:20px; color:#666;">Hệ thống sẽ gửi thông báo cấp lại mật khẩu tới Ban Quản Trị.</p>
-        <div class="form-group">
-            <label>Nhập Số điện thoại của bạn</label>
-            <input type="tel" id="forgot-phone" placeholder="Số điện thoại...">
-        </div>
-        <button class="btn-main" style="background:var(--danger); color:white;" onclick="handleForgotPassword()">GỬI YÊU CẦU</button>
-        <div class="auth-switch" onclick="switchAuth('login')">Quay lại đăng nhập.</div>
-    </div>
+    <div class="auth-box" id="forgot-box" style="display:none;">
+        <div class="auth-title">QUÊN MẬT KHẨU</div>
+        <p style="font-size:14px; text-align:center; margin-bottom:20px; color:#666;">Hệ thống sẽ gửi thông báo cấp lại mật khẩu tới Ban Quản Trị.</p>
+        <div class="form-group">
+            <label>Nhập Số điện thoại của bạn</label>
+            <input type="tel" id="forgot-phone" placeholder="Số điện thoại...">
+        </div>
+        <button class="btn-main" style="background:var(--danger); color:white;" onclick="handleForgotPassword()">GỬI YÊU CẦU</button>
+        <div class="auth-switch" onclick="switchAuth('login')">Quay lại đăng nhập.</div>
+    </div>
 </div>
 
 <div class="app-container" id="main-app">
 <div class="sidebar-overlay" onclick="toggleMenu()"></div>
 <div class="sidebar" id="sidebarMenu">
-    <div class="sidebar-header" style="background:var(--primary); color:var(--accent); padding:20px; text-align:center; font-weight:bold; font-size:18px; border-bottom:1px solid #444;">
-        HỆ THỐNG KIỂM TOÁN<br>
-        <span id="display-user-phone" style="font-size:13px; font-weight:normal; color:#fff; display:block; margin-top:5px;"></span>
-    </div>
-    <div class="sidebar-menu-items">
-        <div class="nav-item active" onclick="showSheet('sheet-tm', this)">1. Tiền Mặt</div>
-        <div class="nav-item" onclick="showSheet('sheet-nh', this)">2. Ngân Hàng</div>
-        <div class="nav-item" onclick="showSheet('sheet-stk-quy', this)">3. Tiết Kiệm & Quỹ</div>
-        <div class="nav-item" onclick="showSheet('sheet-tk', this)" style="color:var(--success)">4. Tổng Kết</div>
-        <div class="nav-item hide-on-mobile" onclick="showSheet('sheet-print', this)" style="color:var(--info); border-top: 2px solid #eee;">🖨️ In Báo Cáo</div>
-        <div class="nav-item" onclick="showSheet('sheet-settings', this)" style="color:var(--accent);">⚙️ Cài Đặt</div>
-        <div class="nav-item" id="nav-admin" onclick="showSheet('sheet-admin', this)" style="display:none; color:var(--danger); border-top: 2px solid #eee;">
-            🛡️ Quản Lý Người Dùng <span id="admin-notif-badge" class="badge-notif" style="display:none;">!</span>
-        </div>
-        <div class="nav-item" onclick="handleLogout()" style="color:#666;">🚪 Đăng Xuất</div>
-    </div>
+    <div class="sidebar-header" style="background:var(--primary); color:var(--accent); padding:20px; text-align:center; font-weight:bold; font-size:18px; border-bottom:1px solid #444;">
+        HỆ THỐNG KIỂM TOÁN<br>
+        <span id="display-user-phone" style="font-size:13px; font-weight:normal; color:#fff; display:block; margin-top:5px;"></span>
+    </div>
+    <div class="sidebar-menu-items">
+        <div class="nav-item active" onclick="showSheet('sheet-tm', this)">1. Tiền Mặt</div>
+        <div class="nav-item" onclick="showSheet('sheet-nh', this)">2. Ngân Hàng</div>
+        <div class="nav-item" onclick="showSheet('sheet-stk-quy', this)">3. Tiết Kiệm & Quỹ</div>
+        <div class="nav-item" onclick="showSheet('sheet-tk', this)" style="color:var(--success)">4. Tổng Kết</div>
+        <div class="nav-item hide-on-mobile" onclick="showSheet('sheet-print', this)" style="color:var(--info); border-top: 2px solid #eee;">🖨️ In Báo Cáo</div>
+        <div class="nav-item" onclick="showSheet('sheet-settings', this)" style="color:var(--accent);">⚙️ Cài Đặt</div>
+        <div class="nav-item" id="nav-admin" onclick="showSheet('sheet-admin', this)" style="display:none; color:var(--danger); border-top: 2px solid #eee;">
+            🛡️ Quản Lý Người Dùng <span id="admin-notif-badge" class="badge-notif" style="display:none;">!</span>
+        </div>
+        <div class="nav-item" onclick="handleLogout()" style="color:#666;">🚪 Đăng Xuất</div>
+    </div>
 </div>
 
 <div class="main-wrapper">
-    <div class="header-main">
-        <div class="header-left"><div class="hamburger-btn" onclick="toggleMenu()">☰</div><div class="header-title" id="current-title">Tiền Mặt</div></div>
-        <div class="header-right"><input type="date" id="header-date-picker" onchange="changeDate()"></div>
-    </div>
+    <div class="header-main">
+        <div class="header-left"><div class="hamburger-btn" onclick="toggleMenu()">☰</div><div class="header-title" id="current-title">Tiền Mặt</div></div>
+        <div class="header-right"><input type="date" id="header-date-picker" onchange="changeDate()"></div>
+    </div>
 
-    <div class="app-content">
-        <div id="sheet-tm" class="page active">
-        <h2>Biên Bản Kiểm Kê Tiền Mặt</h2>
-        <div style="text-align:right; margin-bottom:10px;"><button class="btn-sm" style="background:var(--accent); color:white;" onclick="openEditTM()">Chỉnh sửa số liệu</button></div>
-        <table class="data-table"><thead><tr><th style="text-align: left;">Mệnh giá</th><th style="text-align:center;">Số lượng</th><th style="text-align:right">Thành tiền</th></tr></thead><tbody id="body-tm"></tbody></table>
-        <div class="sub-total-box">TỔNG TIỀN MẶT: <br><span id="val-tm" style="font-size:32px; color:var(--primary)">0</span> đ</div>
-        </div>
+    <div class="app-content">
+        <div id="sheet-tm" class="page active">
+        <h2>Biên Bản Kiểm Kê Tiền Mặt</h2>
+        <div style="text-align:right; margin-bottom:10px;"><button class="btn-sm" style="background:var(--accent); color:white;" onclick="openEditTM()">Chỉnh sửa số liệu</button></div>
+        <table class="data-table"><thead><tr><th style="text-align: left;">Mệnh giá</th><th style="text-align:center;">Số lượng</th><th style="text-align:right">Thành tiền</th></tr></thead><tbody id="body-tm"></tbody></table>
+        <div class="sub-total-box">TỔNG TIỀN MẶT: <br><span id="val-tm" style="font-size:32px; color:var(--primary)">0</span> đ</div>
+        </div>
 
-        <div id="sheet-nh" class="page">
-        <h2>Biên bản kiểm kê Tài Khoản Ngân Hàng</h2>
-        <p style="font-size: 14px; color: #666; font-style: italic; text-align: center; margin-bottom: 20px;">* Cập nhật danh sách Ngân hàng trong mục Cài Đặt.</p>
-        <table class="data-table"><thead><tr><th style="text-align:left">Ngân Hàng</th><th style="width:250px; text-align:right;">Số Dư Hiện Tại (VNĐ)</th><th style="width:60px">Chi tiết</th></tr></thead><tbody id="body-nh"></tbody></table>
-        <div class="sub-total-box">LƯỢNG TIỀN TRONG NGÂN HÀNG: <br><span id="val-nh" style="font-size:32px; color:var(--primary)">0</span> đ</div>
-        </div>
+        <div id="sheet-nh" class="page">
+        <h2>Biên bản kiểm kê Tài Khoản Ngân Hàng</h2>
+        <p style="font-size: 14px; color: #666; font-style: italic; text-align: center; margin-bottom: 20px;">* Cập nhật danh sách Ngân hàng trong mục Cài Đặt.</p>
+        <table class="data-table"><thead><tr><th style="text-align:left">Ngân Hàng</th><th style="width:250px; text-align:right;">Số Dư Hiện Tại (VNĐ)</th><th style="width:60px">Chi tiết</th></tr></thead><tbody id="body-nh"></tbody></table>
+        <div class="sub-total-box">LƯỢNG TIỀN TRONG NGÂN HÀNG: <br><span id="val-nh" style="font-size:32px; color:var(--primary)">0</span> đ</div>
+        </div>
 
-        <div id="sheet-stk-quy" class="page">
-        <div style="display:flex; margin-bottom:25px; border:1px solid #000">
-        <button class="tab-btn active" id="btn-tab-stk" onclick="switchInternalTab('stk')">DANH SÁCH SỔ TIẾT KIỆM</button>
-        <button class="tab-btn" id="btn-tab-quy" onclick="switchInternalTab('quy')">QUẢN LÝ CÁC QUỸ</button>
-        </div>
+        <div id="sheet-stk-quy" class="page">
+        <div style="display:flex; margin-bottom:25px; border:1px solid #000">
+        <button class="tab-btn active" id="btn-tab-stk" onclick="switchInternalTab('stk')">DANH SÁCH SỔ TIẾT KIỆM</button>
+        <button class="tab-btn" id="btn-tab-quy" onclick="switchInternalTab('quy')">QUẢN LÝ CÁC QUỸ</button>
+        </div>
 
-        <div id="content-stk">
-        <div style="display:flex; gap:10px; margin-bottom:15px;">
-            <button class="btn-sm stk-filter-btn active" style="flex:1; background:var(--primary); color:var(--accent);" onclick="filterSTK('all', this)">Tất cả</button>
-            <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('ky-han', this)">Kỳ hạn cố định</button>
-            <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('tich-luy', this)">Góp tích lũy</button>
-        </div>
-        <div id="stk-container"></div>
-        <button class="btn-main" style="background:var(--success); color:white; border:none" onclick="openModal('modal-stk-add')">TẠO SỔ TIẾT KIỆM MỚI</button>
-        <div class="sub-total-box" style="border-color:var(--success); background:#f4f9f4;">TỔNG TIẾT KIỆM: <span id="val-stk" style="font-size:26px; color:var(--success)">0</span> đ</div>
-        </div>
+        <div id="content-stk">
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <button class="btn-sm stk-filter-btn active" style="flex:1; background:var(--primary); color:var(--accent);" onclick="filterSTK('all', this)">Tất cả</button>
+            <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('ky-han', this)">Kỳ hạn cố định</button>
+            <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('tich-luy', this)">Góp tích lũy</button>
+        </div>
+        <div id="stk-container"></div>
+        <button class="btn-main" style="background:var(--success); color:white; border:none" onclick="openModal('modal-stk-add')">TẠO SỔ TIẾT KIỆM MỚI</button>
+        <div class="sub-total-box" style="border-color:var(--success); background:#f4f9f4;">TỔNG TIẾT KIỆM: <span id="val-stk" style="font-size:26px; color:var(--success)">0</span> đ</div>
+        </div>
 
-        <div id="content-quy" style="display:none;">
-        <div id="quy-container"></div>
-        <button class="btn-main" style="background:var(--accent); color:white; border:none" onclick="openModal('modal-quy-add')">TẠO QUỸ MỚI</button>
-        <div class="sub-total-box" style="border-color:var(--accent); background:#fffdf5;">TỔNG CÁC QUỸ: <span id="val-quy" style="font-size:26px; color:var(--accent)">0</span> đ</div>
-        </div>
-        </div>
+        <div id="content-quy" style="display:none;">
+        <div id="quy-container"></div>
+        <button class="btn-main" style="background:var(--accent); color:white; border:none" onclick="openModal('modal-quy-add')">TẠO QUỸ MỚI</button>
+        <div class="sub-total-box" style="border-color:var(--accent); background:#fffdf5;">TỔNG CÁC QUỸ: <span id="val-quy" style="font-size:26px; color:var(--accent)">0</span> đ</div>
+        </div>
+        </div>
 
-        <div id="sheet-tk" class="page">
-        <h2>Báo Cáo Tổng Hợp</h2>
-        <div style="background:white; border:2px solid #000; padding:40px; font-size: 18px;">
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>1. Tiền mặt:</span><strong><span id="fin-tm">0</span> đ</strong></div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>2. Ngân hàng:</span><strong><span id="fin-nh">0</span> đ</strong></div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>3. Các loại quỹ:</span><strong><span id="fin-quy">0</span> đ</strong></div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:25px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>4. Tiết kiệm:</span><strong><span id="fin-stk">0</span> đ</strong></div>
-        <div style="display:flex; justify-content:space-between; font-size:28px; border-top:4px double #000; padding-top:20px; color:var(--success)"><span>TỔNG GIÁ TRỊ:</span><strong><span id="fin-total">0</span> đ</strong></div>
-        </div>
-        <button class="btn-main" style="background:#eee; color:#000; margin-top:30px; border-color:#ccc" onclick="clearDayData()">XOÁ TOÀN BỘ DỮ LIỆU NGÀY NÀY</button>
-        </div>
+        <div id="sheet-tk" class="page">
+        <h2>Báo Cáo Tổng Hợp</h2>
+        <div style="background:white; border:2px solid #000; padding:40px; font-size: 18px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>1. Tiền mặt:</span><strong><span id="fin-tm">0</span> đ</strong></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>2. Ngân hàng:</span><strong><span id="fin-nh">0</span> đ</strong></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>3. Các loại quỹ:</span><strong><span id="fin-quy">0</span> đ</strong></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:25px; border-bottom:1px dotted #ccc; padding-bottom:10px"><span>4. Tiết kiệm:</span><strong><span id="fin-stk">0</span> đ</strong></div>
+        <div style="display:flex; justify-content:space-between; font-size:28px; border-top:4px double #000; padding-top:20px; color:var(--success)"><span>TỔNG GIÁ TRỊ:</span><strong><span id="fin-total">0</span> đ</strong></div>
+        </div>
+        <button class="btn-main" style="background:#eee; color:#000; margin-top:30px; border-color:#ccc" onclick="clearDayData()">XOÁ TOÀN BỘ DỮ LIỆU NGÀY NÀY</button>
+        </div>
 
-        <div id="sheet-print" class="page">
-        <h2>In Báo Cáo</h2>
-        <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
-        <div class="form-group" style="margin-bottom:0;">
-        <label>Chọn ngày muốn in</label>
-        <div style="display:flex; gap:15px;">
-        <input type="date" id="in-print-date" style="flex:2">
-        <button class="btn-main" style="margin-top:0; flex:1; background:var(--info); color:white; border:none;" onclick="openPrintSetup()">TẠO BẢN IN</button>
-        </div>
-        </div>
-        </div>
+        <div id="sheet-print" class="page">
+        <h2>In Báo Cáo</h2>
+        <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
+        <div class="form-group" style="margin-bottom:0;">
+        <label>Chọn ngày muốn in</label>
+        <div style="display:flex; gap:15px;">
+        <input type="date" id="in-print-date" style="flex:2">
+        <button class="btn-main" style="margin-top:0; flex:1; background:var(--info); color:white; border:none;" onclick="openPrintSetup()">TẠO BẢN IN</button>
+        </div>
+        </div>
+        </div>
 
-        <h3 style="text-align:left; border-bottom:2px solid var(--primary); padding-bottom:10px;">Lịch Sử In</h3>
-        <table class="data-table">
-        <thead><tr><th style="width:60px">STT</th><th style="text-align:left">Thời Gian In</th><th>Mã Đối Soát</th><th style="width:100px">Hành Động</th></tr></thead>
-        <tbody id="body-print-history"></tbody>
-        </table>
-        </div>
+        <h3 style="text-align:left; border-bottom:2px solid var(--primary); padding-bottom:10px;">Lịch Sử In</h3>
+        <table class="data-table">
+        <thead><tr><th style="width:60px">STT</th><th style="text-align:left">Thời Gian In</th><th>Mã Đối Soát</th><th style="width:100px">Hành Động</th></tr></thead>
+        <tbody id="body-print-history"></tbody>
+        </table>
+        </div>
 
-        <div id="sheet-settings" class="page">
-        <div style="display:flex; margin-bottom:25px; border:1px solid #000">
-            <button class="tab-btn active" id="btn-tab-set-acc" onclick="switchSettingsTab('acc')">CÀI ĐẶT TÀI KHOẢN</button>
-            <button class="tab-btn" id="btn-tab-set-bank" onclick="switchSettingsTab('bank')">DANH SÁCH NGÂN HÀNG</button>
-        </div>
+        <div id="sheet-settings" class="page">
+        <div style="display:flex; margin-bottom:25px; border:1px solid #000">
+            <button class="tab-btn active" id="btn-tab-set-acc" onclick="switchSettingsTab('acc')">CÀI ĐẶT TÀI KHOẢN</button>
+            <button class="tab-btn" id="btn-tab-set-bank" onclick="switchSettingsTab('bank')">DANH SÁCH NGÂN HÀNG</button>
+        </div>
 
-        <div id="content-set-acc">
-            <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
-                <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Thông Tin Cá Nhân</h3>
-                <div class="form-group"><label>Họ và tên tài khoản</label><input type="text" id="set-user-name" oninput="this.value = this.value.toUpperCase()"></div>
-                <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
-                <div class="form-group"><label>Số điện thoại</label><input type="tel" id="set-user-phone" readonly></div>
-                
-                <div style="display:flex; gap:15px; margin-top:20px; flex-wrap:wrap;">
-                    <button class="btn-main" style="background:var(--info); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="openUserChangePass()">ĐỔI MẬT KHẨU</button>
-                    <button class="btn-main" style="background:var(--success); color:white; border:none; margin-top:0; flex:1.5; min-width:160px;" onclick="saveUserInfo()">CẬP NHẬT THÔNG TIN</button>
-                    <button class="btn-main" style="background:var(--danger); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="deleteMyAccount()">XÓA TÀI KHOẢN</button>
-                </div>
-            </div>
-        </div>
+        <div id="content-set-acc">
+            <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
+                <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Thông Tin Cá Nhân</h3>
+                <div class="form-group"><label>Họ và tên tài khoản</label><input type="text" id="set-user-name" oninput="this.value = this.value.toUpperCase()"></div>
+                <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
+                <div class="form-group"><label>Số điện thoại</label><input type="tel" id="set-user-phone" readonly></div>
+                
+                <div style="display:flex; gap:15px; margin-top:20px; flex-wrap:wrap;">
+                    <button class="btn-main" style="background:var(--info); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="openUserChangePass()">ĐỔI MẬT KHẨU</button>
+                    <button class="btn-main" style="background:var(--success); color:white; border:none; margin-top:0; flex:1.5; min-width:160px;" onclick="saveUserInfo()">CẬP NHẬT THÔNG TIN</button>
+                    <button class="btn-main" style="background:var(--danger); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="deleteMyAccount()">XÓA TÀI KHOẢN</button>
+                </div>
+            </div>
+        </div>
 
-        <div id="content-set-bank" style="display:none;">
-            <div style="background:white; padding:30px; border:1px solid #000">
-                <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Danh Mục Ngân Hàng Hệ Thống</h3>
-                <table class="data-table"><thead><tr><th style="width:60px">STT</th><th style="text-align:left">Tên Ngân Hàng/ Ví điện tử</th><th style="width:180px">Tên Viết Tắt</th><th style="width:60px">Xóa</th></tr></thead><tbody id="body-settings-bank"></tbody></table>
-                <button class="btn-main" style="background:#000; color:var(--accent)" onclick="openModal('modal-bank-add-settings')">+ THÊM NGÂN HÀNG HỆ THỐNG</button>
-            </div>
-        </div>
+        <div id="content-set-bank" style="display:none;">
+            <div style="background:white; padding:30px; border:1px solid #000">
+                <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Danh Mục Ngân Hàng Hệ Thống</h3>
+                <table class="data-table"><thead><tr><th style="width:60px">STT</th><th style="text-align:left">Tên Ngân Hàng/ Ví điện tử</th><th style="width:180px">Tên Viết Tắt</th><th style="width:60px">Xóa</th></tr></thead><tbody id="body-settings-bank"></tbody></table>
+                <button class="btn-main" style="background:#000; color:var(--accent)" onclick="openModal('modal-bank-add-settings')">+ THÊM NGÂN HÀNG HỆ THỐNG</button>
+            </div>
+        </div>
 
-        </div>
+        </div>
 
-        <div id="sheet-admin" class="page">
-        <h2>Bảng Điều Khiển Quản Trị Hệ Thống <span id="admin-bell" style="display:none;">🔔</span></h2>
-        <div style="background:white; padding:30px; border:2px solid var(--danger); overflow-x: auto;">
-            <h3 style="margin-top:0; color:var(--danger)">Danh sách tài khoản</h3>
-            <table class="data-table" style="min-width: 750px;">
-                <thead><tr><th style="width:40px">STT</th><th style="text-align:left">Họ Tên</th><th style="text-align:left">Số Điện Thoại</th><th style="width:80px">Quyền</th><th style="width:250px">Hành Động</th></tr></thead>
-                <tbody id="body-admin-users"></tbody>
-            </table>
-        </div>
-        </div>
+        <div id="sheet-admin" class="page">
+        <h2>Bảng Điều Khiển Quản Trị Hệ Thống <span id="admin-bell" style="display:none;">🔔</span></h2>
+        <div style="background:white; padding:30px; border:2px solid var(--danger); overflow-x: auto;">
+            <h3 style="margin-top:0; color:var(--danger)">Danh sách tài khoản</h3>
+            <table class="data-table" style="min-width: 750px;">
+                <thead><tr><th style="width:40px">STT</th><th style="text-align:left">Họ Tên</th><th style="text-align:left">Số Điện Thoại</th><th style="width:80px">Quyền</th><th style="width:250px">Hành Động</th></tr></thead>
+                <tbody id="body-admin-users"></tbody>
+            </table>
+        </div>
+        </div>
 
-        <div style="text-align: center; margin-top: auto; padding: 30px 20px; color: #333; width: 100%;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <img src="https://lh3.googleusercontent.com/d/1JmKMRizy7qkbjVuvEAXGuAjYU7z_iTem" alt="[LOGO]" style="height: 40px; display: inline-block;"> 
-                <span style="font-size: 16px; font-weight: bold; color: #1a1a1a;">Copyright © 2026 Thiên Trường Software. All rights reserved.</span>
-            </div>
-            <div style="max-width: 650px; margin: 15px auto 0; border-top: 1px solid #ccc; padding-top: 10px; font-size: 13px; color: #444; line-height: 1.6;">
-                Established March 22, 2026 | Saigon, Vietnam | https://lehonganthien61633-lgtm.github.io/kiemtoan/<br>
-                <span style="font-style: italic;">Bản quyền thuộc về Thiên Trường Software</span>
-            </div>
-        </div>
+        <div style="text-align: center; margin-top: auto; padding: 30px 20px; color: #333; width: 100%;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <img src="https://lh3.googleusercontent.com/d/1JmKMRizy7qkbjVuvEAXGuAjYU7z_iTem" alt="[LOGO]" style="height: 40px; display: inline-block;"> 
+                <span style="font-size: 16px; font-weight: bold; color: #1a1a1a;">Copyright © 2026 Thiên Trường Software. All rights reserved.</span>
+            </div>
+            <div style="max-width: 650px; margin: 15px auto 0; border-top: 1px solid #ccc; padding-top: 10px; font-size: 13px; color: #444; line-height: 1.6;">
+                Established March 22, 2026 | Saigon, Vietnam | https://lehonganthien61633-lgtm.github.io/kiemtoan/<br>
+                <span style="font-style: italic;">Bản quyền thuộc về Thiên Trường Software</span>
+            </div>
+        </div>
 
-    </div>
+    </div>
 </div>
 </div>
 
@@ -415,16 +415,16 @@ body * { visibility: hidden; }
 <div class="modal-content" style="max-width:400px;">
 <div class="modal-title">ĐỔI MẬT KHẨU</div>
 <div class="form-group">
-    <label>Mật khẩu hiện tại</label>
-    <input type="password" id="user-current-pass" placeholder="Nhập mật khẩu hiện tại...">
+    <label>Mật khẩu hiện tại</label>
+    <input type="password" id="user-current-pass" placeholder="Nhập mật khẩu hiện tại...">
 </div>
 <div class="form-group">
-    <label>Mật khẩu mới</label>
-    <input type="password" id="user-new-pass" placeholder="Nhập mật khẩu mới...">
+    <label>Mật khẩu mới</label>
+    <input type="password" id="user-new-pass" placeholder="Nhập mật khẩu mới...">
 </div>
 <div class="form-group">
-    <label>Nhập lại mật khẩu mới</label>
-    <input type="password" id="user-confirm-pass" placeholder="Xác nhận mật khẩu mới...">
+    <label>Nhập lại mật khẩu mới</label>
+    <input type="password" id="user-confirm-pass" placeholder="Xác nhận mật khẩu mới...">
 </div>
 <div style="display:flex; gap:15px; margin-top:30px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-user-change-pass')">HỦY BỎ</button>
@@ -437,16 +437,16 @@ body * { visibility: hidden; }
 <div class="modal-content" style="max-width:400px;">
 <div class="modal-title">ĐỔI MẬT KHẨU USER</div>
 <div class="form-group">
-    <label>Tài khoản</label>
-    <input type="text" id="admin-target-user" readonly style="background:#eee;">
+    <label>Tài khoản</label>
+    <input type="text" id="admin-target-user" readonly style="background:#eee;">
 </div>
 <div class="form-group">
-    <label>Mật khẩu mới</label>
-    <input type="password" id="admin-new-pass" placeholder="Nhập mật khẩu mới...">
+    <label>Mật khẩu mới</label>
+    <input type="password" id="admin-new-pass" placeholder="Nhập mật khẩu mới...">
 </div>
 <div class="form-group">
-    <label>Nhập lại mật khẩu mới</label>
-    <input type="password" id="admin-confirm-new-pass" placeholder="Xác nhận mật khẩu mới...">
+    <label>Nhập lại mật khẩu mới</label>
+    <input type="password" id="admin-confirm-new-pass" placeholder="Xác nhận mật khẩu mới...">
 </div>
 <div style="display:flex; gap:15px; margin-top:30px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-admin-pass')">HỦY BỎ</button>
@@ -460,8 +460,8 @@ body * { visibility: hidden; }
 <div class="modal-title">CHỈNH SỬA TIỀN MẶT</div>
 <div style="overflow-y:auto; max-height:300px;">
 <table class="data-table" style="margin-bottom:0;">
-    <thead><tr><th style="text-align:left">Mệnh giá</th><th style="width:70px">SL Đầu</th><th style="width:80px">SL Mới</th><th style="text-align:right">Tổng Mới</th></tr></thead>
-    <tbody id="edit-tm1-tbody"></tbody>
+    <thead><tr><th style="text-align:left">Mệnh giá</th><th style="width:70px">SL Đầu</th><th style="width:80px">SL Mới</th><th style="text-align:right">Tổng Mới</th></tr></thead>
+    <tbody id="edit-tm1-tbody"></tbody>
 </table>
 </div>
 <div class="sub-total-box" style="margin-top:15px; padding:15px;">Chênh lệch: <span id="edit-tm1-diff" style="color:var(--primary); font-size:22px;">0</span> đ</div>
@@ -494,10 +494,10 @@ body * { visibility: hidden; }
 <div class="form-group"><label>Số dư mới (VNĐ)</label><input type="text" id="edit-single-nh-new" oninput="formatInput(this); updateSingleNHDiff();" style="font-size:22px; font-weight:bold; color:var(--success)"></div>
 <div class="form-group"><label>Mức thay đổi</label><div class="readonly-text" style="text-align:left;" id="edit-single-nh-diff">0 đ</div></div>
 <div class="form-group"><label>Lý do điều chỉnh</label>
-    <div style="display:flex; gap:10px;">
-        <select id="sel-single-nh-reason" style="flex:1; padding: 10px;"></select>
-        <button class="btn-sm" style="background:#000; color:#fff;" onclick="openBankReasonManager()">[+] Quản lý</button>
-    </div>
+    <div style="display:flex; gap:10px;">
+        <select id="sel-single-nh-reason" style="flex:1; padding: 10px;"></select>
+        <button class="btn-sm" style="background:#000; color:#fff;" onclick="openBankReasonManager()">[+] Quản lý</button>
+    </div>
 </div>
 <div style="display:flex; gap:15px; margin-top:30px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-edit-single-nh')">HỦY BỎ</button>
@@ -524,10 +524,10 @@ body * { visibility: hidden; }
 
 <h3 style="margin-top: 25px; font-size: 16px; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">LỊCH SỬ ĐIỀU CHỈNH</h3>
 <div style="overflow-y:auto; max-height: 200px;">
-    <table class="data-table" style="font-size: 13px; margin-bottom: 0;">
-        <thead><tr style="background:#e9ecef"><th>Thời gian</th><th style="text-align:right">Biến động</th><th>Lý do</th></tr></thead>
-        <tbody id="info-bank-history"></tbody>
-    </table>
+    <table class="data-table" style="font-size: 13px; margin-bottom: 0;">
+        <thead><tr style="background:#e9ecef"><th>Thời gian</th><th style="text-align:right">Biến động</th><th>Lý do</th></tr></thead>
+        <tbody id="info-bank-history"></tbody>
+    </table>
 </div>
 <button class="btn-main" style="background:var(--accent); color:#fff; border-color:var(--accent); margin-top:20px;" onclick="openSingleBankEdit()">ĐIỀU CHỈNH SỐ DƯ</button>
 <button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:10px;" onclick="closeModal('modal-bank-info')">ĐÓNG</button>
@@ -591,17 +591,17 @@ body * { visibility: hidden; }
 <div class="modal-title">CHI TIẾT & LỊCH SỬ QUỸ</div>
 <div id="quy-detail-summary" style="background:#f4f9f4; padding:15px; border:1px solid var(--accent); margin-bottom:20px; font-size:16px; line-height:1.6;"></div>
 <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-    <label style="font-weight:bold;">Lọc theo kho lưu trữ:</label>
-    <select id="quy-detail-filter" style="width:auto; padding:5px;" onchange="filterQuyHistory()"></select>
+    <label style="font-weight:bold;">Lọc theo kho lưu trữ:</label>
+    <select id="quy-detail-filter" style="width:auto; padding:5px;" onchange="filterQuyHistory()"></select>
 </div>
 <table class="data-table" style="margin-bottom: 10px;"><thead><tr style="background:#e9ecef"><th>Nơi cất giữ</th><th style="width: 100px; text-align: center;">Lưu chung với tài khoản</th><th>Số dư (VNĐ)</th></tr></thead><tbody id="quy-detail-tbody"></tbody></table>
 
 <h3 style="margin-top: 25px; font-size: 16px; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">LỊCH SỬ GIAO DỊCH</h3>
 <div style="overflow-x:auto; max-height: 250px;">
-    <table class="data-table" style="font-size: 13px; margin-bottom: 0;">
-        <thead><tr style="background:#e9ecef"><th>Ngày</th><th>Loại</th><th>Số tiền</th><th>Kho lưu trữ</th><th>Ghi chú</th></tr></thead>
-        <tbody id="quy-history-tbody"></tbody>
-    </table>
+    <table class="data-table" style="font-size: 13px; margin-bottom: 0;">
+        <thead><tr style="background:#e9ecef"><th>Ngày</th><th>Loại</th><th>Số tiền</th><th>Kho lưu trữ</th><th>Ghi chú</th></tr></thead>
+        <tbody id="quy-history-tbody"></tbody>
+    </table>
 </div>
 
 <button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-quy-detail')">ĐÓNG</button>
@@ -797,20 +797,20 @@ body * { visibility: hidden; }
 <div class="p-absolute-footer">
 <div style="text-transform:uppercase; margin-bottom:10px; font-weight:bold;">PHIẾU KIỂM KÊ BẮT BUỘC PHẢI ĐƯỢC LƯU TRỮ - KHÔNG HỦY BỎ DƯỚI MỌI HÌNH THỨC</div>
 <div style="display:flex; justify-content:center; align-items:center; flex-direction:column; gap:5px; margin-bottom:10px;">
-    <div>MÃ ĐỐI SOÁT: <span id="p-ascii" style="font-family:monospace; font-weight:bold; letter-spacing:2px;"></span></div>
-    <div id="p-copy-info" style="display:none; font-weight:bold;">BẢN SAO</div>
+    <div>MÃ ĐỐI SOÁT: <span id="p-ascii" style="font-family:monospace; font-weight:bold; letter-spacing:2px;"></span></div>
+    <div id="p-copy-info" style="display:none; font-weight:bold;">BẢN SAO</div>
 </div>
 <div style="font-weight:bold;">TỔNG CỤC QUẢN LÝ KINH TẾ<br>TRUNG TÂM QUẢN LÝ DÒNG TIỀN<br>BỘ PHẬN KIỂM TOÁN - THANH TRA</div>
 
 <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #000; text-align: center; -webkit-print-color-adjust: exact;">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <img src="https://lh3.googleusercontent.com/d/1JmKMRizy7qkbjVuvEAXGuAjYU7z_iTem" alt="[LOGO]" style="height: 30px; display: inline-block;"> 
-        <span style="font-size: 14px; font-weight: bold; color: #000;">Copyright © 2026 Thiên Trường Software. All rights reserved.</span>
-    </div>
-    <div style="margin-top: 8px; font-size: 11px; color: #000;">
-        Established March 22, 2026 | Saigon, Vietnam | https://lehonganthien61633-lgtm.github.io/kiemtoan/<br>
-        <span style="font-style: italic;">Bản quyền thuộc về Thiên Trường Software</span>
-    </div>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <img src="https://lh3.googleusercontent.com/d/1JmKMRizy7qkbjVuvEAXGuAjYU7z_iTem" alt="[LOGO]" style="height: 30px; display: inline-block;"> 
+        <span style="font-size: 14px; font-weight: bold; color: #000;">Copyright © 2026 Thiên Trường Software. All rights reserved.</span>
+    </div>
+    <div style="margin-top: 8px; font-size: 11px; color: #000;">
+        Established March 22, 2026 | Saigon, Vietnam | https://lehonganthien61633-lgtm.github.io/kiemtoan/<br>
+        <span style="font-style: italic;">Bản quyền thuộc về Thiên Trường Software</span>
+    </div>
 </div>
 
 </div>
@@ -843,12 +843,12 @@ body * { visibility: hidden; }
 <div class="modal-content" style="max-width:400px;">
 <div class="modal-title">ĐỔI TÊN NGƯỜI DÙNG</div>
 <div class="form-group">
-    <label>Tài khoản (SĐT)</label>
-    <input type="text" id="admin-target-user-name" readonly style="background:#eee;">
+    <label>Tài khoản (SĐT)</label>
+    <input type="text" id="admin-target-user-name" readonly style="background:#eee;">
 </div>
 <div class="form-group">
-    <label>Tên hiển thị mới</label>
-    <input type="text" id="admin-new-name" placeholder="Nhập họ và tên mới..." oninput="this.value = this.value.toUpperCase()">
+    <label>Tên hiển thị mới</label>
+    <input type="text" id="admin-new-name" placeholder="Nhập họ và tên mới..." oninput="this.value = this.value.toUpperCase()">
 </div>
 <div style="display:flex; gap:15px; margin-top:30px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-admin-name')">HỦY BỎ</button>
@@ -866,7 +866,7 @@ const FIREBASE_URL = 'https://kiemdem-b7042-default-rtdb.asia-southeast1.firebas
 
 let systemDB = {};
 let activeUserPhone = null;
-let masterData = {}; 
+let masterData = {}; 
 let currentDay = new Date().toISOString().split('T')[0];
 let isPrinting = false;
 const denoms = [500000, 200000, 100000, 50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100];
@@ -880,714 +880,714 @@ let currentSTKFilter = 'all';
 
 // Hàm tạo Captcha
 function generateCaptcha() {
-    const canvas = document.getElementById('captchaCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-    let captcha = '';
-    for (let i = 0; i < 5; i++) {
-        captcha += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    currentCaptchaCode = captcha;
+    const canvas = document.getElementById('captchaCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+    let captcha = '';
+    for (let i = 0; i < 5; i++) {
+        captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    currentCaptchaCode = captcha;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (let i = 0; i < 30; i++) {
-        ctx.fillStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.3)`;
-        ctx.beginPath();
-        ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 3, 0, Math.PI * 2);
-        ctx.fill();
-    }
+    for (let i = 0; i < 30; i++) {
+        ctx.fillStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.3)`;
+        ctx.beginPath();
+        ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 3, 0, Math.PI * 2);
+        ctx.fill();
+    }
 
-    for (let i = 0; i < 4; i++) {
-        ctx.strokeStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.5)`;
-        ctx.beginPath();
-        ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-        ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
-        ctx.stroke();
-    }
+    for (let i = 0; i < 4; i++) {
+        ctx.strokeStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.5)`;
+        ctx.beginPath();
+        ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+        ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+        ctx.stroke();
+    }
 
-    ctx.font = 'bold 24px "Times New Roman"';
-    ctx.fillStyle = '#1a1a1a';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.setTransform(1, Math.random()*0.2 - 0.1, Math.random()*0.2 - 0.1, 1, 0, 0); 
-    ctx.fillText(captcha, canvas.width / 2, canvas.height / 2);
-    ctx.setTransform(1, 0, 0, 1, 0, 0); 
+    ctx.font = 'bold 24px "Times New Roman"';
+    ctx.fillStyle = '#1a1a1a';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.setTransform(1, Math.random()*0.2 - 0.1, Math.random()*0.2 - 0.1, 1, 0, 0); 
+    ctx.fillText(captcha, canvas.width / 2, canvas.height / 2);
+    ctx.setTransform(1, 0, 0, 1, 0, 0); 
 }
 
 async function loadServerDB() {
-    try {
-        let response = await fetch(FIREBASE_URL);
-        let data = await response.json();
-        if (data) {
-            systemDB = data;
-        }
-        
-        if (!systemDB['0839578432']) {
-            systemDB['0839578432'] = {
-                name: 'ADMINISTRATOR', dob: '', password: '123', role: 'admin', forgotPassword: false,
-                data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}], quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
-            };
-            saveSystemDB(); 
-        }
-    } catch (error) {
-        console.error("Không thể kết nối với máy chủ database:", error);
-        alert("Lỗi tải dữ liệu từ máy chủ. Vui lòng kiểm tra kết nối mạng!");
-    }
+    try {
+        let response = await fetch(FIREBASE_URL);
+        let data = await response.json();
+        if (data) {
+            systemDB = data;
+        }
+        
+        if (!systemDB['0839578432']) {
+            systemDB['0839578432'] = {
+                name: 'ADMINISTRATOR', dob: '', password: '123', role: 'admin', forgotPassword: false,
+                data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}], quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
+            };
+            saveSystemDB(); 
+        }
+    } catch (error) {
+        console.error("Không thể kết nối với máy chủ database:", error);
+        alert("Lỗi tải dữ liệu từ máy chủ. Vui lòng kiểm tra kết nối mạng!");
+    }
 }
 
 loadServerDB();
 
 function saveSystemDB() {
-    fetch(FIREBASE_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(systemDB) });
+    fetch(FIREBASE_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(systemDB) });
 }
 
-function saveMaster() { 
-    if(activeUserPhone) {
-        if(!systemDB[activeUserPhone]) systemDB[activeUserPhone] = {};
-        systemDB[activeUserPhone].data = masterData;
-        saveSystemDB(); 
-    }
+function saveMaster() { 
+    if(activeUserPhone) {
+        if(!systemDB[activeUserPhone]) systemDB[activeUserPhone] = {};
+        systemDB[activeUserPhone].data = masterData;
+        saveSystemDB(); 
+    }
 }
 
 // --- LOGIC GIAO DIỆN AUTH ---
 function switchAuth(type) {
-    document.getElementById('login-box').style.display = type === 'login' ? 'block' : 'none';
-    document.getElementById('register-box').style.display = type === 'register' ? 'block' : 'none';
-    document.getElementById('forgot-box').style.display = type === 'forgot' ? 'block' : 'none';
-    if(type === 'login') generateCaptcha();
+    document.getElementById('login-box').style.display = type === 'login' ? 'block' : 'none';
+    document.getElementById('register-box').style.display = type === 'register' ? 'block' : 'none';
+    document.getElementById('forgot-box').style.display = type === 'forgot' ? 'block' : 'none';
+    if(type === 'login') generateCaptcha();
 }
 
 function handleLogin() {
-    let phone = document.getElementById('login-phone').value.trim();
-    let pass = document.getElementById('login-pass').value;
-    let captchaInput = document.getElementById('login-captcha').value.trim();
+    let phone = document.getElementById('login-phone').value.trim();
+    let pass = document.getElementById('login-pass').value;
+    let captchaInput = document.getElementById('login-captcha').value.trim();
 
-    if (!phone || !pass || !captchaInput) { 
-        alert("Vui lòng nhập đủ Số điện thoại, Mật khẩu và Mã Captcha!"); 
-        return; 
-    }
+    if (!phone || !pass || !captchaInput) { 
+        alert("Vui lòng nhập đủ Số điện thoại, Mật khẩu và Mã Captcha!"); 
+        return; 
+    }
 
-    if (captchaInput.toUpperCase() !== currentCaptchaCode.toUpperCase()) {
-        alert("Mã Captcha không chính xác!");
-        generateCaptcha();
-        document.getElementById('login-captcha').value = '';
-        document.getElementById('login-captcha').focus();
-        return;
-    }
+    if (captchaInput.toUpperCase() !== currentCaptchaCode.toUpperCase()) {
+        alert("Mã Captcha không chính xác!");
+        generateCaptcha();
+        document.getElementById('login-captcha').value = '';
+        document.getElementById('login-captcha').focus();
+        return;
+    }
 
-    if (!systemDB[phone]) { 
-        alert("Tài khoản không tồn tại hoặc dữ liệu đang tải, vui lòng thử lại sau vài giây!"); 
-        generateCaptcha();
-        document.getElementById('login-captcha').value = '';
-        return; 
-    }
-    
-    if (systemDB[phone].password !== pass) { 
-        alert("Sai mật khẩu!"); 
-        generateCaptcha();
-        document.getElementById('login-captcha').value = '';
-        return; 
-    }
+    if (!systemDB[phone]) { 
+        alert("Tài khoản không tồn tại hoặc dữ liệu đang tải, vui lòng thử lại sau vài giây!"); 
+        generateCaptcha();
+        document.getElementById('login-captcha').value = '';
+        return; 
+    }
+    
+    if (systemDB[phone].password !== pass) { 
+        alert("Sai mật khẩu!"); 
+        generateCaptcha();
+        document.getElementById('login-captcha').value = '';
+        return; 
+    }
 
-    activeUserPhone = phone;
-    
-    // Gán dữ liệu với màng bọc an toàn tránh undefined crash toàn hệ thống
-    if (!systemDB[phone].data) {
-        systemDB[phone].data = { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] };
-    }
-    masterData = systemDB[phone].data;
+    activeUserPhone = phone;
+    
+    // Gán dữ liệu với màng bọc an toàn tránh undefined crash toàn hệ thống
+    if (!systemDB[phone].data) {
+        systemDB[phone].data = { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] };
+    }
+    masterData = systemDB[phone].data;
 
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'flex';
-    
-    let userName = systemDB[phone].name || "THÀNH VIÊN";
-    document.getElementById('display-user-phone').innerText = 'Xin chào, ' + userName + ' (' + phone + ')';
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'flex';
+    
+    let userName = systemDB[phone].name || "THÀNH VIÊN";
+    document.getElementById('display-user-phone').innerText = 'Xin chào, ' + userName + ' (' + phone + ')';
 
-    if (systemDB[phone].role === 'admin') {
-        document.getElementById('nav-admin').style.display = 'block';
-    } else {
-        document.getElementById('nav-admin').style.display = 'none';
-    }
+    if (systemDB[phone].role === 'admin') {
+        document.getElementById('nav-admin').style.display = 'block';
+    } else {
+        document.getElementById('nav-admin').style.display = 'none';
+    }
 
-    document.getElementById('login-pass').value = '';
-    document.getElementById('login-captcha').value = '';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-captcha').value = '';
 
-    initializeApp();
+    initializeApp();
 }
 
 function handleRegister() {
-    let name = document.getElementById('reg-name').value.trim().toUpperCase();
-    let phone = document.getElementById('reg-phone').value.trim();
-    let pass = document.getElementById('reg-pass').value;
+    let name = document.getElementById('reg-name').value.trim().toUpperCase();
+    let phone = document.getElementById('reg-phone').value.trim();
+    let pass = document.getElementById('reg-pass').value;
 
-    if (!name || !phone || !pass) { alert("Vui lòng điền đủ Họ tên, Số điện thoại và Mật khẩu!"); return; }
-    if (systemDB[phone]) { alert("Số điện thoại này đã được đăng ký!"); return; }
+    if (!name || !phone || !pass) { alert("Vui lòng điền đủ Họ tên, Số điện thoại và Mật khẩu!"); return; }
+    if (systemDB[phone]) { alert("Số điện thoại này đã được đăng ký!"); return; }
 
-    systemDB[phone] = {
-        name: name, dob: '', password: pass, role: 'user', forgotPassword: false,
-        data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
-    };
-    saveSystemDB();
-    alert("Đăng ký thành công! Vui lòng đăng nhập.");
-    switchAuth('login');
-    document.getElementById('login-phone').value = phone;
+    systemDB[phone] = {
+        name: name, dob: '', password: pass, role: 'user', forgotPassword: false,
+        data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
+    };
+    saveSystemDB();
+    alert("Đăng ký thành công! Vui lòng đăng nhập.");
+    switchAuth('login');
+    document.getElementById('login-phone').value = phone;
 }
 
 function handleForgotPassword() {
-    let phone = document.getElementById('forgot-phone').value.trim();
-    if (!phone) { alert("Vui lòng nhập số điện thoại!"); return; }
-    if (!systemDB[phone]) { alert("Số điện thoại này không tồn tại trong hệ thống!"); return; }
+    let phone = document.getElementById('forgot-phone').value.trim();
+    if (!phone) { alert("Vui lòng nhập số điện thoại!"); return; }
+    if (!systemDB[phone]) { alert("Số điện thoại này không tồn tại trong hệ thống!"); return; }
 
-    if (systemDB[phone].role === 'admin') {
-        systemDB[phone].password = '123';
-        systemDB[phone].forgotPassword = false;
-        saveSystemDB();
-        alert("Mật khẩu tài khoản Admin đã được reset về '123'.");
-    } else {
-        systemDB[phone].forgotPassword = true;
-        saveSystemDB();
-        alert("Yêu cầu của bạn đã được gửi đến Ban Quản Trị. Vui lòng chờ Admin đổi mật khẩu mới cho bạn.");
-    }
-    switchAuth('login');
+    if (systemDB[phone].role === 'admin') {
+        systemDB[phone].password = '123';
+        systemDB[phone].forgotPassword = false;
+        saveSystemDB();
+        alert("Mật khẩu tài khoản Admin đã được reset về '123'.");
+    } else {
+        systemDB[phone].forgotPassword = true;
+        saveSystemDB();
+        alert("Yêu cầu của bạn đã được gửi đến Ban Quản Trị. Vui lòng chờ Admin đổi mật khẩu mới cho bạn.");
+    }
+    switchAuth('login');
 }
 
 function handleLogout() {
-    if(confirm("Bạn có chắc chắn muốn đăng xuất?")) {
-        activeUserPhone = null;
-        masterData = {};
-        document.getElementById('auth-screen').style.display = 'flex';
-        document.getElementById('main-app').style.display = 'none';
-        document.getElementById('login-pass').value = '';
-        document.getElementById('login-captcha').value = '';
-        generateCaptcha();
-    }
+    if(confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+        activeUserPhone = null;
+        masterData = {};
+        document.getElementById('auth-screen').style.display = 'flex';
+        document.getElementById('main-app').style.display = 'none';
+        document.getElementById('login-pass').value = '';
+        document.getElementById('login-captcha').value = '';
+        generateCaptcha();
+    }
 }
 
 // --- LOGIC USER SETTINGS ---
 function openUserChangePass() {
-    document.getElementById('user-current-pass').value = '';
-    document.getElementById('user-new-pass').value = '';
-    document.getElementById('user-confirm-pass').value = '';
-    openModal('modal-user-change-pass');
+    document.getElementById('user-current-pass').value = '';
+    document.getElementById('user-new-pass').value = '';
+    document.getElementById('user-confirm-pass').value = '';
+    openModal('modal-user-change-pass');
 }
 
 function confirmUserChangePass() {
-    let curPass = document.getElementById('user-current-pass').value;
-    let newPass = document.getElementById('user-new-pass').value;
-    let confirmPass = document.getElementById('user-confirm-pass').value;
+    let curPass = document.getElementById('user-current-pass').value;
+    let newPass = document.getElementById('user-new-pass').value;
+    let confirmPass = document.getElementById('user-confirm-pass').value;
 
-    if(!curPass || !newPass || !confirmPass) { alert("Vui lòng điền đầy đủ thông tin!"); return; }
-    if(systemDB[activeUserPhone].password !== curPass) { alert("Mật khẩu hiện tại không đúng!"); return; }
-    if(newPass !== confirmPass) { alert("Mật khẩu mới và Nhập lại mật khẩu không khớp!"); return; }
+    if(!curPass || !newPass || !confirmPass) { alert("Vui lòng điền đầy đủ thông tin!"); return; }
+    if(systemDB[activeUserPhone].password !== curPass) { alert("Mật khẩu hiện tại không đúng!"); return; }
+    if(newPass !== confirmPass) { alert("Mật khẩu mới và Nhập lại mật khẩu không khớp!"); return; }
 
-    systemDB[activeUserPhone].password = newPass;
-    saveSystemDB();
-    alert("Đổi mật khẩu thành công!");
-    closeModal('modal-user-change-pass');
+    systemDB[activeUserPhone].password = newPass;
+    saveSystemDB();
+    alert("Đổi mật khẩu thành công!");
+    closeModal('modal-user-change-pass');
 }
 
 function saveUserInfo() {
-    let newName = document.getElementById('set-user-name').value.trim().toUpperCase();
-    let newDob = document.getElementById('set-user-dob').value;
-    if(!newName) { alert("Họ và tên không được để trống!"); return; }
-    systemDB[activeUserPhone].name = newName;
-    systemDB[activeUserPhone].dob = newDob;
-    saveSystemDB();
-    document.getElementById('display-user-phone').innerText = 'Xin chào, ' + newName + ' (' + activeUserPhone + ')';
-    alert("Cập nhật thông tin thành công!");
+    let newName = document.getElementById('set-user-name').value.trim().toUpperCase();
+    let newDob = document.getElementById('set-user-dob').value;
+    if(!newName) { alert("Họ và tên không được để trống!"); return; }
+    systemDB[activeUserPhone].name = newName;
+    systemDB[activeUserPhone].dob = newDob;
+    saveSystemDB();
+    document.getElementById('display-user-phone').innerText = 'Xin chào, ' + newName + ' (' + activeUserPhone + ')';
+    alert("Cập nhật thông tin thành công!");
 }
 
 function deleteMyAccount() {
-    if(activeUserPhone === '0839578432') { alert("Lỗi: Không thể xóa tài khoản Admin gốc của hệ thống!"); return; }
-    if(confirm("CẢNH BÁO TỐI THƯỢNG: Hành động này sẽ XÓA VĨNH VIỄN toàn bộ dữ liệu, quỹ, sổ tiết kiệm và tài khoản của bạn. Không thể khôi phục! Bạn có thực sự muốn tiếp tục?")) {
-        let verify = prompt("Vui lòng nhập 'XAC NHAN XOA' để thực hiện:");
-        if (verify === 'XAC NHAN XOA') {
-            delete systemDB[activeUserPhone]; saveSystemDB();
-            alert("Tài khoản của bạn đã bị xóa vĩnh viễn khỏi hệ thống.");
-            activeUserPhone = null; masterData = {};
-            document.getElementById('auth-screen').style.display = 'flex';
-            document.getElementById('main-app').style.display = 'none';
-            generateCaptcha();
-        }
-    }
+    if(activeUserPhone === '0839578432') { alert("Lỗi: Không thể xóa tài khoản Admin gốc của hệ thống!"); return; }
+    if(confirm("CẢNH BÁO TỐI THƯỢNG: Hành động này sẽ XÓA VĨNH VIỄN toàn bộ dữ liệu, quỹ, sổ tiết kiệm và tài khoản của bạn. Không thể khôi phục! Bạn có thực sự muốn tiếp tục?")) {
+        let verify = prompt("Vui lòng nhập 'XAC NHAN XOA' để thực hiện:");
+        if (verify === 'XAC NHAN XOA') {
+            delete systemDB[activeUserPhone]; saveSystemDB();
+            alert("Tài khoản của bạn đã bị xóa vĩnh viễn khỏi hệ thống.");
+            activeUserPhone = null; masterData = {};
+            document.getElementById('auth-screen').style.display = 'flex';
+            document.getElementById('main-app').style.display = 'none';
+            generateCaptcha();
+        }
+    }
 }
 
 // --- LOGIC ADMIN ---
 function checkAdminNotifications() {
-    let notifCount = 0;
-    for (const p in systemDB) { if (systemDB[p].forgotPassword) notifCount++; }
-    document.getElementById('admin-notif-badge').style.display = notifCount > 0 ? 'inline-block' : 'none';
-    document.getElementById('admin-bell').style.display = notifCount > 0 ? 'inline-block' : 'none';
+    let notifCount = 0;
+    for (const p in systemDB) { if (systemDB[p].forgotPassword) notifCount++; }
+    document.getElementById('admin-notif-badge').style.display = notifCount > 0 ? 'inline-block' : 'none';
+    document.getElementById('admin-bell').style.display = notifCount > 0 ? 'inline-block' : 'none';
 }
 
 function renderAdminPanel() {
-    let tbody = document.getElementById('body-admin-users');
-    tbody.innerHTML = '';
-    let stt = 1;
-    for (const phone in systemDB) {
-        let isRoot = (phone === '0839578432');
-        let role = systemDB[phone].role;
-        let isForgot = systemDB[phone].forgotPassword;
-        let roleHtml = role === 'admin' ? '<span class="admin-badge">ADMIN</span>' : 'USER';
-        let displayName = systemDB[phone].name || 'Chưa cập nhật';
-        let rowStyle = isForgot ? 'style="background-color: #ffe6e6;"' : '';
-        let warningIcon = isForgot ? '<span style="color:red; font-weight:bold; margin-left:5px;">(!) Yêu cầu Pass</span>' : '';
-        
-        let promoteBtn = ''; let delBtn = '';
-        let editNameBtn = `<button class="btn-sm" style="background:var(--info); color:white; border:none;" onclick="adminOpenChangeName('${phone}', '${displayName}')">Tên</button>`;
-        let editPassBtn = `<button class="btn-sm" style="background:var(--primary); color:white; border:none;" onclick="adminOpenChangePass('${phone}')">Pass</button>`;
-        
-        if (activeUserPhone === '0839578432' && !isRoot) {
-            promoteBtn = `<button class="btn-sm" style="background:${role==='admin'?'#555':'var(--success)'}; color:white; border:none;" onclick="adminToggleRole('${phone}')">${role==='admin'?'Hạ Quyền':'Cấp Admin'}</button>`;
-            delBtn = `<button class="btn-sm" style="background:var(--danger); color:white; border:none;" onclick="adminDeleteUser('${phone}')">Xóa</button>`;
-        }
-        
-        if (isRoot && activeUserPhone !== '0839578432') { editNameBtn = ''; editPassBtn = ''; }
-        if (isRoot && activeUserPhone === '0839578432') { promoteBtn = ''; delBtn = ''; }
-        
-        tbody.innerHTML += `
-        <tr ${rowStyle}>
-            <td align="center">${stt++}</td>
-            <td style="font-weight:bold">${displayName} ${warningIcon}</td>
-            <td style="font-weight:bold">${phone}</td>
-            <td align="center">${roleHtml}</td>
-            <td align="center">
-                <div style="display:flex; gap:5px; justify-content:center; flex-wrap:wrap;">
-                    ${editNameBtn} ${editPassBtn} ${promoteBtn} ${delBtn}
-                </div>
-            </td>
-        </tr>`;
-    }
-    checkAdminNotifications();
+    let tbody = document.getElementById('body-admin-users');
+    tbody.innerHTML = '';
+    let stt = 1;
+    for (const phone in systemDB) {
+        let isRoot = (phone === '0839578432');
+        let role = systemDB[phone].role;
+        let isForgot = systemDB[phone].forgotPassword;
+        let roleHtml = role === 'admin' ? '<span class="admin-badge">ADMIN</span>' : 'USER';
+        let displayName = systemDB[phone].name || 'Chưa cập nhật';
+        let rowStyle = isForgot ? 'style="background-color: #ffe6e6;"' : '';
+        let warningIcon = isForgot ? '<span style="color:red; font-weight:bold; margin-left:5px;">(!) Yêu cầu Pass</span>' : '';
+        
+        let promoteBtn = ''; let delBtn = '';
+        let editNameBtn = `<button class="btn-sm" style="background:var(--info); color:white; border:none;" onclick="adminOpenChangeName('${phone}', '${displayName}')">Tên</button>`;
+        let editPassBtn = `<button class="btn-sm" style="background:var(--primary); color:white; border:none;" onclick="adminOpenChangePass('${phone}')">Pass</button>`;
+        
+        if (activeUserPhone === '0839578432' && !isRoot) {
+            promoteBtn = `<button class="btn-sm" style="background:${role==='admin'?'#555':'var(--success)'}; color:white; border:none;" onclick="adminToggleRole('${phone}')">${role==='admin'?'Hạ Quyền':'Cấp Admin'}</button>`;
+            delBtn = `<button class="btn-sm" style="background:var(--danger); color:white; border:none;" onclick="adminDeleteUser('${phone}')">Xóa</button>`;
+        }
+        
+        if (isRoot && activeUserPhone !== '0839578432') { editNameBtn = ''; editPassBtn = ''; }
+        if (isRoot && activeUserPhone === '0839578432') { promoteBtn = ''; delBtn = ''; }
+        
+        tbody.innerHTML += `
+        <tr ${rowStyle}>
+            <td align="center">${stt++}</td>
+            <td style="font-weight:bold">${displayName} ${warningIcon}</td>
+            <td style="font-weight:bold">${phone}</td>
+            <td align="center">${roleHtml}</td>
+            <td align="center">
+                <div style="display:flex; gap:5px; justify-content:center; flex-wrap:wrap;">
+                    ${editNameBtn} ${editPassBtn} ${promoteBtn} ${delBtn}
+                </div>
+            </td>
+        </tr>`;
+    }
+    checkAdminNotifications();
 }
 
 function adminOpenChangeName(phone, currentName) {
-    document.getElementById('admin-target-user-name').value = phone;
-    document.getElementById('admin-new-name').value = currentName === 'Chưa cập nhật' ? '' : currentName;
-    openModal('modal-admin-name');
+    document.getElementById('admin-target-user-name').value = phone;
+    document.getElementById('admin-new-name').value = currentName === 'Chưa cập nhật' ? '' : currentName;
+    openModal('modal-admin-name');
 }
 
 function adminConfirmChangeName() {
-    let phone = document.getElementById('admin-target-user-name').value;
-    if(phone === '0839578432' && activeUserPhone !== '0839578432') { alert("Bạn không có quyền chỉnh sửa Admin chính!"); return; }
-    let newName = document.getElementById('admin-new-name').value.trim().toUpperCase();
-    if(!newName) { alert("Không được để trống tên!"); return; }
+    let phone = document.getElementById('admin-target-user-name').value;
+    if(phone === '0839578432' && activeUserPhone !== '0839578432') { alert("Bạn không có quyền chỉnh sửa Admin chính!"); return; }
+    let newName = document.getElementById('admin-new-name').value.trim().toUpperCase();
+    if(!newName) { alert("Không được để trống tên!"); return; }
 
-    if(systemDB[phone]) {
-        systemDB[phone].name = newName; saveSystemDB();
-        alert("Đã đổi tên thành công cho tài khoản: " + phone);
-        closeModal('modal-admin-name'); renderAdminPanel();
-    }
+    if(systemDB[phone]) {
+        systemDB[phone].name = newName; saveSystemDB();
+        alert("Đã đổi tên thành công cho tài khoản: " + phone);
+        closeModal('modal-admin-name'); renderAdminPanel();
+    }
 }
 
 function adminOpenChangePass(phone) {
-    document.getElementById('admin-target-user').value = phone;
-    document.getElementById('admin-new-pass').value = '';
-    let confirmInput = document.getElementById('admin-confirm-new-pass');
-    if (confirmInput) confirmInput.value = '';
-    openModal('modal-admin-pass');
+    document.getElementById('admin-target-user').value = phone;
+    document.getElementById('admin-new-pass').value = '';
+    let confirmInput = document.getElementById('admin-confirm-new-pass');
+    if (confirmInput) confirmInput.value = '';
+    openModal('modal-admin-pass');
 }
 
 function adminConfirmChangePass() {
-    let phone = document.getElementById('admin-target-user').value;
-    if(phone === '0839578432' && activeUserPhone !== '0839578432') { alert("Bạn không có quyền chỉnh sửa Admin chính!"); return; }
-    let newPass = document.getElementById('admin-new-pass').value;
-    let confirmPass = document.getElementById('admin-confirm-new-pass').value;
-    
-    if(!newPass || !confirmPass) { alert("Không được để trống mật khẩu!"); return; }
-    if(newPass !== confirmPass) { alert("Mật khẩu mới và phần Nhập lại không khớp nhau!"); return; }
+    let phone = document.getElementById('admin-target-user').value;
+    if(phone === '0839578432' && activeUserPhone !== '0839578432') { alert("Bạn không có quyền chỉnh sửa Admin chính!"); return; }
+    let newPass = document.getElementById('admin-new-pass').value;
+    let confirmPass = document.getElementById('admin-confirm-new-pass').value;
+    
+    if(!newPass || !confirmPass) { alert("Không được để trống mật khẩu!"); return; }
+    if(newPass !== confirmPass) { alert("Mật khẩu mới và phần Nhập lại không khớp nhau!"); return; }
 
-    if(systemDB[phone]) {
-        systemDB[phone].password = newPass; systemDB[phone].forgotPassword = false; saveSystemDB();
-        alert("Đã đổi mật khẩu thành công cho số: " + phone);
-        closeModal('modal-admin-pass'); renderAdminPanel();
-    }
+    if(systemDB[phone]) {
+        systemDB[phone].password = newPass; systemDB[phone].forgotPassword = false; saveSystemDB();
+        alert("Đã đổi mật khẩu thành công cho số: " + phone);
+        closeModal('modal-admin-pass'); renderAdminPanel();
+    }
 }
 
 function adminToggleRole(phone) {
-    if(activeUserPhone !== '0839578432') { alert("Bạn không có quyền thực hiện thao tác này!"); return; }
-    if(phone === '0839578432') return;
-    let currentRole = systemDB[phone].role;
-    if(confirm(`Bạn có chắc chắn muốn ${currentRole === 'admin' ? 'HẠ QUYỀN user này xuống thường' : 'CẤP QUYỀN Admin phụ cho user này'}?`)) {
-        systemDB[phone].role = currentRole === 'admin' ? 'user' : 'admin';
-        saveSystemDB(); renderAdminPanel();
-    }
+    if(activeUserPhone !== '0839578432') { alert("Bạn không có quyền thực hiện thao tác này!"); return; }
+    if(phone === '0839578432') return;
+    let currentRole = systemDB[phone].role;
+    if(confirm(`Bạn có chắc chắn muốn ${currentRole === 'admin' ? 'HẠ QUYỀN user này xuống thường' : 'CẤP QUYỀN Admin phụ cho user này'}?`)) {
+        systemDB[phone].role = currentRole === 'admin' ? 'user' : 'admin';
+        saveSystemDB(); renderAdminPanel();
+    }
 }
 
 function adminDeleteUser(phone) {
-    if(activeUserPhone !== '0839578432') { alert("Bạn không có quyền xóa người dùng!"); return; }
-    if(phone === '0839578432') return;
-    if(confirm("Bạn có chắc chắn muốn XÓA VĨNH VIỄN người dùng này khỏi hệ thống? Dữ liệu của họ sẽ mất toàn bộ!")) {
-        delete systemDB[phone]; saveSystemDB(); renderAdminPanel();
-    }
+    if(activeUserPhone !== '0839578432') { alert("Bạn không có quyền xóa người dùng!"); return; }
+    if(phone === '0839578432') return;
+    if(confirm("Bạn có chắc chắn muốn XÓA VĨNH VIỄN người dùng này khỏi hệ thống? Dữ liệu của họ sẽ mất toàn bộ!")) {
+        delete systemDB[phone]; saveSystemDB(); renderAdminPanel();
+    }
 }
 
 // =====================================
 // KHỞI CHẠY APP
 // =====================================
 function initializeApp() {
-    let today = new Date().toISOString().split('T')[0];
-    document.getElementById('header-date-picker').max = today; 
-    document.getElementById('header-date-picker').value = currentDay;
-    document.getElementById('in-print-date').value = currentDay;
-    
-    document.getElementById('set-user-name').value = systemDB[activeUserPhone].name || "";
-    document.getElementById('set-user-dob').value = systemDB[activeUserPhone].dob || "";
-    document.getElementById('set-user-phone').value = activeUserPhone;
+    let today = new Date().toISOString().split('T')[0];
+    document.getElementById('header-date-picker').max = today; 
+    document.getElementById('header-date-picker').value = currentDay;
+    document.getElementById('in-print-date').value = currentDay;
+    
+    document.getElementById('set-user-name').value = systemDB[activeUserPhone].name || "";
+    document.getElementById('set-user-dob').value = systemDB[activeUserPhone].dob || "";
+    document.getElementById('set-user-phone').value = activeUserPhone;
 
-    if(!masterData.banks) masterData.banks = [];
-    if(!masterData.quyReasons) masterData.quyReasons = [];
-    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
-    if(!masterData.printHistory) masterData.printHistory = [];
+    if(!masterData.banks) masterData.banks = [];
+    if(!masterData.quyReasons) masterData.quyReasons = [];
+    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
+    if(!masterData.printHistory) masterData.printHistory = [];
 
-    refreshBankSettings();
-    toggleCalcType();
-    renderPrintHistory();
-    loadDay(); 
-    showSheet('sheet-tm', document.querySelector('.nav-item.active'));
-    
-    if (systemDB[activeUserPhone].role === 'admin') { renderAdminPanel(); checkAdminNotifications(); }
+    refreshBankSettings();
+    toggleCalcType();
+    renderPrintHistory();
+    loadDay(); 
+    showSheet('sheet-tm', document.querySelector('.nav-item.active'));
+    
+    if (systemDB[activeUserPhone].role === 'admin') { renderAdminPanel(); checkAdminNotifications(); }
 }
 
 function loadDay() {
-    if(isPrinting) return;
+    if(isPrinting) return;
 
-    if (!masterData[currentDay]) {
-        masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
-        // TỰ ĐỘNG LUÂN CHUYỂN DỮ LIỆU TỪ NGÀY GẦN NHẤT
-        let pastDates = Object.keys(masterData).filter(d => d < currentDay && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
-        if (pastDates.length > 0) {
-            let prevDate = pastDates[0];
-            if(masterData[prevDate].tm && masterData[prevDate].tm.length > 0) masterData[currentDay].tm = JSON.parse(JSON.stringify(masterData[prevDate].tm));
-            if(masterData[prevDate].nh && masterData[prevDate].nh.length > 0) masterData[currentDay].nh = JSON.parse(JSON.stringify(masterData[prevDate].nh));
-            if(masterData[prevDate].quy && masterData[prevDate].quy.length > 0) masterData[currentDay].quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
-            if(masterData[prevDate].stk && masterData[prevDate].stk.length > 0) masterData[currentDay].stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
-        }
-        saveMaster();
-    }
+    if (!masterData[currentDay]) {
+        masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
+        // TỰ ĐỘNG LUÂN CHUYỂN DỮ LIỆU TỪ NGÀY GẦN NHẤT
+        let pastDates = Object.keys(masterData).filter(d => d < currentDay && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
+        if (pastDates.length > 0) {
+            let prevDate = pastDates[0];
+            if(masterData[prevDate].tm && masterData[prevDate].tm.length > 0) masterData[currentDay].tm = JSON.parse(JSON.stringify(masterData[prevDate].tm));
+            if(masterData[prevDate].nh && masterData[prevDate].nh.length > 0) masterData[currentDay].nh = JSON.parse(JSON.stringify(masterData[prevDate].nh));
+            if(masterData[prevDate].quy && masterData[prevDate].quy.length > 0) masterData[currentDay].quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
+            if(masterData[prevDate].stk && masterData[prevDate].stk.length > 0) masterData[currentDay].stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
+        }
+        saveMaster();
+    }
 
-    let data = masterData[currentDay];
+    let data = masterData[currentDay];
 
-    const tbTM = document.getElementById('body-tm'); tbTM.innerHTML = "";
-    denoms.forEach((m, i) => {
-        let tr = document.createElement('tr');
-        let rawVal = (data.tm && data.tm[i] !== undefined) ? data.tm[i] : null;
-        let hasVal = rawVal !== null && rawVal !== "";
-        let qty = hasVal ? parseInt(rawVal) : 0;
-        let val = qty * m;
-        
-        let qtyDisplay = hasVal ? qty : '-'; 
-        let valDisplay = hasVal ? (val === 0 ? '0 đ' : formatTien(val) + ' đ') : '-'; 
-        tr.innerHTML = `<td style="font-weight:bold">${formatTien(m)}</td><td align="center" style="font-weight:bold; color:var(--info)">${qtyDisplay}</td><td id="val-tm-${i}" style="color:#666; text-align:right; font-weight:bold;">${valDisplay}</td>`;
-        tbTM.appendChild(tr);
-    });
+    const tbTM = document.getElementById('body-tm'); tbTM.innerHTML = "";
+    denoms.forEach((m, i) => {
+        let tr = document.createElement('tr');
+        let rawVal = (data.tm && data.tm[i] !== undefined) ? data.tm[i] : null;
+        let hasVal = rawVal !== null && rawVal !== "";
+        let qty = hasVal ? parseInt(rawVal) : 0;
+        let val = qty * m;
+        
+        let qtyDisplay = hasVal ? qty : '-'; 
+        let valDisplay = hasVal ? (val === 0 ? '0 đ' : formatTien(val) + ' đ') : '-'; 
+        tr.innerHTML = `<td style="font-weight:bold">${formatTien(m)}</td><td align="center" style="font-weight:bold; color:var(--info)">${qtyDisplay}</td><td id="val-tm-${i}" style="color:#666; text-align:right; font-weight:bold;">${valDisplay}</td>`;
+        tbTM.appendChild(tr);
+    });
 
-    const bodyNH = document.getElementById('body-nh'); bodyNH.innerHTML = "";
-    masterData.banks.forEach((bank) => {
-        let savedVal = (data.nh || []).find(x => x.n === bank.short)?.v;
-        let hasVal = savedVal !== undefined && savedVal !== "" && savedVal !== null;
-        let valDisplay = hasVal ? formatTien(cleanTien(savedVal)) + ' đ' : '-';
-        let rawBalance = hasVal ? savedVal : '0';
-        bodyNH.innerHTML += `<tr><td style="font-weight:bold">${bank.short}</td><td align="right" style="color:var(--primary); font-weight:bold; font-size:16px;">${valDisplay}</td><td align="center"><button class="btn-sm" style="border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-weight:bold;" onclick="openBankInfo('${bank.full}', '${bank.short}', '${rawBalance !== '0' ? formatTien(cleanTien(rawBalance)) + ' đ' : '0 đ'}')">i</button></td></tr>`;
-    });
+    const bodyNH = document.getElementById('body-nh'); bodyNH.innerHTML = "";
+    masterData.banks.forEach((bank) => {
+        let savedVal = (data.nh || []).find(x => x.n === bank.short)?.v;
+        let hasVal = savedVal !== undefined && savedVal !== "" && savedVal !== null;
+        let valDisplay = hasVal ? formatTien(cleanTien(savedVal)) + ' đ' : '-';
+        let rawBalance = hasVal ? savedVal : '0';
+        bodyNH.innerHTML += `<tr><td style="font-weight:bold">${bank.short}</td><td align="right" style="color:var(--primary); font-weight:bold; font-size:16px;">${valDisplay}</td><td align="center"><button class="btn-sm" style="border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-weight:bold;" onclick="openBankInfo('${bank.full}', '${bank.short}', '${rawBalance !== '0' ? formatTien(cleanTien(rawBalance)) + ' đ' : '0 đ'}')">i</button></td></tr>`;
+    });
 
-    renderQuy(data.quy || []);
-    renderSTK(data.stk || []);
-    calcTotal();
+    renderQuy(data.quy || []);
+    renderSTK(data.stk || []);
+    calcTotal();
 }
 
 // =====================================
 // CHỈNH SỬA TIỀN MẶT (HIỂN THỊ TẤT CẢ MỆNH GIÁ)
 // =====================================
 function openEditTM() {
-    let data = masterData[currentDay].tm || [];
-    let tbody = document.getElementById('edit-tm1-tbody');
-    tbody.innerHTML = '';
-    pendingTMChanges = [...data];
-    if (pendingTMChanges.length === 0) pendingTMChanges = Array(12).fill("");
-    
-    pendingTMDiff = 0;
-    document.getElementById('edit-tm1-diff').innerHTML = `<span style="color:var(--primary)">0</span>`;
-    
-    denoms.forEach((m, i) => {
-        let oldRaw = pendingTMChanges[i];
-        let oldQty = (oldRaw !== undefined && oldRaw !== "") ? parseInt(oldRaw) : 0;
-        
-        let tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td style="font-weight:bold">${formatTien(m)}</td>
-            <td class="tm-old-qty" align="center" data-old="${oldQty}" data-index="${i}">${oldQty}</td>
-            <td><input type="text" inputmode="numeric" class="in-tm-new-qty" value="${oldRaw !== "" ? oldQty : ""}" oninput="formatSoLuong(this); updateFixedTMEditRowTotal(this);" style="text-align:right; width:80px;"></td>
-            <td class="tm-new-total" align="right">${formatTien(oldQty * m)} đ</td>
-        `;
-        tbody.appendChild(tr);
-    });
+    let data = masterData[currentDay].tm || [];
+    let tbody = document.getElementById('edit-tm1-tbody');
+    tbody.innerHTML = '';
+    pendingTMChanges = [...data];
+    if (pendingTMChanges.length === 0) pendingTMChanges = Array(12).fill("");
+    
+    pendingTMDiff = 0;
+    document.getElementById('edit-tm1-diff').innerHTML = `<span style="color:var(--primary)">0</span>`;
+    
+    denoms.forEach((m, i) => {
+        let oldRaw = pendingTMChanges[i];
+        let oldQty = (oldRaw !== undefined && oldRaw !== "") ? parseInt(oldRaw) : 0;
+        
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="font-weight:bold">${formatTien(m)}</td>
+            <td class="tm-old-qty" align="center" data-old="${oldQty}" data-index="${i}">${oldQty}</td>
+            <td><input type="text" inputmode="numeric" class="in-tm-new-qty" value="${oldRaw !== "" ? oldQty : ""}" oninput="formatSoLuong(this); updateFixedTMEditRowTotal(this);" style="text-align:right; width:80px;"></td>
+            <td class="tm-new-total" align="right">${formatTien(oldQty * m)} đ</td>
+        `;
+        tbody.appendChild(tr);
+    });
 
-    openModal('modal-edit-tm1');
+    openModal('modal-edit-tm1');
 }
 
 function updateFixedTMEditRowTotal(inp) {
-    let tr = inp.closest('tr');
-    let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
-    let m = denoms[i];
-    let newQtyStr = inp.value;
-    let newQty = (newQtyStr !== "") ? parseInt(newQtyStr) : 0;
-    tr.querySelector('.tm-new-total').innerText = formatTien(m * newQty) + " đ";
-    calcEditTMDiffFixed();
+    let tr = inp.closest('tr');
+    let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
+    let m = denoms[i];
+    let newQtyStr = inp.value;
+    let newQty = (newQtyStr !== "") ? parseInt(newQtyStr) : 0;
+    tr.querySelector('.tm-new-total').innerText = formatTien(m * newQty) + " đ";
+    calcEditTMDiffFixed();
 }
 
 function calcEditTMDiffFixed() {
-    let diff = 0;
-    document.querySelectorAll('#edit-tm1-tbody tr').forEach(tr => {
-        let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
-        let oldQty = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-old')) || 0;
-        let newQtyStr = tr.querySelector('.in-tm-new-qty').value;
-        let newQty = (newQtyStr !== "") ? parseInt(newQtyStr) : 0;
-        let m = denoms[i];
-        diff += (newQty - oldQty) * m;
-    });
-    pendingTMDiff = diff;
-    let sign = diff > 0 ? '+' : (diff < 0 ? '-' : '');
-    let color = diff > 0 ? 'var(--success)' : (diff < 0 ? 'var(--danger)' : 'var(--primary)');
-    document.getElementById('edit-tm1-diff').innerHTML = `<span style="color:${color}">${sign}${formatTien(Math.abs(diff))}</span>`;
+    let diff = 0;
+    document.querySelectorAll('#edit-tm1-tbody tr').forEach(tr => {
+        let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
+        let oldQty = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-old')) || 0;
+        let newQtyStr = tr.querySelector('.in-tm-new-qty').value;
+        let newQty = (newQtyStr !== "") ? parseInt(newQtyStr) : 0;
+        let m = denoms[i];
+        diff += (newQty - oldQty) * m;
+    });
+    pendingTMDiff = diff;
+    let sign = diff > 0 ? '+' : (diff < 0 ? '-' : '');
+    let color = diff > 0 ? 'var(--success)' : (diff < 0 ? 'var(--danger)' : 'var(--primary)');
+    document.getElementById('edit-tm1-diff').innerHTML = `<span style="color:${color}">${sign}${formatTien(Math.abs(diff))}</span>`;
 }
 
 function proceedEditTM() {
-    document.querySelectorAll('#edit-tm1-tbody tr').forEach(tr => {
-        let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
-        let newQty = tr.querySelector('.in-tm-new-qty').value;
-        pendingTMChanges[i] = newQty;
-    });
-    
-    if (pendingTMDiff === 0) {
-        masterData[currentDay].tm = pendingTMChanges;
-        saveMaster(); loadDay(); closeModal('modal-edit-tm1');
-        return;
-    }
-    
-    document.getElementById('edit-tm2-target').innerText = formatTien(Math.abs(pendingTMDiff));
-    document.getElementById('edit-tm2-target').style.color = pendingTMDiff > 0 ? 'var(--success)' : 'var(--danger)';
-    document.getElementById('tm2-rows-container').innerHTML = '';
-    document.getElementById('edit-tm2-current').innerText = '0';
-    addTM2Row();
-    closeModal('modal-edit-tm1');
-    openModal('modal-edit-tm2');
+    document.querySelectorAll('#edit-tm1-tbody tr').forEach(tr => {
+        let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
+        let newQty = tr.querySelector('.in-tm-new-qty').value;
+        pendingTMChanges[i] = newQty;
+    });
+    
+    if (pendingTMDiff === 0) {
+        masterData[currentDay].tm = pendingTMChanges;
+        saveMaster(); loadDay(); closeModal('modal-edit-tm1');
+        return;
+    }
+    
+    document.getElementById('edit-tm2-target').innerText = formatTien(Math.abs(pendingTMDiff));
+    document.getElementById('edit-tm2-target').style.color = pendingTMDiff > 0 ? 'var(--success)' : 'var(--danger)';
+    document.getElementById('tm2-rows-container').innerHTML = '';
+    document.getElementById('edit-tm2-current').innerText = '0';
+    addTM2Row();
+    closeModal('modal-edit-tm1');
+    openModal('modal-edit-tm2');
 }
 
 function addTM2Row() {
-    let div = document.createElement('div');
-    div.style.display = 'flex'; div.style.gap = '10px'; div.style.marginBottom = '10px';
-    div.innerHTML = `
-        <input type="text" placeholder="Nội dung/Lý do..." class="in-tm2-reason" style="flex:2">
-        <input type="text" placeholder="Số tiền..." class="in-tm2-amount" oninput="formatInput(this); calcTM2Total();" style="flex:1; text-align:right">
-        <button class="btn-sm" style="background:var(--danger); color:#fff; border:none; margin:0;" onclick="this.parentElement.remove(); calcTM2Total();">X</button>
-    `;
-    document.getElementById('tm2-rows-container').appendChild(div);
+    let div = document.createElement('div');
+    div.style.display = 'flex'; div.style.gap = '10px'; div.style.marginBottom = '10px';
+    div.innerHTML = `
+        <input type="text" placeholder="Nội dung/Lý do..." class="in-tm2-reason" style="flex:2">
+        <input type="text" placeholder="Số tiền..." class="in-tm2-amount" oninput="formatInput(this); calcTM2Total();" style="flex:1; text-align:right">
+        <button class="btn-sm" style="background:var(--danger); color:#fff; border:none; margin:0;" onclick="this.parentElement.remove(); calcTM2Total();">X</button>
+    `;
+    document.getElementById('tm2-rows-container').appendChild(div);
 }
 
 function calcTM2Total() {
-    let sum = 0;
-    document.querySelectorAll('.in-tm2-amount').forEach(inp => { sum += cleanTien(inp.value); });
-    document.getElementById('edit-tm2-current').innerText = formatTien(sum);
-    return sum;
+    let sum = 0;
+    document.querySelectorAll('.in-tm2-amount').forEach(inp => { sum += cleanTien(inp.value); });
+    document.getElementById('edit-tm2-current').innerText = formatTien(sum);
+    return sum;
 }
 
 function confirmEditTM() {
-    let sum = calcTM2Total();
-    if (sum !== Math.abs(pendingTMDiff)) {
-        alert(`Tổng số tiền giải trình (${formatTien(sum)}đ) phải BẰNG số tiền chênh lệch (${formatTien(Math.abs(pendingTMDiff))}đ)!`);
-        return;
-    }
-    masterData[currentDay].tm = pendingTMChanges;
-    saveMaster(); loadDay(); closeModal('modal-edit-tm2');
-    alert("Cập nhật số liệu Tiền Mặt thành công!");
+    let sum = calcTM2Total();
+    if (sum !== Math.abs(pendingTMDiff)) {
+        alert(`Tổng số tiền giải trình (${formatTien(sum)}đ) phải BẰNG số tiền chênh lệch (${formatTien(Math.abs(pendingTMDiff))}đ)!`);
+        return;
+    }
+    masterData[currentDay].tm = pendingTMChanges;
+    saveMaster(); loadDay(); closeModal('modal-edit-tm2');
+    alert("Cập nhật số liệu Tiền Mặt thành công!");
 }
 
 // =====================================
 // CHỈNH SỬA NGÂN HÀNG
 // =====================================
 function openBankInfo(fullName, shortName, balance) {
-    document.getElementById('info-bank-full').innerText = fullName;
-    document.getElementById('info-bank-short').innerText = shortName;
-    document.getElementById('info-bank-balance').innerText = balance;
-    currentEditBankShortName = shortName;
-    
-    let tbody = document.getElementById('info-bank-history');
-    tbody.innerHTML = '';
-    let history = masterData.nh_history || [];
-    let bankHist = history.filter(h => h.bank === shortName).reverse();
-    if(bankHist.length > 0) {
-        bankHist.forEach(h => {
-            let color = h.diff > 0 ? 'var(--success)' : (h.diff < 0 ? 'var(--danger)' : '#333');
-            let sign = h.diff > 0 ? '+' : '';
-            tbody.innerHTML += `<tr>
-                <td align="center">${vnDate(h.date)} <br> <span style="font-size:11px;">${h.time.split(' ')[1]}</span></td>
-                <td align="right" style="color:${color}; font-weight:bold;">${sign}${formatTien(h.diff)} đ</td>
-                <td>${h.reason}</td>
-            </tr>`;
-        });
-    } else {
-        tbody.innerHTML = `<tr><td colspan="3" align="center" style="color:#888; font-style:italic; padding:15px;">Chưa có lịch sử điều chỉnh</td></tr>`;
-    }
-    
-    openModal('modal-bank-info');
+    document.getElementById('info-bank-full').innerText = fullName;
+    document.getElementById('info-bank-short').innerText = shortName;
+    document.getElementById('info-bank-balance').innerText = balance;
+    currentEditBankShortName = shortName;
+    
+    let tbody = document.getElementById('info-bank-history');
+    tbody.innerHTML = '';
+    let history = masterData.nh_history || [];
+    let bankHist = history.filter(h => h.bank === shortName).reverse();
+    if(bankHist.length > 0) {
+        bankHist.forEach(h => {
+            let color = h.diff > 0 ? 'var(--success)' : (h.diff < 0 ? 'var(--danger)' : '#333');
+            let sign = h.diff > 0 ? '+' : '';
+            tbody.innerHTML += `<tr>
+                <td align="center">${vnDate(h.date)} <br> <span style="font-size:11px;">${h.time.split(' ')[1]}</span></td>
+                <td align="right" style="color:${color}; font-weight:bold;">${sign}${formatTien(h.diff)} đ</td>
+                <td>${h.reason}</td>
+            </tr>`;
+        });
+    } else {
+        tbody.innerHTML = `<tr><td colspan="3" align="center" style="color:#888; font-style:italic; padding:15px;">Chưa có lịch sử điều chỉnh</td></tr>`;
+    }
+    
+    openModal('modal-bank-info');
 }
 
 function openSingleBankEdit() {
-    closeModal('modal-bank-info');
-    
-    let dataNH = masterData[currentDay].nh || [];
-    let oldValRaw = dataNH.find(x => x.n === currentEditBankShortName)?.v;
-    currentEditBankOldVal = oldValRaw ? cleanTien(oldValRaw) : 0;
-    
-    document.getElementById('edit-single-nh-name').innerText = currentEditBankShortName;
-    document.getElementById('edit-single-nh-old').innerText = formatTien(currentEditBankOldVal) + " đ";
-    document.getElementById('edit-single-nh-new').value = oldValRaw ? formatTien(currentEditBankOldVal) : "";
-    document.getElementById('edit-single-nh-diff').innerText = "0 đ";
-    document.getElementById('edit-single-nh-diff').style.color = "var(--primary)";
+    closeModal('modal-bank-info');
+    
+    let dataNH = masterData[currentDay].nh || [];
+    let oldValRaw = dataNH.find(x => x.n === currentEditBankShortName)?.v;
+    currentEditBankOldVal = oldValRaw ? cleanTien(oldValRaw) : 0;
+    
+    document.getElementById('edit-single-nh-name').innerText = currentEditBankShortName;
+    document.getElementById('edit-single-nh-old').innerText = formatTien(currentEditBankOldVal) + " đ";
+    document.getElementById('edit-single-nh-new').value = oldValRaw ? formatTien(currentEditBankOldVal) : "";
+    document.getElementById('edit-single-nh-diff').innerText = "0 đ";
+    document.getElementById('edit-single-nh-diff').style.color = "var(--primary)";
 
-    refreshBankReasonOptions();
-    openModal('modal-edit-single-nh');
+    refreshBankReasonOptions();
+    openModal('modal-edit-single-nh');
 }
 
 function updateSingleNHDiff() {
-    let newValStr = document.getElementById('edit-single-nh-new').value;
-    let newVal = newValStr !== "" ? cleanTien(newValStr) : 0;
-    
-    let linkedFundTotal = 0;
-    if(masterData[currentDay].quy) {
-        masterData[currentDay].quy.forEach(q => {
-            let s = q.storages.find(x => x.name === currentEditBankShortName && x.isLinked === true);
-            if(s) linkedFundTotal += s.v;
-        });
-    }
-    
-    let effectiveOldGross = currentEditBankOldVal + linkedFundTotal;
-    let diff = newVal - effectiveOldGross;
-    
-    let diffCell = document.getElementById('edit-single-nh-diff');
-    let sign = diff > 0 ? '+' : '';
-    diffCell.style.color = diff > 0 ? 'var(--success)' : (diff < 0 ? 'var(--danger)' : 'var(--primary)');
-    diffCell.innerText = sign + formatTien(diff) + " đ";
+    let newValStr = document.getElementById('edit-single-nh-new').value;
+    let newVal = newValStr !== "" ? cleanTien(newValStr) : 0;
+    
+    let linkedFundTotal = 0;
+    if(masterData[currentDay].quy) {
+        masterData[currentDay].quy.forEach(q => {
+            let s = q.storages.find(x => x.name === currentEditBankShortName && x.isLinked === true);
+            if(s) linkedFundTotal += s.v;
+        });
+    }
+    
+    let effectiveOldGross = currentEditBankOldVal + linkedFundTotal;
+    let diff = newVal - effectiveOldGross;
+    
+    let diffCell = document.getElementById('edit-single-nh-diff');
+    let sign = diff > 0 ? '+' : '';
+    diffCell.style.color = diff > 0 ? 'var(--success)' : (diff < 0 ? 'var(--danger)' : 'var(--primary)');
+    diffCell.innerText = sign + formatTien(diff) + " đ";
 }
 
 function confirmSingleBankEdit() {
-    let newNHData = [...(masterData[currentDay].nh || [])];
-    if(!masterData.nh_history) masterData.nh_history = [];
-    let nowTime = new Date().toLocaleString('vi-VN');
+    let newNHData = [...(masterData[currentDay].nh || [])];
+    if(!masterData.nh_history) masterData.nh_history = [];
+    let nowTime = new Date().toLocaleString('vi-VN');
 
-    let newValStr = document.getElementById('edit-single-nh-new').value;
-    let rawInputVal = newValStr !== "" ? cleanTien(newValStr) : null; 
-    
-    let linkedFundTotal = 0;
-    if(masterData[currentDay].quy) {
-        masterData[currentDay].quy.forEach(q => {
-            let s = q.storages.find(x => x.name === currentEditBankShortName && x.isLinked === true);
-            if(s) linkedFundTotal += s.v;
-        });
-    }
+    let newValStr = document.getElementById('edit-single-nh-new').value;
+    let rawInputVal = newValStr !== "" ? cleanTien(newValStr) : null; 
+    
+    let linkedFundTotal = 0;
+    if(masterData[currentDay].quy) {
+        masterData[currentDay].quy.forEach(q => {
+            let s = q.storages.find(x => x.name === currentEditBankShortName && x.isLinked === true);
+            if(s) linkedFundTotal += s.v;
+        });
+    }
 
-    let newVal = null;
-    let diff = 0;
-    let calcNewVal = 0;
+    let newVal = null;
+    let diff = 0;
+    let calcNewVal = 0;
 
-    if (rawInputVal !== null) {
-        newVal = rawInputVal - linkedFundTotal;
-        if (newVal < 0) newVal = 0;
-        calcNewVal = newVal;
-        let effectiveOldGross = currentEditBankOldVal + linkedFundTotal;
-        diff = rawInputVal - effectiveOldGross;
-    }
+    if (rawInputVal !== null) {
+        newVal = rawInputVal - linkedFundTotal;
+        if (newVal < 0) newVal = 0;
+        calcNewVal = newVal;
+        let effectiveOldGross = currentEditBankOldVal + linkedFundTotal;
+        diff = rawInputVal - effectiveOldGross;
+    }
 
-    let reasonSelect = document.getElementById('sel-single-nh-reason').value;
-    
-    let idx = newNHData.findIndex(x => x.n === currentEditBankShortName);
-    if (idx > -1) {
-        if (newVal === null) newNHData[idx].v = ""; 
-        else newNHData[idx].v = newVal.toString();
-    }
-    else {
-        if (newVal !== null) newNHData.push({ n: currentEditBankShortName, v: newVal.toString() });
-    }
-    
-    if (rawInputVal !== null && diff !== 0) {
-        masterData.nh_history.push({ date: currentDay, time: nowTime, bank: currentEditBankShortName, oldVal: currentEditBankOldVal, newVal: calcNewVal, diff: diff, reason: reasonSelect });
-    }
-    
-    if (diff < 0) { 
-        let amountToDeduct = Math.abs(diff);
-        if(masterData[currentDay].quy) {
-            masterData[currentDay].quy.forEach(q => {
-                let storageItem = q.storages.find(s => s.name === currentEditBankShortName && s.isLinked === true);
-                if (storageItem && amountToDeduct > 0) {
-                    let deduct = Math.min(storageItem.v, amountToDeduct);
-                    storageItem.v -= deduct;
-                    amountToDeduct -= deduct;
-                    if(!q.history) q.history = [];
-                    q.history.push({ d: currentDay, type: 'rut', amount: deduct, storage: currentEditBankShortName, reason: 'Trừ tự động do giảm NH: ' + reasonSelect });
-                }
-            });
-        }
-    }
+    let reasonSelect = document.getElementById('sel-single-nh-reason').value;
+    
+    let idx = newNHData.findIndex(x => x.n === currentEditBankShortName);
+    if (idx > -1) {
+        if (newVal === null) newNHData[idx].v = ""; 
+        else newNHData[idx].v = newVal.toString();
+    }
+    else {
+        if (newVal !== null) newNHData.push({ n: currentEditBankShortName, v: newVal.toString() });
+    }
+    
+    if (rawInputVal !== null && diff !== 0) {
+        masterData.nh_history.push({ date: currentDay, time: nowTime, bank: currentEditBankShortName, oldVal: currentEditBankOldVal, newVal: calcNewVal, diff: diff, reason: reasonSelect });
+    }
+    
+    if (diff < 0) { 
+        let amountToDeduct = Math.abs(diff);
+        if(masterData[currentDay].quy) {
+            masterData[currentDay].quy.forEach(q => {
+                let storageItem = q.storages.find(s => s.name === currentEditBankShortName && s.isLinked === true);
+                if (storageItem && amountToDeduct > 0) {
+                    let deduct = Math.min(storageItem.v, amountToDeduct);
+                    storageItem.v -= deduct;
+                    amountToDeduct -= deduct;
+                    if(!q.history) q.history = [];
+                    q.history.push({ d: currentDay, type: 'rut', amount: deduct, storage: currentEditBankShortName, reason: 'Trừ tự động do giảm NH: ' + reasonSelect });
+                }
+            });
+        }
+    }
 
-    masterData[currentDay].nh = newNHData;
-    saveMaster(); loadDay(); closeModal('modal-edit-single-nh');
-    alert("Đã cập nhật số dư Ngân hàng!");
+    masterData[currentDay].nh = newNHData;
+    saveMaster(); loadDay(); closeModal('modal-edit-single-nh');
+    alert("Đã cập nhật số dư Ngân hàng!");
 }
 
 function refreshBankReasonOptions() {
-    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
-    let html = masterData.bankReasons.map(r => `<option value="${r}">${r}</option>`).join('');
-    let sel = document.getElementById('sel-single-nh-reason');
-    if(sel) {
-        let currentVal = sel.value;
-        sel.innerHTML = html;
-        if(masterData.bankReasons.includes(currentVal)) sel.value = currentVal;
-    }
+    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
+    let html = masterData.bankReasons.map(r => `<option value="${r}">${r}</option>`).join('');
+    let sel = document.getElementById('sel-single-nh-reason');
+    if(sel) {
+        let currentVal = sel.value;
+        sel.innerHTML = html;
+        if(masterData.bankReasons.includes(currentVal)) sel.value = currentVal;
+    }
 }
 
 function openBankReasonManager() {
-    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
-    document.getElementById('in-new-bank-reason').value = "";
-    renderBankReasonsList();
-    openModal('modal-bank-reasons');
+    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
+    document.getElementById('in-new-bank-reason').value = "";
+    renderBankReasonsList();
+    openModal('modal-bank-reasons');
 }
 
 function closeBankReasonManager() {
-    closeModal('modal-bank-reasons');
-    refreshBankReasonOptions();
+    closeModal('modal-bank-reasons');
+    refreshBankReasonOptions();
 }
 
 function renderBankReasonsList() {
-    let listHtml = "";
-    masterData.bankReasons.forEach((r, i) => {
-        listHtml += `<tr><td style="font-weight:bold">${r}</td><td align="center"><span onclick="deleteBankReason(${i})" style="color:red; cursor:pointer; font-weight:bold;">✖</span></td></tr>`;
-    });
-    document.getElementById('body-bank-reasons-list').innerHTML = listHtml;
+    let listHtml = "";
+    masterData.bankReasons.forEach((r, i) => {
+        listHtml += `<tr><td style="font-weight:bold">${r}</td><td align="center"><span onclick="deleteBankReason(${i})" style="color:red; cursor:pointer; font-weight:bold;">✖</span></td></tr>`;
+    });
+    document.getElementById('body-bank-reasons-list').innerHTML = listHtml;
 }
 
 function saveNewBankReason() {
-    let reason = document.getElementById('in-new-bank-reason').value.trim();
-    if (reason !== "") {
-        if (!masterData.bankReasons.includes(reason)) { 
-            masterData.bankReasons.push(reason); 
-            saveMaster(); 
-            renderBankReasonsList(); 
-            document.getElementById('in-new-bank-reason').value = "";
-        } else { 
-            alert("Lý do này đã tồn tại!"); 
-        }
-    }
+    let reason = document.getElementById('in-new-bank-reason').value.trim();
+    if (reason !== "") {
+        if (!masterData.bankReasons.includes(reason)) { 
+            masterData.bankReasons.push(reason); 
+            saveMaster(); 
+            renderBankReasonsList(); 
+            document.getElementById('in-new-bank-reason').value = "";
+        } else { 
+            alert("Lý do này đã tồn tại!"); 
+        }
+    }
 }
 
-function deleteBankReason(index) { 
-    if(confirm("Xóa lý do này?")) { 
-        masterData.bankReasons.splice(index, 1); 
-        saveMaster(); 
-        renderBankReasonsList(); 
-    } 
+function deleteBankReason(index) { 
+    if(confirm("Xóa lý do này?")) { 
+        masterData.bankReasons.splice(index, 1); 
+        saveMaster(); 
+        renderBankReasonsList(); 
+    } 
 }
 
 
@@ -1686,11 +1686,11 @@ let filterSel = document.getElementById('quy-detail-filter');
 filterSel.innerHTML = `<option value="all">Tất cả tài khoản</option>`;
 
 q.storages.forEach((s) => {
-    let isLinkedChecked = s.isLinked ? "checked" : "";
-    let linkToggle = s.name !== 'Tiền mặt' ? `<label class="switch" style="margin-top:4px;"><input type="checkbox" onchange="toggleQuyLink(${q.id}, '${s.name}', this.checked)" ${isLinkedChecked}><span class="slider"></span></label>` : '<span style="color:#aaa">-</span>';
-    
-    b.innerHTML += `<tr><td style="font-weight:bold">${s.name}</td><td align="center">${linkToggle}</td><td align="right" style="color:var(--success); font-weight:bold; font-size:16px;">${formatTien(s.v)} đ</td></tr>`;
-    filterSel.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+    let isLinkedChecked = s.isLinked ? "checked" : "";
+    let linkToggle = s.name !== 'Tiền mặt' ? `<label class="switch" style="margin-top:4px;"><input type="checkbox" onchange="toggleQuyLink(${q.id}, '${s.name}', this.checked)" ${isLinkedChecked}><span class="slider"></span></label>` : '<span style="color:#aaa">-</span>';
+    
+    b.innerHTML += `<tr><td style="font-weight:bold">${s.name}</td><td align="center">${linkToggle}</td><td align="right" style="color:var(--success); font-weight:bold; font-size:16px;">${formatTien(s.v)} đ</td></tr>`;
+    filterSel.innerHTML += `<option value="${s.name}">${s.name}</option>`;
 });
 
 filterQuyHistory();
@@ -1698,44 +1698,44 @@ openModal('modal-quy-detail');
 }
 
 window.toggleQuyLink = function(quyId, storageName, isChecked) {
-    let q = masterData[currentDay].quy.find(x => x.id === quyId);
-    if(q) {
-        let s = q.storages.find(x => x.name === storageName);
-        if(s) {
-            s.isLinked = isChecked;
-            saveMaster();
-        }
-    }
+    let q = masterData[currentDay].quy.find(x => x.id === quyId);
+    if(q) {
+        let s = q.storages.find(x => x.name === storageName);
+        if(s) {
+            s.isLinked = isChecked;
+            saveMaster();
+        }
+    }
 };
 
 function filterQuyHistory() {
-    let q = masterData[currentDay].quy.find(x => x.id === currentQuyDetailId); if(!q) return;
-    let filterVal = document.getElementById('quy-detail-filter').value;
-    let hBody = document.getElementById('quy-history-tbody');
-    hBody.innerHTML = "";
-    
-    let historyToRender = q.history || [];
-    if (filterVal !== 'all') {
-        historyToRender = historyToRender.filter(h => h.storage === filterVal);
-    }
-    
-    if (historyToRender.length > 0) {
-        let sortedHistory = [...historyToRender].reverse();
-        sortedHistory.forEach(h => {
-            let typeText = h.type === 'init' ? 'Khởi tạo' : (h.type === 'nop' ? 'Nộp thêm' : 'Rút ra');
-            let color = h.type === 'rut' ? 'var(--danger)' : 'var(--success)';
-            let sign = h.type === 'rut' ? '-' : '+';
-            hBody.innerHTML += `<tr>
-                <td align="center">${vnDate(h.d)}</td>
-                <td align="center" style="font-weight:bold; color:${color}">${typeText}</td>
-                <td align="right" style="font-weight:bold; color:${color}">${sign}${formatTien(h.amount)} đ</td>
-                <td>${h.storage}</td>
-                <td>${h.reason || ''}</td>
-            </tr>`;
-        });
-    } else {
-        hBody.innerHTML = `<tr><td colspan="5" align="center" style="color:#888; font-style:italic; padding:15px;">Chưa có lịch sử giao dịch nào ở tài khoản này.</td></tr>`;
-    }
+    let q = masterData[currentDay].quy.find(x => x.id === currentQuyDetailId); if(!q) return;
+    let filterVal = document.getElementById('quy-detail-filter').value;
+    let hBody = document.getElementById('quy-history-tbody');
+    hBody.innerHTML = "";
+    
+    let historyToRender = q.history || [];
+    if (filterVal !== 'all') {
+        historyToRender = historyToRender.filter(h => h.storage === filterVal);
+    }
+    
+    if (historyToRender.length > 0) {
+        let sortedHistory = [...historyToRender].reverse();
+        sortedHistory.forEach(h => {
+            let typeText = h.type === 'init' ? 'Khởi tạo' : (h.type === 'nop' ? 'Nộp thêm' : 'Rút ra');
+            let color = h.type === 'rut' ? 'var(--danger)' : 'var(--success)';
+            let sign = h.type === 'rut' ? '-' : '+';
+            hBody.innerHTML += `<tr>
+                <td align="center">${vnDate(h.d)}</td>
+                <td align="center" style="font-weight:bold; color:${color}">${typeText}</td>
+                <td align="right" style="font-weight:bold; color:${color}">${sign}${formatTien(h.amount)} đ</td>
+                <td>${h.storage}</td>
+                <td>${h.reason || ''}</td>
+            </tr>`;
+        });
+    } else {
+        hBody.innerHTML = `<tr><td colspan="5" align="center" style="color:#888; font-style:italic; padding:15px;">Chưa có lịch sử giao dịch nào ở tài khoản này.</td></tr>`;
+    }
 }
 
 function openEditQuyStorage(id) {
@@ -1761,7 +1761,7 @@ function openNopQuy(id) {
 let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
 document.getElementById('hid-quy-nop-id').value = id;
 document.getElementById('in-quy-nop-val').value = "";
-document.getElementById('in-quy-nop-date').value = currentDay; 
+document.getElementById('in-quy-nop-date').value = currentDay; 
 document.getElementById('in-quy-nop-date').max = new Date().toISOString().split('T')[0];
 let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
 document.getElementById('sel-quy-nop-storage').innerHTML = storageHtml;
@@ -1769,20 +1769,20 @@ openModal('modal-quy-nop');
 }
 
 function confirmNopQuy() {
-let id = parseInt(document.getElementById('hid-quy-nop-id').value), 
-    val = cleanTien(document.getElementById('in-quy-nop-val').value), 
-    storageName = document.getElementById('sel-quy-nop-storage').value,
-    nopDate = document.getElementById('in-quy-nop-date').value;
+let id = parseInt(document.getElementById('hid-quy-nop-id').value), 
+    val = cleanTien(document.getElementById('in-quy-nop-val').value), 
+    storageName = document.getElementById('sel-quy-nop-storage').value,
+    nopDate = document.getElementById('in-quy-nop-date').value;
 if (val <= 0 || !nopDate) { alert("Vui lòng nhập số tiền và ngày nộp hợp lệ!"); return; }
 let q = masterData[currentDay].quy.find(x => x.id === id);
 if (q) {
-    let storageIndex = q.storages.findIndex(s => s.name === storageName);
-    if (storageIndex > -1) {
-        q.storages[storageIndex].v += val;
-        if(!q.history) q.history = [];
-        q.history.push({ d: nopDate, type: 'nop', amount: val, storage: storageName, reason: 'Nộp thêm tiền' });
-        saveMaster(); closeModal('modal-quy-nop'); loadDay();
-    }
+    let storageIndex = q.storages.findIndex(s => s.name === storageName);
+    if (storageIndex > -1) {
+        q.storages[storageIndex].v += val;
+        if(!q.history) q.history = [];
+        q.history.push({ d: nopDate, type: 'nop', amount: val, storage: storageName, reason: 'Nộp thêm tiền' });
+        saveMaster(); closeModal('modal-quy-nop'); loadDay();
+    }
 }
 }
 
@@ -1823,46 +1823,48 @@ openModal('modal-quy-rut');
 }
 
 function confirmRutQuy() {
-let id = parseInt(document.getElementById('hid-quy-rut-id').value), 
-    val = cleanTien(document.getElementById('in-quy-rut-val').value), 
-    storageName = document.getElementById('sel-quy-rut-storage').value,
-    reason = document.getElementById('sel-quy-rut-reason').value,
-    rutDate = document.getElementById('in-quy-rut-date').value;
+let id = parseInt(document.getElementById('hid-quy-rut-id').value), 
+    val = cleanTien(document.getElementById('in-quy-rut-val').value), 
+    storageName = document.getElementById('sel-quy-rut-storage').value,
+    reason = document.getElementById('sel-quy-rut-reason').value,
+    rutDate = document.getElementById('in-quy-rut-date').value;
 if (val <= 0 || !rutDate) { alert("Vui lòng nhập số tiền và ngày rút hợp lệ!"); return; }
 let q = masterData[currentDay].quy.find(x => x.id === id);
 if (q) {
-    let storageIndex = q.storages.findIndex(s => s.name === storageName);
-    if (storageIndex > -1) {
-        if (q.storages[storageIndex].v < val) { alert("Lỗi: Số dư không đủ!"); return; }
-        q.storages[storageIndex].v -= val;
-        if(!q.history) q.history = [];
-        q.history.push({ d: rutDate, type: 'rut', amount: val, storage: storageName, reason: reason });
-        saveMaster(); closeModal('modal-quy-rut'); loadDay();
-    }
+    let storageIndex = q.storages.findIndex(s => s.name === storageName);
+    if (storageIndex > -1) {
+        if (q.storages[storageIndex].v < val) { alert("Lỗi: Số dư không đủ!"); return; }
+        q.storages[storageIndex].v -= val;
+        if(!q.history) q.history = [];
+        q.history.push({ d: rutDate, type: 'rut', amount: val, storage: storageName, reason: reason });
+        saveMaster(); closeModal('modal-quy-rut'); loadDay();
+    }
 }
 }
 
 function deleteQuy(id) {
-if(confirm("Bạn có chắc chắn muốn xóa quỹ này không?")) {
+let p = prompt("Nhập mật khẩu để xóa quỹ:");
+if(p !== systemDB[activeUserPhone].password) { alert("Sai mật khẩu!"); return; }
+let c = prompt("Nhập dòng chữ ' XÁC NHẬN XÓA QUỸ' để xóa:");
+if(c !== " XÁC NHẬN XÓA QUỸ") { alert("Xác nhận không hợp lệ!"); return; }
 masterData[currentDay].quy = masterData[currentDay].quy.filter(x => x.id !== id);
 saveMaster(); loadDay();
-}
 }
 
 // =====================================
 // FILTER CHO SỔ TIẾT KIỆM
 // =====================================
 function filterSTK(type, btn) {
-    currentSTKFilter = type;
-    document.querySelectorAll('.stk-filter-btn').forEach(b => {
-        b.style.background = '#fff';
-        b.style.color = '#000';
-    });
-    btn.style.background = 'var(--primary)';
-    btn.style.color = 'var(--accent)';
-    
-    let list = masterData[currentDay]?.stk || [];
-    renderSTK(list);
+    currentSTKFilter = type;
+    document.querySelectorAll('.stk-filter-btn').forEach(b => {
+        b.style.background = '#fff';
+        b.style.color = '#000';
+    });
+    btn.style.background = 'var(--primary)';
+    btn.style.color = 'var(--accent)';
+    
+    let list = masterData[currentDay]?.stk || [];
+    renderSTK(list);
 }
 
 // =====================================
@@ -1888,12 +1890,12 @@ const dToday = new Date(currentDay).getTime();
 
 let filteredList = list;
 if (currentSTKFilter !== 'all') {
-    filteredList = list.filter(s => s.type === currentSTKFilter);
+    filteredList = list.filter(s => s.type === currentSTKFilter);
 }
 
 if(filteredList.length === 0) {
-    cont.innerHTML = `<div style="text-align:center; padding:20px; color:#666; font-style:italic;">Không có sổ tiết kiệm nào trong danh mục này.</div>`;
-    return;
+    cont.innerHTML = `<div style="text-align:center; padding:20px; color:#666; font-style:italic;">Không có sổ tiết kiệm nào trong danh mục này.</div>`;
+    return;
 }
 
 filteredList.forEach(s => {
@@ -1961,12 +1963,12 @@ b.innerHTML += `<tr><td align="center">${vnDate(h.d)}</td><td style="text-align:
 openModal('modal-stk-detail');
 }
 
-function openNop(id) { 
-    document.getElementById('hid-nop-id').value = id; 
-    document.getElementById('in-nop-val').value = ""; 
-    document.getElementById('in-stk-nop-date').value = currentDay;
-    document.getElementById('in-stk-nop-date').max = new Date().toISOString().split('T')[0];
-    openModal('modal-stk-nop'); 
+function openNop(id) { 
+    document.getElementById('hid-nop-id').value = id; 
+    document.getElementById('in-nop-val').value = ""; 
+    document.getElementById('in-stk-nop-date').value = currentDay;
+    document.getElementById('in-stk-nop-date').max = new Date().toISOString().split('T')[0];
+    openModal('modal-stk-nop'); 
 }
 
 function confirmNop() {
@@ -2054,15 +2056,15 @@ for(let j=0; j<3; j++) {
 let cellVal = printCells[i * 3 + j];
 if (cellVal === null) { tmPrintHtml += `<td class="tm-empty"></td><td class="tm-empty"></td><td class="tm-empty"></td>`;
 } else {
-let originIdx = denoms.indexOf(cellVal); 
+let originIdx = denoms.indexOf(cellVal); 
 let rawVal = data.tm && data.tm[originIdx] !== undefined && data.tm[originIdx] !== "" ? data.tm[originIdx] : null;
 if (rawVal !== null) {
-    let slg = parseInt(rawVal) || 0;
-    let tong = cellVal * slg;
-    let tongDisplay = tong === 0 ? '0' : formatTien(tong);
-    tmPrintHtml += `<td class="tm-val">${formatTien(cellVal)}</td><td class="tm-sl">${slg}</td><td>${tongDisplay}</td>`;
+    let slg = parseInt(rawVal) || 0;
+    let tong = cellVal * slg;
+    let tongDisplay = tong === 0 ? '0' : formatTien(tong);
+    tmPrintHtml += `<td class="tm-val">${formatTien(cellVal)}</td><td class="tm-sl">${slg}</td><td>${tongDisplay}</td>`;
 } else {
-    tmPrintHtml += `<td class="tm-val">${formatTien(cellVal)}</td><td class="tm-sl"></td><td>-</td>`;
+    tmPrintHtml += `<td class="tm-val">${formatTien(cellVal)}</td><td class="tm-sl"></td><td>-</td>`;
 }
 } } tmPrintHtml += `</tr>`; }
 document.getElementById('p-tm-grid-tbody').innerHTML = tmPrintHtml;
@@ -2070,22 +2072,22 @@ document.getElementById('p-tm-grid-tbody').innerHTML = tmPrintHtml;
 let activeBanks = (data.nh || []).filter(n => cleanTien(n.v) > 0);
 let nhPrintHtml = "";
 if (activeBanks.length > 2) {
-    document.querySelector('#p-nh-table thead').innerHTML = `<tr><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th></tr>`;
-    document.querySelector('#p-nh-table tfoot td:first-child').setAttribute('colspan', '3');
-    for (let i = 0; i < activeBanks.length; i += 2) {
-        let b1 = activeBanks[i];
-        let b2 = activeBanks[i+1];
-        nhPrintHtml += `<tr>
-            <td style="text-align:left;">${b1.n}</td><td align="right">${formatTien(cleanTien(b1.v))} đ</td>
-            <td style="text-align:left;">${b2 ? b2.n : ''}</td><td align="right">${b2 ? formatTien(cleanTien(b2.v)) + ' đ' : ''}</td>
-        </tr>`;
-    }
+    document.querySelector('#p-nh-table thead').innerHTML = `<tr><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th></tr>`;
+    document.querySelector('#p-nh-table tfoot td:first-child').setAttribute('colspan', '3');
+    for (let i = 0; i < activeBanks.length; i += 2) {
+        let b1 = activeBanks[i];
+        let b2 = activeBanks[i+1];
+        nhPrintHtml += `<tr>
+            <td style="text-align:left;">${b1.n}</td><td align="right">${formatTien(cleanTien(b1.v))} đ</td>
+            <td style="text-align:left;">${b2 ? b2.n : ''}</td><td align="right">${b2 ? formatTien(cleanTien(b2.v)) + ' đ' : ''}</td>
+        </tr>`;
+    }
 } else {
-    document.querySelector('#p-nh-table thead').innerHTML = `<tr><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th></tr>`;
-    document.querySelector('#p-nh-table tfoot td:first-child').removeAttribute('colspan');
-    activeBanks.forEach(n => { 
-        nhPrintHtml += `<tr><td style="text-align:left;">${n.n}</td><td align="right">${formatTien(cleanTien(n.v))} đ</td></tr>`; 
-    });
+    document.querySelector('#p-nh-table thead').innerHTML = `<tr><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th></tr>`;
+    document.querySelector('#p-nh-table tfoot td:first-child').removeAttribute('colspan');
+    activeBanks.forEach(n => { 
+        nhPrintHtml += `<tr><td style="text-align:left;">${n.n}</td><td align="right">${formatTien(cleanTien(n.v))} đ</td></tr>`; 
+    });
 }
 document.querySelector('#p-nh-table tbody').innerHTML = nhPrintHtml;
 document.getElementById('p-nh-total').innerText = formatTien(tNH) + " đ";
@@ -2121,10 +2123,10 @@ closeModal('modal-print-setup'); buildPrintLayout(printDate);
 
 setTimeout(() => {
 let asciiCode = generateASCII(12); let nowTime = new Date().toLocaleString('vi-VN');
-document.getElementById('p-auditor').innerText = auditor; 
-document.getElementById('p-address').innerText = address; 
+document.getElementById('p-auditor').innerText = auditor; 
+document.getElementById('p-address').innerText = address; 
 
-document.getElementById('p-sign-name-1').innerText = ""; 
+document.getElementById('p-sign-name-1').innerText = systemDB[activeUserPhone].name; 
 document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
 
 let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(printDate + 'T00:00:00');
@@ -2144,9 +2146,9 @@ function printOldRecord(dateStr, codeStr) {
 let history = masterData.printHistory || []; let record = history.find(x => x.code === codeStr); if(!record) return;
 buildPrintLayout(dateStr);
 setTimeout(() => {
-document.getElementById('p-auditor').innerText = record.auditor; 
-document.getElementById('p-address').innerText = record.address; 
-document.getElementById('p-sign-name-1').innerText = ""; 
+document.getElementById('p-auditor').innerText = record.auditor; 
+document.getElementById('p-address').innerText = record.address; 
+document.getElementById('p-sign-name-1').innerText = systemDB[activeUserPhone].name; 
 document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
 
 let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(dateStr + 'T00:00:00'); let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
@@ -2176,9 +2178,9 @@ if (window.innerWidth < 850) toggleMenu();
 if(id === 'sheet-print') renderPrintHistory();
 
 setTimeout(() => {
-    let contentBox = document.querySelector('.app-content');
-    if(contentBox) contentBox.scrollTop = 0;
-    window.scrollTo(0, 0);
+    let contentBox = document.querySelector('.app-content');
+    if(contentBox) contentBox.scrollTop = 0;
+    window.scrollTo(0, 0);
 }, 10);
 }
 
