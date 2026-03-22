@@ -310,13 +310,13 @@ body * { visibility: hidden; }
             <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('tich-luy', this)">Góp tích lũy</button>
         </div>
         <div id="stk-container"></div>
-        <button class="btn-main" style="background:var(--success); color:white; border:none" onclick="openModal('modal-stk-add')">LẬP SỔ TIẾT KIỆM MỚI</button>
+        <button class="btn-main" style="background:var(--success); color:white; border:none" onclick="openModal('modal-stk-add')">TẠO SỔ TIẾT KIỆM MỚI</button>
         <div class="sub-total-box" style="border-color:var(--success); background:#f4f9f4;">TỔNG TIẾT KIỆM: <span id="val-stk" style="font-size:26px; color:var(--success)">0</span> đ</div>
         </div>
 
         <div id="content-quy" style="display:none;">
         <div id="quy-container"></div>
-        <button class="btn-main" style="background:var(--accent); color:white; border:none" onclick="openModal('modal-quy-add')">+ THIẾT LẬP QUỸ MỚI</button>
+        <button class="btn-main" style="background:var(--accent); color:white; border:none" onclick="openModal('modal-quy-add')">TẠO QUỸ MỚI</button>
         <div class="sub-total-box" style="border-color:var(--accent); background:#fffdf5;">TỔNG CÁC QUỸ: <span id="val-quy" style="font-size:26px; color:var(--accent)">0</span> đ</div>
         </div>
         </div>
@@ -495,7 +495,7 @@ body * { visibility: hidden; }
 
 <div class="modal-overlay" id="modal-bank-reasons" style="z-index: 100000;">
 <div class="modal-content" style="max-width:400px;">
-<div class="modal-title">QUẢN LÝ LÝ DO ĐIỀU CHỈNH NH</div>
+<div class="modal-title">LÝ DO ĐIỀU CHỈNH NH</div>
 <div style="display:flex; gap:10px; margin-bottom: 20px;"><input type="text" id="in-new-bank-reason" placeholder="Nhập lý do mới..." style="flex:1; padding:10px;"><button class="btn-sm" style="background:var(--success); color:#fff; font-size:14px; padding:0 15px;" onclick="saveNewBankReason()">THÊM</button></div>
 <table class="data-table"><thead><tr style="background:#e9ecef"><th style="text-align:left">Tên Lý Do</th><th style="width:50px">Xóa</th></tr></thead><tbody id="body-bank-reasons-list"></tbody></table>
 <button class="btn-main" style="background:#000; color:#fff; border-color:#000;" onclick="closeBankReasonManager()">ĐÓNG</button>
@@ -541,7 +541,7 @@ body * { visibility: hidden; }
 </div>
 <div style="display:flex; gap:15px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-stk-add')">HỦY BỎ</button>
-<button class="btn-main" style="flex:2" onclick="saveNewSTK()">LƯU VÀO HỆ THỐNG</button>
+<button class="btn-main" style="flex:2" onclick="saveNewSTK()">TẠO SỔ MỚI</button>
 </div>
 </div>
 </div>
@@ -581,7 +581,7 @@ body * { visibility: hidden; }
     <label style="font-weight:bold;">Lọc theo kho lưu trữ:</label>
     <select id="quy-detail-filter" style="width:auto; padding:5px;" onchange="filterQuyHistory()"></select>
 </div>
-<table class="data-table" style="margin-bottom: 10px;"><thead><tr style="background:#e9ecef"><th>Nơi cất giữ</th><th style="width: 100px; text-align: center;">Lưu chung NH</th><th>Số dư (VNĐ)</th></tr></thead><tbody id="quy-detail-tbody"></tbody></table>
+<table class="data-table" style="margin-bottom: 10px;"><thead><tr style="background:#e9ecef"><th>Nơi cất giữ</th><th style="width: 100px; text-align: center;">Lưu chung với tài khoản</th><th>Số dư (VNĐ)</th></tr></thead><tbody id="quy-detail-tbody"></tbody></table>
 
 <h3 style="margin-top: 25px; font-size: 16px; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">LỊCH SỬ GIAO DỊCH</h3>
 <div style="overflow-x:auto; max-height: 250px;">
