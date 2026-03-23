@@ -28,15 +28,10 @@ display: flex;
 justify-content: center;
 }
 
-/* Base64 Data URI cho Background Watermark để tránh lỗi in ấn */
-.watermark-bg {
-    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgoJPGRlZnM+CgkJPHBhdHRlcm4gaWQ9IndhdGVybWFyayIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8dGV4dCB4PSIxNTAiIHk9IjEwMCIgZm9udC1zaXplPSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiYSgyMDAsIDIwMCwgMjAwLCAwLjE1KSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCwgMTUwLCAxMDApIj5LSUVNIFRPQU48L3RleHQ+CgkJPC9wYXR0ZXJuPgoJPC9kZWZzPgoJPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCN3YXRlcm1hcmspIiAvPjwvc3ZnPg==') center/cover no-repeat;
-}
-
 /* === CSS HỆ THỐNG AUTH === */
 .auth-wrapper {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: url('https://lh3.googleusercontent.com/d/1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa') center/cover no-repeat;
+    background: url('https://drive.google.com/uc?export=view&id=1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa') center/cover no-repeat;
     display: flex; justify-content: center; align-items: center; z-index: 100000;
 }
 .auth-overlay {
@@ -84,7 +79,7 @@ justify-content: center;
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgoJPGRlZnM+CgkJPHBhdHRlcm4gaWQ9IndhdGVybWFyayIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8dGV4dCB4PSIxNTAiIHk9IjEwMCIgZm9udC1zaXplPSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiYSgyMDAsIDIwMCwgMjAwLCAwLjE1KSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCwgMTUwLCAxMDApIj5LSUVNIFRPQU48L3RleHQ+CgkJPC9wYXR0ZXJuPgoJPC9kZWZzPgoJPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCN3YXRlcm1hcmspIiAvPjwvc3ZnPg==') center/cover no-repeat;
+    background: url('https://drive.google.com/uc?export=view&id=1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa') center/cover no-repeat;
     opacity: 0.08;
     pointer-events: none;
     z-index: 1;
@@ -157,7 +152,7 @@ input:checked + .slider:before { transform: translateX(16px); }
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 99999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
 .modal-overlay.active { display: flex; }
 .modal-content { background: #fff; width: 100%; max-width: 550px; border: 2px solid var(--accent); padding: 35px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 60px rgba(0,0,0,0.6); border-radius: 8px; }
-.modal-content::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgoJPGRlZnM+CgkJPHBhdHRlcm4gaWQ9IndhdGVybWFyayIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8dGV4dCB4PSIxNTAiIHk9IjEwMCIgZm9udC1zaXplPSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiYSgyMDAsIDIwMCwgMjAwLCAwLjE1KSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCwgMTUwLCAxMDApIj5LSUVNIFRPQU48L3RleHQ+CgkJPC9wYXR0ZXJuPgoJPC9kZWZzPgoJPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCN3YXRlcm1hcmspIiAvPjwvc3ZnPg==') center/cover no-repeat; opacity: 0.08; pointer-events: none; z-index: 0; border-radius: 8px; }
+.modal-content::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://drive.google.com/uc?export=view&id=1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa') center/cover no-repeat; opacity: 0.08; pointer-events: none; z-index: 0; border-radius: 8px; }
 .modal-content > * { position: relative; z-index: 1; }
 .modal-title { font-size: 22px; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 25px; border-bottom: 1px solid #ccc; padding-bottom: 15px; }
 .form-group { margin-bottom: 20px; }
@@ -190,7 +185,7 @@ html, body { background: #fff !important; padding: 0 !important; margin: 0 !impo
 #auth-screen, .app-container, .modal-overlay { display: none !important; }
 #print-area { display: block !important; position: relative !important; left: 0; top: 0; width: 100%; font-family: "Times New Roman", Times, serif; font-size: 13px; color: #000; box-sizing: border-box; }
 .p-wrap { border: 2px solid #000; padding: 20px; min-height: 95vh; display: flex; flex-direction: column; position: relative;}
-.p-wrap::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgoJPGRlZnM+CgkJPHBhdHRlcm4gaWQ9IndhdGVybWFyayIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8dGV4dCB4PSIxNTAiIHk9IjEwMCIgZm9udC1zaXplPSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiYSgyMDAsIDIwMCwgMjAwLCAwLjE1KSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCwgMTUwLCAxMDApIj5LSUVNIFRPQU48L3RleHQ+CgkJPC9wYXR0ZXJuPgoJPC9kZWZzPgoJPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCN3YXRlcm1hcmspIiAvPjwvc3ZnPg==') center/contain no-repeat; opacity: 0.1; pointer-events: none; z-index: -1; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+.p-wrap::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://drive.google.com/uc?export=view&id=1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa') center/contain no-repeat; opacity: 0.1; pointer-events: none; z-index: -1; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 .p-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px;}
 .p-title { text-align: center; text-transform: uppercase; font-weight: bold; font-size: 20px; margin: 15px 0 20px 0; }
 .p-info { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; font-size: 14px;}
@@ -417,7 +412,7 @@ html, body { background: #fff !important; padding: 0 !important; margin: 0 !impo
 
         <div style="text-align: center; margin-top: auto; padding: 30px 20px; color: #333; width: 100%; position: relative; z-index: 2;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <img src="https://lh3.googleusercontent.com/d/1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa" alt="[LOGO]" style="height: 80px; display: inline-block;"> 
+                <img src="https://drive.google.com/uc?export=view&id=1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa" alt="[LOGO]" style="height: 80px; display: inline-block;"> 
                 <span style="font-size: 16px; font-weight: bold; color: #1a1a1a;">Copyright © 2026 Thiên Trường Software. All rights reserved.</span>
             </div>
             <div style="max-width: 650px; margin: 15px auto 0; border-top: 1px solid #ccc; padding-top: 10px; font-size: 13px; color: #444; line-height: 1.6;">
@@ -827,20 +822,20 @@ html, body { background: #fff !important; padding: 0 !important; margin: 0 !impo
 <div class="p-absolute-footer">
 <div style="text-transform:uppercase; margin-bottom:10px; font-weight:bold;">PHIẾU KIỂM KÊ BẮT BUỘC PHẢI ĐƯỢC LƯU TRỮ - KHÔNG HỦY BỎ DƯỚI MỌI HÌNH THỨC</div>
 <div style="display:flex; justify-content:center; align-items:center; flex-direction:column; gap:5px; margin-bottom:10px;">
-    <div>MÃ ĐỐI SOÁT: <span id="p-ascii" style="font-family:monospace; font-weight:bold; letter-spacing:2px;"></span></div>
-    <div id="p-copy-info" style="display:none; font-weight:bold;">BẢN SAO</div>
+    <div>MÃ ĐỐI SOÁT: <span id="p-ascii" style="font-family:monospace; font-weight:bold; letter-spacing:2px;"></span></div>
+    <div id="p-copy-info" style="display:none; font-weight:bold;">BẢN SAO</div>
 </div>
 <div style="font-weight:bold;">TỔNG CỤC QUẢN LÝ KINH TẾ<br>TRUNG TÂM QUẢN LÝ DÒNG TIỀN<br>BỘ PHẬN KIỂM TOÁN - THANH TRA</div>
 
 <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #000; text-align: center; -webkit-print-color-adjust: exact;">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <img src="https://lh3.googleusercontent.com/d/1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa" alt="[LOGO]" style="height: 60px; display: inline-block;"> 
-        <span style="font-size: 14px; font-weight: bold; color: #000;">Copyright © 2026 Thiên Trường Software. All rights reserved.</span>
-    </div>
-    <div style="margin-top: 8px; font-size: 11px; color: #000;">
-        Established March 22, 2026 | Saigon, Vietnam | https://lehonganthien61633-lgtm.github.io/kiemtoan/<br>
-        <span style="font-style: italic;">Bản quyền thuộc về Thiên Trường Software</span>
-    </div>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <img src="https://drive.google.com/uc?export=view&id=1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa" alt="[LOGO]" style="height: 60px; display: inline-block;"> 
+        <span style="font-size: 14px; font-weight: bold; color: #000;">Copyright © 2026 Thiên Trường Software. All rights reserved.</span>
+    </div>
+    <div style="margin-top: 8px; font-size: 11px; color: #000;">
+        Established March 22, 2026 | Saigon, Vietnam | https://lehonganthien61633-lgtm.github.io/kiemtoan/<br>
+        <span style="font-style: italic;">Bản quyền thuộc về Thiên Trường Software</span>
+    </div>
 </div>
 
 </div>
@@ -873,12 +868,12 @@ html, body { background: #fff !important; padding: 0 !important; margin: 0 !impo
 <div class="modal-content" style="max-width:400px;">
 <div class="modal-title">ĐỔI TÊN NGƯỜI DÙNG</div>
 <div class="form-group">
-    <label>Tài khoản (SĐT)</label>
-    <input type="text" id="admin-target-user-name" readonly style="background:#eee;">
+    <label>Tài khoản (SĐT)</label>
+    <input type="text" id="admin-target-user-name" readonly style="background:#eee;">
 </div>
 <div class="form-group">
-    <label>Tên hiển thị mới</label>
-    <input type="text" id="admin-new-name" placeholder="Nhập họ và tên mới..." oninput="this.value = this.value.toUpperCase()">
+    <label>Tên hiển thị mới</label>
+    <input type="text" id="admin-new-name" placeholder="Nhập họ và tên mới..." oninput="this.value = this.value.toUpperCase()">
 </div>
 <div style="display:flex; gap:15px; margin-top:30px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-admin-name')">HỦY BỎ</button>
@@ -896,7 +891,7 @@ const FIREBASE_URL = 'https://kiemdem-b7042-default-rtdb.asia-southeast1.firebas
 
 let systemDB = {};
 let activeUserPhone = null;
-let masterData = {}; 
+let masterData = {}; 
 let currentDay = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
 let isPrinting = false;
 const denoms = [500000, 200000, 100000, 50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100];
@@ -910,728 +905,728 @@ let currentSTKFilter = 'all';
 
 // Hàm lấy giờ GMT+7 tránh lỗi timeZone trên thiết bị cũ
 function getGMT7Time() {
-    let d = new Date();
-    let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
-    let gmt7Date = new Date(utc + (3600000 * 7));
-    let h = String(gmt7Date.getHours()).padStart(2, '0');
-    let m = String(gmt7Date.getMinutes()).padStart(2, '0');
-    let s = String(gmt7Date.getSeconds()).padStart(2, '0');
-    let dd = String(gmt7Date.getDate()).padStart(2, '0');
-    let mo = String(gmt7Date.getMonth() + 1).padStart(2, '0');
-    let yyyy = gmt7Date.getFullYear();
-    return `${h}:${m}:${s} ${dd}/${mo}/${yyyy}`;
+    let d = new Date();
+    let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    let gmt7Date = new Date(utc + (3600000 * 7));
+    let h = String(gmt7Date.getHours()).padStart(2, '0');
+    let m = String(gmt7Date.getMinutes()).padStart(2, '0');
+    let s = String(gmt7Date.getSeconds()).padStart(2, '0');
+    let dd = String(gmt7Date.getDate()).padStart(2, '0');
+    let mo = String(gmt7Date.getMonth() + 1).padStart(2, '0');
+    let yyyy = gmt7Date.getFullYear();
+    return `${h}:${m}:${s} ${dd}/${mo}/${yyyy}`;
 }
 
 // Hàm tạo Captcha
 function generateCaptcha() {
-    const canvas = document.getElementById('captchaCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-    let captcha = '';
-    for (let i = 0; i < 5; i++) {
-        captcha += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    currentCaptchaCode = captcha;
+    const canvas = document.getElementById('captchaCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+    let captcha = '';
+    for (let i = 0; i < 5; i++) {
+        captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    currentCaptchaCode = captcha;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (let i = 0; i < 30; i++) {
-        ctx.fillStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.3)`;
-        ctx.beginPath();
-        ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 3, 0, Math.PI * 2);
-        ctx.fill();
-    }
+    for (let i = 0; i < 30; i++) {
+        ctx.fillStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.3)`;
+        ctx.beginPath();
+        ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 3, 0, Math.PI * 2);
+        ctx.fill();
+    }
 
-    for (let i = 0; i < 4; i++) {
-        ctx.strokeStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.5)`;
-        ctx.beginPath();
-        ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-        ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
-        ctx.stroke();
-    }
+    for (let i = 0; i < 4; i++) {
+        ctx.strokeStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255},0.5)`;
+        ctx.beginPath();
+        ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+        ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+        ctx.stroke();
+    }
 
-    ctx.font = 'bold 24px "Times New Roman"';
-    ctx.fillStyle = '#1a1a1a';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.setTransform(1, Math.random()*0.2 - 0.1, Math.random()*0.2 - 0.1, 1, 0, 0); 
-    ctx.fillText(captcha, canvas.width / 2, canvas.height / 2);
-    ctx.setTransform(1, 0, 0, 1, 0, 0); 
+    ctx.font = 'bold 24px "Times New Roman"';
+    ctx.fillStyle = '#1a1a1a';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.setTransform(1, Math.random()*0.2 - 0.1, Math.random()*0.2 - 0.1, 1, 0, 0); 
+    ctx.fillText(captcha, canvas.width / 2, canvas.height / 2);
+    ctx.setTransform(1, 0, 0, 1, 0, 0); 
 }
 
 async function loadServerDB() {
-    try {
-        let response = await fetch(FIREBASE_URL);
-        let data = await response.json();
-        if (data) {
-            systemDB = data;
-        }
-        
-        if (!systemDB['0839578432']) {
-            systemDB['0839578432'] = {
-                name: 'ADMINISTRATOR', dob: '', password: '123', role: 'admin', forgotPassword: false,
-                data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}], quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
-            };
-            saveSystemDB(); 
-        }
-    } catch (error) {
-        console.error("Không thể kết nối với máy chủ database:", error);
-        alert("Lỗi tải dữ liệu từ máy chủ. Vui lòng kiểm tra kết nối mạng!");
-    }
+    try {
+        let response = await fetch(FIREBASE_URL);
+        let data = await response.json();
+        if (data) {
+            systemDB = data;
+        }
+        
+        if (!systemDB['0839578432']) {
+            systemDB['0839578432'] = {
+                name: 'ADMINISTRATOR', dob: '', password: '123', role: 'admin', forgotPassword: false,
+                data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}], quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
+            };
+            saveSystemDB(); 
+        }
+    } catch (error) {
+        console.error("Không thể kết nối với máy chủ database:", error);
+        alert("Lỗi tải dữ liệu từ máy chủ. Vui lòng kiểm tra kết nối mạng!");
+    }
 }
 
 loadServerDB();
 
 function saveSystemDB() {
-    fetch(FIREBASE_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(systemDB) });
+    fetch(FIREBASE_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(systemDB) });
 }
 
-function saveMaster() { 
-    if(activeUserPhone) {
-        if(!systemDB[activeUserPhone]) systemDB[activeUserPhone] = {};
-        systemDB[activeUserPhone].data = masterData;
-        saveSystemDB(); 
-    }
+function saveMaster() { 
+    if(activeUserPhone) {
+        if(!systemDB[activeUserPhone]) systemDB[activeUserPhone] = {};
+        systemDB[activeUserPhone].data = masterData;
+        saveSystemDB(); 
+    }
 }
 
 // --- LOGIC GIAO DIỆN AUTH ---
 function switchAuth(type) {
-    document.getElementById('login-box').style.display = type === 'login' ? 'block' : 'none';
-    document.getElementById('register-box').style.display = type === 'register' ? 'block' : 'none';
-    document.getElementById('forgot-box').style.display = type === 'forgot' ? 'block' : 'none';
-    if(type === 'login') generateCaptcha();
+    document.getElementById('login-box').style.display = type === 'login' ? 'block' : 'none';
+    document.getElementById('register-box').style.display = type === 'register' ? 'block' : 'none';
+    document.getElementById('forgot-box').style.display = type === 'forgot' ? 'block' : 'none';
+    if(type === 'login') generateCaptcha();
 }
 
 function handleLogin() {
-    let phone = document.getElementById('login-phone').value.trim();
-    let pass = document.getElementById('login-pass').value;
-    let captchaInput = document.getElementById('login-captcha').value.trim();
+    let phone = document.getElementById('login-phone').value.trim();
+    let pass = document.getElementById('login-pass').value;
+    let captchaInput = document.getElementById('login-captcha').value.trim();
 
-    if (!phone || !pass || !captchaInput) { 
-        alert("Vui lòng nhập đủ Số điện thoại, Mật khẩu và Mã Captcha!"); 
-        return; 
-    }
+    if (!phone || !pass || !captchaInput) { 
+        alert("Vui lòng nhập đủ Số điện thoại, Mật khẩu và Mã Captcha!"); 
+        return; 
+    }
 
-    if (captchaInput.toUpperCase() !== currentCaptchaCode.toUpperCase()) {
-        alert("Mã Captcha không chính xác!");
-        generateCaptcha();
-        document.getElementById('login-captcha').value = '';
-        document.getElementById('login-captcha').focus();
-        return;
-    }
+    if (captchaInput.toUpperCase() !== currentCaptchaCode.toUpperCase()) {
+        alert("Mã Captcha không chính xác!");
+        generateCaptcha();
+        document.getElementById('login-captcha').value = '';
+        document.getElementById('login-captcha').focus();
+        return;
+    }
 
-    if (!systemDB[phone]) { 
-        alert("Tài khoản không tồn tại hoặc dữ liệu đang tải, vui lòng thử lại sau vài giây!"); 
-        generateCaptcha();
-        document.getElementById('login-captcha').value = '';
-        return; 
-    }
-    
-    if (systemDB[phone].password !== pass) { 
-        alert("Sai mật khẩu!"); 
-        generateCaptcha();
-        document.getElementById('login-captcha').value = '';
-        return; 
-    }
+    if (!systemDB[phone]) { 
+        alert("Tài khoản không tồn tại hoặc dữ liệu đang tải, vui lòng thử lại sau vài giây!"); 
+        generateCaptcha();
+        document.getElementById('login-captcha').value = '';
+        return; 
+    }
+    
+    if (systemDB[phone].password !== pass) { 
+        alert("Sai mật khẩu!"); 
+        generateCaptcha();
+        document.getElementById('login-captcha').value = '';
+        return; 
+    }
 
-    activeUserPhone = phone;
-    
-    // Gán dữ liệu với màng bọc an toàn tránh undefined crash toàn hệ thống
-    if (!systemDB[phone].data) {
-        systemDB[phone].data = { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] };
-    }
-    masterData = systemDB[phone].data;
+    activeUserPhone = phone;
+    
+    // Gán dữ liệu với màng bọc an toàn tránh undefined crash toàn hệ thống
+    if (!systemDB[phone].data) {
+        systemDB[phone].data = { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] };
+    }
+    masterData = systemDB[phone].data;
 
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'flex';
-    
-    let userName = systemDB[phone].name || "THÀNH VIÊN";
-    document.getElementById('display-user-phone').innerText = 'Xin chào, ' + userName + ' (' + phone + ')';
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'flex';
+    
+    let userName = systemDB[phone].name || "THÀNH VIÊN";
+    document.getElementById('display-user-phone').innerText = 'Xin chào, ' + userName + ' (' + phone + ')';
 
-    if (systemDB[phone].role === 'admin') {
-        document.getElementById('nav-admin').style.display = 'block';
-    } else {
-        document.getElementById('nav-admin').style.display = 'none';
-    }
+    if (systemDB[phone].role === 'admin') {
+        document.getElementById('nav-admin').style.display = 'block';
+    } else {
+        document.getElementById('nav-admin').style.display = 'none';
+    }
 
-    document.getElementById('login-pass').value = '';
-    document.getElementById('login-captcha').value = '';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-captcha').value = '';
 
-    initializeApp();
+    initializeApp();
 }
 
 function handleRegister() {
-    let name = document.getElementById('reg-name').value.trim().toUpperCase();
-    let phone = document.getElementById('reg-phone').value.trim();
-    let pass = document.getElementById('reg-pass').value;
+    let name = document.getElementById('reg-name').value.trim().toUpperCase();
+    let phone = document.getElementById('reg-phone').value.trim();
+    let pass = document.getElementById('reg-pass').value;
 
-    if (!name || !phone || !pass) { alert("Vui lòng điền đủ Họ tên, Số điện thoại và Mật khẩu!"); return; }
-    if (systemDB[phone]) { alert("Số điện thoại này đã được đăng ký!"); return; }
+    if (!name || !phone || !pass) { alert("Vui lòng điền đủ Họ tên, Số điện thoại và Mật khẩu!"); return; }
+    if (systemDB[phone]) { alert("Số điện thoại này đã được đăng ký!"); return; }
 
-    systemDB[phone] = {
-        name: name, dob: '', password: pass, role: 'user', forgotPassword: false,
-        data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
-    };
-    saveSystemDB();
-    alert("Đăng ký thành công! Vui lòng đăng nhập.");
-    switchAuth('login');
-    document.getElementById('login-phone').value = phone;
+    systemDB[phone] = {
+        name: name, dob: '', password: pass, role: 'user', forgotPassword: false,
+        data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
+    };
+    saveSystemDB();
+    alert("Đăng ký thành công! Vui lòng đăng nhập.");
+    switchAuth('login');
+    document.getElementById('login-phone').value = phone;
 }
 
 function handleForgotPassword() {
-    let phone = document.getElementById('forgot-phone').value.trim();
-    if (!phone) { alert("Vui lòng nhập số điện thoại!"); return; }
-    if (!systemDB[phone]) { alert("Số điện thoại này không tồn tại trong hệ thống!"); return; }
+    let phone = document.getElementById('forgot-phone').value.trim();
+    if (!phone) { alert("Vui lòng nhập số điện thoại!"); return; }
+    if (!systemDB[phone]) { alert("Số điện thoại này không tồn tại trong hệ thống!"); return; }
 
-    if (systemDB[phone].role === 'admin') {
-        systemDB[phone].password = '123';
-        systemDB[phone].forgotPassword = false;
-        saveSystemDB();
-        alert("Mật khẩu tài khoản Admin đã được reset về '123'.");
-    } else {
-        systemDB[phone].forgotPassword = true;
-        saveSystemDB();
-        alert("Yêu cầu của bạn đã được gửi đến Ban Quản Trị. Vui lòng chờ Admin đổi mật khẩu mới cho bạn.");
-    }
-    switchAuth('login');
+    if (systemDB[phone].role === 'admin') {
+        systemDB[phone].password = '123';
+        systemDB[phone].forgotPassword = false;
+        saveSystemDB();
+        alert("Mật khẩu tài khoản Admin đã được reset về '123'.");
+    } else {
+        systemDB[phone].forgotPassword = true;
+        saveSystemDB();
+        alert("Yêu cầu của bạn đã được gửi đến Ban Quản Trị. Vui lòng chờ Admin đổi mật khẩu mới cho bạn.");
+    }
+    switchAuth('login');
 }
 
 function handleLogout() {
-    if(confirm("Bạn có chắc chắn muốn đăng xuất?")) {
-        activeUserPhone = null;
-        masterData = {};
-        document.getElementById('auth-screen').style.display = 'flex';
-        document.getElementById('main-app').style.display = 'none';
-        document.getElementById('login-pass').value = '';
-        document.getElementById('login-captcha').value = '';
-        generateCaptcha();
-    }
+    if(confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+        activeUserPhone = null;
+        masterData = {};
+        document.getElementById('auth-screen').style.display = 'flex';
+        document.getElementById('main-app').style.display = 'none';
+        document.getElementById('login-pass').value = '';
+        document.getElementById('login-captcha').value = '';
+        generateCaptcha();
+    }
 }
 
 // --- LOGIC USER SETTINGS ---
 function openUserChangePass() {
-    document.getElementById('user-current-pass').value = '';
-    document.getElementById('user-new-pass').value = '';
-    document.getElementById('user-confirm-pass').value = '';
-    openModal('modal-user-change-pass');
+    document.getElementById('user-current-pass').value = '';
+    document.getElementById('user-new-pass').value = '';
+    document.getElementById('user-confirm-pass').value = '';
+    openModal('modal-user-change-pass');
 }
 
 function confirmUserChangePass() {
-    let curPass = document.getElementById('user-current-pass').value;
-    let newPass = document.getElementById('user-new-pass').value;
-    let confirmPass = document.getElementById('user-confirm-pass').value;
+    let curPass = document.getElementById('user-current-pass').value;
+    let newPass = document.getElementById('user-new-pass').value;
+    let confirmPass = document.getElementById('user-confirm-pass').value;
 
-    if(!curPass || !newPass || !confirmPass) { alert("Vui lòng điền đầy đủ thông tin!"); return; }
-    if(systemDB[activeUserPhone].password !== curPass) { alert("Mật khẩu hiện tại không đúng!"); return; }
-    if(newPass !== confirmPass) { alert("Mật khẩu mới và Nhập lại mật khẩu không khớp!"); return; }
+    if(!curPass || !newPass || !confirmPass) { alert("Vui lòng điền đầy đủ thông tin!"); return; }
+    if(systemDB[activeUserPhone].password !== curPass) { alert("Mật khẩu hiện tại không đúng!"); return; }
+    if(newPass !== confirmPass) { alert("Mật khẩu mới và Nhập lại mật khẩu không khớp!"); return; }
 
-    systemDB[activeUserPhone].password = newPass;
-    saveSystemDB();
-    alert("Đổi mật khẩu thành công!");
-    closeModal('modal-user-change-pass');
+    systemDB[activeUserPhone].password = newPass;
+    saveSystemDB();
+    alert("Đổi mật khẩu thành công!");
+    closeModal('modal-user-change-pass');
 }
 
 function saveUserInfo() {
-    let newName = document.getElementById('set-user-name').value.trim().toUpperCase();
-    let newDob = document.getElementById('set-user-dob').value;
-    if(!newName) { alert("Họ và tên không được để trống!"); return; }
-    systemDB[activeUserPhone].name = newName;
-    systemDB[activeUserPhone].dob = newDob;
-    saveSystemDB();
-    document.getElementById('display-user-phone').innerText = 'Xin chào, ' + newName + ' (' + activeUserPhone + ')';
-    alert("Cập nhật thông tin thành công!");
+    let newName = document.getElementById('set-user-name').value.trim().toUpperCase();
+    let newDob = document.getElementById('set-user-dob').value;
+    if(!newName) { alert("Họ và tên không được để trống!"); return; }
+    systemDB[activeUserPhone].name = newName;
+    systemDB[activeUserPhone].dob = newDob;
+    saveSystemDB();
+    document.getElementById('display-user-phone').innerText = 'Xin chào, ' + newName + ' (' + activeUserPhone + ')';
+    alert("Cập nhật thông tin thành công!");
 }
 
 function deleteMyAccount() {
-    if(activeUserPhone === '0839578432') { alert("Lỗi: Không thể xóa tài khoản Admin gốc của hệ thống!"); return; }
-    if(confirm("CẢNH BÁO TỐI THƯỢNG: Hành động này sẽ XÓA VĨNH VIỄN toàn bộ dữ liệu, quỹ, sổ tiết kiệm và tài khoản của bạn. Không thể khôi phục! Bạn có thực sự muốn tiếp tục?")) {
-        let verify = prompt("Vui lòng nhập 'XAC NHAN XOA' để thực hiện:");
-        if (verify === 'XAC NHAN XOA') {
-            delete systemDB[activeUserPhone]; saveSystemDB();
-            alert("Tài khoản của bạn đã bị xóa vĩnh viễn khỏi hệ thống.");
-            activeUserPhone = null; masterData = {};
-            document.getElementById('auth-screen').style.display = 'flex';
-            document.getElementById('main-app').style.display = 'none';
-            generateCaptcha();
-        }
-    }
+    if(activeUserPhone === '0839578432') { alert("Lỗi: Không thể xóa tài khoản Admin gốc của hệ thống!"); return; }
+    if(confirm("CẢNH BÁO TỐI THƯỢNG: Hành động này sẽ XÓA VĨNH VIỄN toàn bộ dữ liệu, quỹ, sổ tiết kiệm và tài khoản của bạn. Không thể khôi phục! Bạn có thực sự muốn tiếp tục?")) {
+        let verify = prompt("Vui lòng nhập 'XAC NHAN XOA' để thực hiện:");
+        if (verify === 'XAC NHAN XOA') {
+            delete systemDB[activeUserPhone]; saveSystemDB();
+            alert("Tài khoản của bạn đã bị xóa vĩnh viễn khỏi hệ thống.");
+            activeUserPhone = null; masterData = {};
+            document.getElementById('auth-screen').style.display = 'flex';
+            document.getElementById('main-app').style.display = 'none';
+            generateCaptcha();
+        }
+    }
 }
 
 // --- LOGIC ADMIN ---
 function checkAdminNotifications() {
-    let notifCount = 0;
-    for (const p in systemDB) { if (systemDB[p].forgotPassword) notifCount++; }
-    document.getElementById('admin-notif-badge').style.display = notifCount > 0 ? 'inline-block' : 'none';
-    document.getElementById('admin-bell').style.display = notifCount > 0 ? 'inline-block' : 'none';
+    let notifCount = 0;
+    for (const p in systemDB) { if (systemDB[p].forgotPassword) notifCount++; }
+    document.getElementById('admin-notif-badge').style.display = notifCount > 0 ? 'inline-block' : 'none';
+    document.getElementById('admin-bell').style.display = notifCount > 0 ? 'inline-block' : 'none';
 }
 
 function renderAdminPanel() {
-    let tbody = document.getElementById('body-admin-users');
-    tbody.innerHTML = '';
-    let stt = 1;
-    for (const phone in systemDB) {
-        let isRoot = (phone === '0839578432');
-        let role = systemDB[phone].role;
-        let isForgot = systemDB[phone].forgotPassword;
-        let roleHtml = role === 'admin' ? '<span class="admin-badge">ADMIN</span>' : 'USER';
-        let displayName = systemDB[phone].name || 'Chưa cập nhật';
-        let rowStyle = isForgot ? 'style="background-color: #ffe6e6;"' : '';
-        let warningIcon = isForgot ? '<span style="color:red; font-weight:bold; margin-left:5px;">(!) Yêu cầu Pass</span>' : '';
-        
-        let promoteBtn = ''; let delBtn = '';
-        let editNameBtn = `<button class="btn-sm" style="background:var(--info); color:white; border:none;" onclick="adminOpenChangeName('${phone}', '${displayName}')">Tên</button>`;
-        let editPassBtn = `<button class="btn-sm" style="background:var(--primary); color:white; border:none;" onclick="adminOpenChangePass('${phone}')">Pass</button>`;
-        
-        if (activeUserPhone === '0839578432' && !isRoot) {
-            promoteBtn = `<button class="btn-sm" style="background:${role==='admin'?'#555':'var(--success)'}; color:white; border:none;" onclick="adminToggleRole('${phone}')">${role==='admin'?'Hạ Quyền':'Cấp Admin'}</button>`;
-            delBtn = `<button class="btn-sm" style="background:var(--danger); color:white; border:none;" onclick="adminDeleteUser('${phone}')">Xóa</button>`;
-        }
-        
-        if (isRoot && activeUserPhone !== '0839578432') { editNameBtn = ''; editPassBtn = ''; }
-        if (isRoot && activeUserPhone === '0839578432') { promoteBtn = ''; delBtn = ''; }
-        
-        tbody.innerHTML += `
-        <tr ${rowStyle}>
-            <td align="center">${stt++}</td>
-            <td style="font-weight:bold">${displayName} ${warningIcon}</td>
-            <td style="font-weight:bold">${phone}</td>
-            <td align="center">${roleHtml}</td>
-            <td align="center">
-                <div style="display:flex; gap:5px; justify-content:center; flex-wrap:wrap;">
-                    ${editNameBtn} ${editPassBtn} ${promoteBtn} ${delBtn}
-                </div>
-            </td>
-        </tr>`;
-    }
-    checkAdminNotifications();
+    let tbody = document.getElementById('body-admin-users');
+    tbody.innerHTML = '';
+    let stt = 1;
+    for (const phone in systemDB) {
+        let isRoot = (phone === '0839578432');
+        let role = systemDB[phone].role;
+        let isForgot = systemDB[phone].forgotPassword;
+        let roleHtml = role === 'admin' ? '<span class="admin-badge">ADMIN</span>' : 'USER';
+        let displayName = systemDB[phone].name || 'Chưa cập nhật';
+        let rowStyle = isForgot ? 'style="background-color: #ffe6e6;"' : '';
+        let warningIcon = isForgot ? '<span style="color:red; font-weight:bold; margin-left:5px;">(!) Yêu cầu Pass</span>' : '';
+        
+        let promoteBtn = ''; let delBtn = '';
+        let editNameBtn = `<button class="btn-sm" style="background:var(--info); color:white; border:none;" onclick="adminOpenChangeName('${phone}', '${displayName}')">Tên</button>`;
+        let editPassBtn = `<button class="btn-sm" style="background:var(--primary); color:white; border:none;" onclick="adminOpenChangePass('${phone}')">Pass</button>`;
+        
+        if (activeUserPhone === '0839578432' && !isRoot) {
+            promoteBtn = `<button class="btn-sm" style="background:${role==='admin'?'#555':'var(--success)'}; color:white; border:none;" onclick="adminToggleRole('${phone}')">${role==='admin'?'Hạ Quyền':'Cấp Admin'}</button>`;
+            delBtn = `<button class="btn-sm" style="background:var(--danger); color:white; border:none;" onclick="adminDeleteUser('${phone}')">Xóa</button>`;
+        }
+        
+        if (isRoot && activeUserPhone !== '0839578432') { editNameBtn = ''; editPassBtn = ''; }
+        if (isRoot && activeUserPhone === '0839578432') { promoteBtn = ''; delBtn = ''; }
+        
+        tbody.innerHTML += `
+        <tr ${rowStyle}>
+            <td align="center">${stt++}</td>
+            <td style="font-weight:bold">${displayName} ${warningIcon}</td>
+            <td style="font-weight:bold">${phone}</td>
+            <td align="center">${roleHtml}</td>
+            <td align="center">
+                <div style="display:flex; gap:5px; justify-content:center; flex-wrap:wrap;">
+                    ${editNameBtn} ${editPassBtn} ${promoteBtn} ${delBtn}
+                </div>
+            </td>
+        </tr>`;
+    }
+    checkAdminNotifications();
 }
 
 function adminOpenChangeName(phone, currentName) {
-    document.getElementById('admin-target-user-name').value = phone;
-    document.getElementById('admin-new-name').value = currentName === 'Chưa cập nhật' ? '' : currentName;
-    openModal('modal-admin-name');
+    document.getElementById('admin-target-user-name').value = phone;
+    document.getElementById('admin-new-name').value = currentName === 'Chưa cập nhật' ? '' : currentName;
+    openModal('modal-admin-name');
 }
 
 function adminConfirmChangeName() {
-    let phone = document.getElementById('admin-target-user-name').value;
-    if(phone === '0839578432' && activeUserPhone !== '0839578432') { alert("Bạn không có quyền chỉnh sửa Admin chính!"); return; }
-    let newName = document.getElementById('admin-new-name').value.trim().toUpperCase();
-    if(!newName) { alert("Không được để trống tên!"); return; }
+    let phone = document.getElementById('admin-target-user-name').value;
+    if(phone === '0839578432' && activeUserPhone !== '0839578432') { alert("Bạn không có quyền chỉnh sửa Admin chính!"); return; }
+    let newName = document.getElementById('admin-new-name').value.trim().toUpperCase();
+    if(!newName) { alert("Không được để trống tên!"); return; }
 
-    if(systemDB[phone]) {
-        systemDB[phone].name = newName; saveSystemDB();
-        alert("Đã đổi tên thành công cho tài khoản: " + phone);
-        closeModal('modal-admin-name'); renderAdminPanel();
-    }
+    if(systemDB[phone]) {
+        systemDB[phone].name = newName; saveSystemDB();
+        alert("Đã đổi tên thành công cho tài khoản: " + phone);
+        closeModal('modal-admin-name'); renderAdminPanel();
+    }
 }
 
 function adminOpenChangePass(phone) {
-    document.getElementById('admin-target-user').value = phone;
-    document.getElementById('admin-new-pass').value = '';
-    let confirmInput = document.getElementById('admin-confirm-new-pass');
-    if (confirmInput) confirmInput.value = '';
-    openModal('modal-admin-pass');
+    document.getElementById('admin-target-user').value = phone;
+    document.getElementById('admin-new-pass').value = '';
+    let confirmInput = document.getElementById('admin-confirm-new-pass');
+    if (confirmInput) confirmInput.value = '';
+    openModal('modal-admin-pass');
 }
 
 function adminConfirmChangePass() {
-    let phone = document.getElementById('admin-target-user').value;
-    if(phone === '0839578432' && activeUserPhone !== '0839578432') { alert("Bạn không có quyền chỉnh sửa Admin chính!"); return; }
-    let newPass = document.getElementById('admin-new-pass').value;
-    let confirmPass = document.getElementById('admin-confirm-new-pass').value;
-    
-    if(!newPass || !confirmPass) { alert("Không được để trống mật khẩu!"); return; }
-    if(newPass !== confirmPass) { alert("Mật khẩu mới và phần Nhập lại không khớp nhau!"); return; }
+    let phone = document.getElementById('admin-target-user').value;
+    if(phone === '0839578432' && activeUserPhone !== '0839578432') { alert("Bạn không có quyền chỉnh sửa Admin chính!"); return; }
+    let newPass = document.getElementById('admin-new-pass').value;
+    let confirmPass = document.getElementById('admin-confirm-new-pass').value;
+    
+    if(!newPass || !confirmPass) { alert("Không được để trống mật khẩu!"); return; }
+    if(newPass !== confirmPass) { alert("Mật khẩu mới và phần Nhập lại không khớp nhau!"); return; }
 
-    if(systemDB[phone]) {
-        systemDB[phone].password = newPass; systemDB[phone].forgotPassword = false; saveSystemDB();
-        alert("Đã đổi mật khẩu thành công cho số: " + phone);
-        closeModal('modal-admin-pass'); renderAdminPanel();
-    }
+    if(systemDB[phone]) {
+        systemDB[phone].password = newPass; systemDB[phone].forgotPassword = false; saveSystemDB();
+        alert("Đã đổi mật khẩu thành công cho số: " + phone);
+        closeModal('modal-admin-pass'); renderAdminPanel();
+    }
 }
 
 function adminToggleRole(phone) {
-    if(activeUserPhone !== '0839578432') { alert("Bạn không có quyền thực hiện thao tác này!"); return; }
-    if(phone === '0839578432') return;
-    let currentRole = systemDB[phone].role;
-    if(confirm(`Bạn có chắc chắn muốn ${currentRole === 'admin' ? 'HẠ QUYỀN user này xuống thường' : 'CẤP QUYỀN Admin phụ cho user này'}?`)) {
-        systemDB[phone].role = currentRole === 'admin' ? 'user' : 'admin';
-        saveSystemDB(); renderAdminPanel();
-    }
+    if(activeUserPhone !== '0839578432') { alert("Bạn không có quyền thực hiện thao tác này!"); return; }
+    if(phone === '0839578432') return;
+    let currentRole = systemDB[phone].role;
+    if(confirm(`Bạn có chắc chắn muốn ${currentRole === 'admin' ? 'HẠ QUYỀN user này xuống thường' : 'CẤP QUYỀN Admin phụ cho user này'}?`)) {
+        systemDB[phone].role = currentRole === 'admin' ? 'user' : 'admin';
+        saveSystemDB(); renderAdminPanel();
+    }
 }
 
 function adminDeleteUser(phone) {
-    if(activeUserPhone !== '0839578432') { alert("Bạn không có quyền xóa người dùng!"); return; }
-    if(phone === '0839578432') return;
-    if(confirm("Bạn có chắc chắn muốn XÓA VĨNH VIỄN người dùng này khỏi hệ thống? Dữ liệu của họ sẽ mất toàn bộ!")) {
-        delete systemDB[phone]; saveSystemDB(); renderAdminPanel();
-    }
+    if(activeUserPhone !== '0839578432') { alert("Bạn không có quyền xóa người dùng!"); return; }
+    if(phone === '0839578432') return;
+    if(confirm("Bạn có chắc chắn muốn XÓA VĨNH VIỄN người dùng này khỏi hệ thống? Dữ liệu của họ sẽ mất toàn bộ!")) {
+        delete systemDB[phone]; saveSystemDB(); renderAdminPanel();
+    }
 }
 
 // =====================================
 // KHỞI CHẠY APP
 // =====================================
 function initializeApp() {
-    let today = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
-    document.getElementById('header-date-picker').max = today; 
-    document.getElementById('header-date-picker').value = currentDay;
-    document.getElementById('in-print-date').value = currentDay;
-    
-    document.getElementById('set-user-name').value = systemDB[activeUserPhone].name || "";
-    document.getElementById('set-user-dob').value = systemDB[activeUserPhone].dob || "";
-    document.getElementById('set-user-phone').value = activeUserPhone;
+    let today = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
+    document.getElementById('header-date-picker').max = today; 
+    document.getElementById('header-date-picker').value = currentDay;
+    document.getElementById('in-print-date').value = currentDay;
+    
+    document.getElementById('set-user-name').value = systemDB[activeUserPhone].name || "";
+    document.getElementById('set-user-dob').value = systemDB[activeUserPhone].dob || "";
+    document.getElementById('set-user-phone').value = activeUserPhone;
 
-    if(!masterData.banks) masterData.banks = [];
-    if(!masterData.quyReasons) masterData.quyReasons = [];
-    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
-    if(!masterData.printHistory) masterData.printHistory = [];
+    if(!masterData.banks) masterData.banks = [];
+    if(!masterData.quyReasons) masterData.quyReasons = [];
+    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
+    if(!masterData.printHistory) masterData.printHistory = [];
 
-    refreshBankSettings();
-    toggleCalcType();
-    renderPrintHistory();
-    loadDay(); 
-    showSheet('sheet-tm', document.querySelector('.nav-item.active'));
-    
-    if (systemDB[activeUserPhone].role === 'admin') { renderAdminPanel(); checkAdminNotifications(); }
+    refreshBankSettings();
+    toggleCalcType();
+    renderPrintHistory();
+    loadDay(); 
+    showSheet('sheet-tm', document.querySelector('.nav-item.active'));
+    
+    if (systemDB[activeUserPhone].role === 'admin') { renderAdminPanel(); checkAdminNotifications(); }
 }
 
 function loadDay() {
-    if(isPrinting) return;
+    if(isPrinting) return;
 
-    if (!masterData[currentDay]) {
-        masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
-        // TỰ ĐỘNG LUÂN CHUYỂN DỮ LIỆU TỪ NGÀY GẦN NHẤT
-        let pastDates = Object.keys(masterData).filter(d => d < currentDay && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
-        if (pastDates.length > 0) {
-            let prevDate = pastDates[0];
-            if(masterData[prevDate].tm && masterData[prevDate].tm.length > 0) masterData[currentDay].tm = JSON.parse(JSON.stringify(masterData[prevDate].tm));
-            if(masterData[prevDate].nh && masterData[prevDate].nh.length > 0) masterData[currentDay].nh = JSON.parse(JSON.stringify(masterData[prevDate].nh));
-            if(masterData[prevDate].quy && masterData[prevDate].quy.length > 0) masterData[currentDay].quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
-            if(masterData[prevDate].stk && masterData[prevDate].stk.length > 0) masterData[currentDay].stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
-        }
-        saveMaster();
-    }
+    if (!masterData[currentDay]) {
+        masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
+        // TỰ ĐỘNG LUÂN CHUYỂN DỮ LIỆU TỪ NGÀY GẦN NHẤT
+        let pastDates = Object.keys(masterData).filter(d => d < currentDay && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
+        if (pastDates.length > 0) {
+            let prevDate = pastDates[0];
+            if(masterData[prevDate].tm && masterData[prevDate].tm.length > 0) masterData[currentDay].tm = JSON.parse(JSON.stringify(masterData[prevDate].tm));
+            if(masterData[prevDate].nh && masterData[prevDate].nh.length > 0) masterData[currentDay].nh = JSON.parse(JSON.stringify(masterData[prevDate].nh));
+            if(masterData[prevDate].quy && masterData[prevDate].quy.length > 0) masterData[currentDay].quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
+            if(masterData[prevDate].stk && masterData[prevDate].stk.length > 0) masterData[currentDay].stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
+        }
+        saveMaster();
+    }
 
-    let data = masterData[currentDay];
+    let data = masterData[currentDay];
 
-    const tbTM = document.getElementById('body-tm'); tbTM.innerHTML = "";
-    denoms.forEach((m, i) => {
-        let tr = document.createElement('tr');
-        let rawVal = (data.tm && data.tm[i] !== undefined) ? data.tm[i] : null;
-        let hasVal = rawVal !== null && rawVal !== "";
-        let qty = hasVal ? parseInt(rawVal) : 0;
-        let val = qty * m;
-        
-        let qtyDisplay = hasVal ? qty : '-'; 
-        let valDisplay = hasVal ? (val === 0 ? '0 đ' : formatTien(val) + ' đ') : '-'; 
-        tr.innerHTML = `<td style="font-weight:bold">${formatTien(m)}</td><td align="center" style="font-weight:bold; color:var(--info)">${qtyDisplay}</td><td id="val-tm-${i}" style="color:#666; text-align:right; font-weight:bold;">${valDisplay}</td>`;
-        tbTM.appendChild(tr);
-    });
+    const tbTM = document.getElementById('body-tm'); tbTM.innerHTML = "";
+    denoms.forEach((m, i) => {
+        let tr = document.createElement('tr');
+        let rawVal = (data.tm && data.tm[i] !== undefined) ? data.tm[i] : null;
+        let hasVal = rawVal !== null && rawVal !== "";
+        let qty = hasVal ? parseInt(rawVal) : 0;
+        let val = qty * m;
+        
+        let qtyDisplay = hasVal ? qty : '-'; 
+        let valDisplay = hasVal ? (val === 0 ? '0 đ' : formatTien(val) + ' đ') : '-'; 
+        tr.innerHTML = `<td style="font-weight:bold">${formatTien(m)}</td><td align="center" style="font-weight:bold; color:var(--info)">${qtyDisplay}</td><td id="val-tm-${i}" style="color:#666; text-align:right; font-weight:bold;">${valDisplay}</td>`;
+        tbTM.appendChild(tr);
+    });
 
-    const bodyNH = document.getElementById('body-nh'); bodyNH.innerHTML = "";
-    masterData.banks.forEach((bank) => {
-        let savedVal = (data.nh || []).find(x => x.n === bank.short)?.v;
-        let hasVal = savedVal !== undefined && savedVal !== "" && savedVal !== null;
-        let valDisplay = hasVal ? formatTien(cleanTien(savedVal)) + ' đ' : '-';
-        let rawBalance = hasVal ? savedVal : '0';
-        bodyNH.innerHTML += `<tr><td style="font-weight:bold">${bank.short}</td><td align="right" style="color:var(--primary); font-weight:bold; font-size:16px;">${valDisplay}</td><td align="center"><button class="btn-sm" style="border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-weight:bold;" onclick="openBankInfo('${bank.full}', '${bank.short}', '${rawBalance !== '0' ? formatTien(cleanTien(rawBalance)) + ' đ' : '0 đ'}')">i</button></td></tr>`;
-    });
+    const bodyNH = document.getElementById('body-nh'); bodyNH.innerHTML = "";
+    masterData.banks.forEach((bank) => {
+        let savedVal = (data.nh || []).find(x => x.n === bank.short)?.v;
+        let hasVal = savedVal !== undefined && savedVal !== "" && savedVal !== null;
+        let valDisplay = hasVal ? formatTien(cleanTien(savedVal)) + ' đ' : '-';
+        let rawBalance = hasVal ? savedVal : '0';
+        bodyNH.innerHTML += `<tr><td style="font-weight:bold">${bank.short}</td><td align="right" style="color:var(--primary); font-weight:bold; font-size:16px;">${valDisplay}</td><td align="center"><button class="btn-sm" style="border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-weight:bold;" onclick="openBankInfo('${bank.full}', '${bank.short}', '${rawBalance !== '0' ? formatTien(cleanTien(rawBalance)) + ' đ' : '0 đ'}')">i</button></td></tr>`;
+    });
 
-    renderQuy(data.quy || []);
-    renderSTK(data.stk || []);
-    calcTotal();
+    renderQuy(data.quy || []);
+    renderSTK(data.stk || []);
+    calcTotal();
 }
 
 // =====================================
 // CHỈNH SỬA TIỀN MẶT (HIỂN THỊ TẤT CẢ MỆNH GIÁ)
 // =====================================
 function openEditTM() {
-    let data = masterData[currentDay].tm || [];
-    let tbody = document.getElementById('edit-tm1-tbody');
-    tbody.innerHTML = '';
-    pendingTMChanges = [...data];
-    if (pendingTMChanges.length === 0) pendingTMChanges = Array(12).fill("");
-    
-    pendingTMDiff = 0;
-    document.getElementById('edit-tm1-diff').innerHTML = `<span style="color:var(--primary)">0</span>`;
-    
-    denoms.forEach((m, i) => {
-        let oldRaw = pendingTMChanges[i];
-        let oldQty = (oldRaw !== undefined && oldRaw !== "") ? parseInt(oldRaw) : 0;
-        
-        let tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td style="font-weight:bold">${formatTien(m)}</td>
-            <td class="tm-old-qty" align="center" data-old="${oldQty}" data-index="${i}">${oldQty}</td>
-            <td><input type="text" inputmode="numeric" class="in-tm-new-qty" value="${oldRaw !== "" ? oldQty : ""}" oninput="formatSoLuong(this); updateFixedTMEditRowTotal(this);" style="text-align:right; width:80px;"></td>
-            <td class="tm-new-total" align="right">${formatTien(oldQty * m)} đ</td>
-        `;
-        tbody.appendChild(tr);
-    });
+    let data = masterData[currentDay].tm || [];
+    let tbody = document.getElementById('edit-tm1-tbody');
+    tbody.innerHTML = '';
+    pendingTMChanges = [...data];
+    if (pendingTMChanges.length === 0) pendingTMChanges = Array(12).fill("");
+    
+    pendingTMDiff = 0;
+    document.getElementById('edit-tm1-diff').innerHTML = `<span style="color:var(--primary)">0</span>`;
+    
+    denoms.forEach((m, i) => {
+        let oldRaw = pendingTMChanges[i];
+        let oldQty = (oldRaw !== undefined && oldRaw !== "") ? parseInt(oldRaw) : 0;
+        
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="font-weight:bold">${formatTien(m)}</td>
+            <td class="tm-old-qty" align="center" data-old="${oldQty}" data-index="${i}">${oldQty}</td>
+            <td><input type="text" inputmode="numeric" class="in-tm-new-qty" value="${oldRaw !== "" ? oldQty : ""}" oninput="formatSoLuong(this); updateFixedTMEditRowTotal(this);" style="text-align:right; width:80px;"></td>
+            <td class="tm-new-total" align="right">${formatTien(oldQty * m)} đ</td>
+        `;
+        tbody.appendChild(tr);
+    });
 
-    openModal('modal-edit-tm1');
+    openModal('modal-edit-tm1');
 }
 
 function updateFixedTMEditRowTotal(inp) {
-    let tr = inp.closest('tr');
-    let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
-    let m = denoms[i];
-    let newQtyStr = inp.value;
-    let newQty = (newQtyStr !== "") ? parseInt(newQtyStr) : 0;
-    tr.querySelector('.tm-new-total').innerText = formatTien(m * newQty) + " đ";
-    calcEditTMDiffFixed();
+    let tr = inp.closest('tr');
+    let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
+    let m = denoms[i];
+    let newQtyStr = inp.value;
+    let newQty = (newQtyStr !== "") ? parseInt(newQtyStr) : 0;
+    tr.querySelector('.tm-new-total').innerText = formatTien(m * newQty) + " đ";
+    calcEditTMDiffFixed();
 }
 
 function calcEditTMDiffFixed() {
-    let diff = 0;
-    document.querySelectorAll('#edit-tm1-tbody tr').forEach(tr => {
-        let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
-        let oldQty = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-old')) || 0;
-        let newQtyStr = tr.querySelector('.in-tm-new-qty').value;
-        let newQty = (newQtyStr !== "") ? parseInt(newQtyStr) : 0;
-        let m = denoms[i];
-        diff += (newQty - oldQty) * m;
-    });
-    pendingTMDiff = diff;
-    let sign = diff > 0 ? '+' : (diff < 0 ? '-' : '');
-    let color = diff > 0 ? 'var(--success)' : (diff < 0 ? 'var(--danger)' : 'var(--primary)');
-    document.getElementById('edit-tm1-diff').innerHTML = `<span style="color:${color}">${sign}${formatTien(Math.abs(diff))}</span>`;
+    let diff = 0;
+    document.querySelectorAll('#edit-tm1-tbody tr').forEach(tr => {
+        let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
+        let oldQty = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-old')) || 0;
+        let newQtyStr = tr.querySelector('.in-tm-new-qty').value;
+        let newQty = (newQtyStr !== "") ? parseInt(newQtyStr) : 0;
+        let m = denoms[i];
+        diff += (newQty - oldQty) * m;
+    });
+    pendingTMDiff = diff;
+    let sign = diff > 0 ? '+' : (diff < 0 ? '-' : '');
+    let color = diff > 0 ? 'var(--success)' : (diff < 0 ? 'var(--danger)' : 'var(--primary)');
+    document.getElementById('edit-tm1-diff').innerHTML = `<span style="color:${color}">${sign}${formatTien(Math.abs(diff))}</span>`;
 }
 
 function proceedEditTM() {
-    document.querySelectorAll('#edit-tm1-tbody tr').forEach(tr => {
-        let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
-        let newQty = tr.querySelector('.in-tm-new-qty').value;
-        pendingTMChanges[i] = newQty;
-    });
-    
-    if (pendingTMDiff === 0) {
-        masterData[currentDay].tm = pendingTMChanges;
-        saveMaster(); loadDay(); closeModal('modal-edit-tm1');
-        return;
-    }
-    
-    document.getElementById('edit-tm2-target').innerText = formatTien(Math.abs(pendingTMDiff));
-    document.getElementById('edit-tm2-target').style.color = pendingTMDiff > 0 ? 'var(--success)' : 'var(--danger)';
-    document.getElementById('tm2-rows-container').innerHTML = '';
-    document.getElementById('edit-tm2-current').innerText = '0';
-    addTM2Row();
-    closeModal('modal-edit-tm1');
-    openModal('modal-edit-tm2');
+    document.querySelectorAll('#edit-tm1-tbody tr').forEach(tr => {
+        let i = parseInt(tr.querySelector('.tm-old-qty').getAttribute('data-index'));
+        let newQty = tr.querySelector('.in-tm-new-qty').value;
+        pendingTMChanges[i] = newQty;
+    });
+    
+    if (pendingTMDiff === 0) {
+        masterData[currentDay].tm = pendingTMChanges;
+        saveMaster(); loadDay(); closeModal('modal-edit-tm1');
+        return;
+    }
+    
+    document.getElementById('edit-tm2-target').innerText = formatTien(Math.abs(pendingTMDiff));
+    document.getElementById('edit-tm2-target').style.color = pendingTMDiff > 0 ? 'var(--success)' : 'var(--danger)';
+    document.getElementById('tm2-rows-container').innerHTML = '';
+    document.getElementById('edit-tm2-current').innerText = '0';
+    addTM2Row();
+    closeModal('modal-edit-tm1');
+    openModal('modal-edit-tm2');
 }
 
 function addTM2Row() {
-    let div = document.createElement('div');
-    div.style.display = 'flex'; div.style.gap = '10px'; div.style.marginBottom = '10px';
-    div.innerHTML = `
-        <input type="text" placeholder="Nội dung/Lý do..." class="in-tm2-reason" style="flex:2">
-        <input type="text" placeholder="Số tiền..." class="in-tm2-amount" oninput="formatInput(this); calcTM2Total();" style="flex:1; text-align:right">
-        <button class="btn-sm" style="background:var(--danger); color:#fff; border:none; margin:0;" onclick="this.parentElement.remove(); calcTM2Total();">X</button>
-    `;
-    document.getElementById('tm2-rows-container').appendChild(div);
+    let div = document.createElement('div');
+    div.style.display = 'flex'; div.style.gap = '10px'; div.style.marginBottom = '10px';
+    div.innerHTML = `
+        <input type="text" placeholder="Nội dung/Lý do..." class="in-tm2-reason" style="flex:2">
+        <input type="text" placeholder="Số tiền..." class="in-tm2-amount" oninput="formatInput(this); calcTM2Total();" style="flex:1; text-align:right">
+        <button class="btn-sm" style="background:var(--danger); color:#fff; border:none; margin:0;" onclick="this.parentElement.remove(); calcTM2Total();">X</button>
+    `;
+    document.getElementById('tm2-rows-container').appendChild(div);
 }
 
 function calcTM2Total() {
-    let sum = 0;
-    document.querySelectorAll('.in-tm2-amount').forEach(inp => { sum += cleanTien(inp.value); });
-    document.getElementById('edit-tm2-current').innerText = formatTien(sum);
-    return sum;
+    let sum = 0;
+    document.querySelectorAll('.in-tm2-amount').forEach(inp => { sum += cleanTien(inp.value); });
+    document.getElementById('edit-tm2-current').innerText = formatTien(sum);
+    return sum;
 }
 
 function confirmEditTM() {
-    let sum = calcTM2Total();
-    if (sum !== Math.abs(pendingTMDiff)) {
-        alert(`Tổng số tiền giải trình (${formatTien(sum)}đ) phải BẰNG số tiền chênh lệch (${formatTien(Math.abs(pendingTMDiff))}đ)!`);
-        return;
-    }
-    masterData[currentDay].tm = pendingTMChanges;
-    saveMaster(); loadDay(); closeModal('modal-edit-tm2');
-    alert("Cập nhật số liệu Tiền Mặt thành công!");
+    let sum = calcTM2Total();
+    if (sum !== Math.abs(pendingTMDiff)) {
+        alert(`Tổng số tiền giải trình (${formatTien(sum)}đ) phải BẰNG số tiền chênh lệch (${formatTien(Math.abs(pendingTMDiff))}đ)!`);
+        return;
+    }
+    masterData[currentDay].tm = pendingTMChanges;
+    saveMaster(); loadDay(); closeModal('modal-edit-tm2');
+    alert("Cập nhật số liệu Tiền Mặt thành công!");
 }
 
 // =====================================
 // CHỈNH SỬA NGÂN HÀNG
 // =====================================
 function openBankInfo(fullName, shortName, balance) {
-    document.getElementById('info-bank-full').innerText = fullName;
-    document.getElementById('info-bank-short').innerText = shortName;
-    document.getElementById('info-bank-balance').innerText = balance;
-    currentEditBankShortName = shortName;
-    
-    let tbody = document.getElementById('info-bank-history');
-    tbody.innerHTML = '';
-    let history = masterData.nh_history || [];
-    let bankHist = history.filter(h => h.bank === shortName).reverse();
-    if(bankHist.length > 0) {
-        bankHist.forEach(h => {
-            let color = h.diff > 0 ? 'var(--success)' : (h.diff < 0 ? 'var(--danger)' : '#333');
-            let sign = h.diff > 0 ? '+' : '';
-            tbody.innerHTML += `<tr>
-                <td align="center">${vnDate(h.date)} <br> <span style="font-size:11px;">${h.time.split(' ')[1]}</span></td>
-                <td align="right" style="color:${color}; font-weight:bold;">${sign}${formatTien(h.diff)} đ</td>
-                <td>${h.reason}</td>
-            </tr>`;
-        });
-    } else {
-        tbody.innerHTML = `<tr><td colspan="3" align="center" style="color:#888; font-style:italic; padding:15px;">Chưa có lịch sử điều chỉnh</td></tr>`;
-    }
-    
-    openModal('modal-bank-info');
+    document.getElementById('info-bank-full').innerText = fullName;
+    document.getElementById('info-bank-short').innerText = shortName;
+    document.getElementById('info-bank-balance').innerText = balance;
+    currentEditBankShortName = shortName;
+    
+    let tbody = document.getElementById('info-bank-history');
+    tbody.innerHTML = '';
+    let history = masterData.nh_history || [];
+    let bankHist = history.filter(h => h.bank === shortName).reverse();
+    if(bankHist.length > 0) {
+        bankHist.forEach(h => {
+            let color = h.diff > 0 ? 'var(--success)' : (h.diff < 0 ? 'var(--danger)' : '#333');
+            let sign = h.diff > 0 ? '+' : '';
+            tbody.innerHTML += `<tr>
+                <td align="center">${vnDate(h.date)} <br> <span style="font-size:11px;">${h.time.split(' ')[1]}</span></td>
+                <td align="right" style="color:${color}; font-weight:bold;">${sign}${formatTien(h.diff)} đ</td>
+                <td>${h.reason}</td>
+            </tr>`;
+        });
+    } else {
+        tbody.innerHTML = `<tr><td colspan="3" align="center" style="color:#888; font-style:italic; padding:15px;">Chưa có lịch sử điều chỉnh</td></tr>`;
+    }
+    
+    openModal('modal-bank-info');
 }
 
 function openSingleBankEdit() {
-    closeModal('modal-bank-info');
-    
-    let dataNH = masterData[currentDay].nh || [];
-    let oldValRaw = dataNH.find(x => x.n === currentEditBankShortName)?.v;
-    currentEditBankOldVal = oldValRaw ? cleanTien(oldValRaw) : 0;
-    
-    document.getElementById('edit-single-nh-name').innerText = currentEditBankShortName;
-    document.getElementById('edit-single-nh-old').innerText = formatTien(currentEditBankOldVal) + " đ";
-    document.getElementById('edit-single-nh-new').value = oldValRaw ? formatTien(currentEditBankOldVal) : "";
-    document.getElementById('edit-single-nh-diff').innerText = "0 đ";
-    document.getElementById('edit-single-nh-diff').style.color = "var(--primary)";
+    closeModal('modal-bank-info');
+    
+    let dataNH = masterData[currentDay].nh || [];
+    let oldValRaw = dataNH.find(x => x.n === currentEditBankShortName)?.v;
+    currentEditBankOldVal = oldValRaw ? cleanTien(oldValRaw) : 0;
+    
+    document.getElementById('edit-single-nh-name').innerText = currentEditBankShortName;
+    document.getElementById('edit-single-nh-old').innerText = formatTien(currentEditBankOldVal) + " đ";
+    document.getElementById('edit-single-nh-new').value = oldValRaw ? formatTien(currentEditBankOldVal) : "";
+    document.getElementById('edit-single-nh-diff').innerText = "0 đ";
+    document.getElementById('edit-single-nh-diff').style.color = "var(--primary)";
 
-    refreshBankReasonOptions();
-    openModal('modal-edit-single-nh');
+    refreshBankReasonOptions();
+    openModal('modal-edit-single-nh');
 }
 
 function updateSingleNHDiff() {
-    let newValStr = document.getElementById('edit-single-nh-new').value;
-    let newVal = newValStr !== "" ? cleanTien(newValStr) : 0;
-    
-    let linkedFundTotal = 0;
-    if(masterData[currentDay].quy) {
-        masterData[currentDay].quy.forEach(q => {
-            let s = q.storages.find(x => x.name === currentEditBankShortName && x.isLinked === true);
-            if(s) linkedFundTotal += s.v;
-        });
-    }
-    
-    let effectiveOldGross = currentEditBankOldVal + linkedFundTotal;
-    let diff = newVal - effectiveOldGross;
-    
-    let diffCell = document.getElementById('edit-single-nh-diff');
-    let sign = diff > 0 ? '+' : '';
-    diffCell.style.color = diff > 0 ? 'var(--success)' : (diff < 0 ? 'var(--danger)' : 'var(--primary)');
-    diffCell.innerText = sign + formatTien(diff) + " đ";
+    let newValStr = document.getElementById('edit-single-nh-new').value;
+    let newVal = newValStr !== "" ? cleanTien(newValStr) : 0;
+    
+    let linkedFundTotal = 0;
+    if(masterData[currentDay].quy) {
+        masterData[currentDay].quy.forEach(q => {
+            let s = q.storages.find(x => x.name === currentEditBankShortName && x.isLinked === true);
+            if(s) linkedFundTotal += s.v;
+        });
+    }
+    
+    let effectiveOldGross = currentEditBankOldVal + linkedFundTotal;
+    let diff = newVal - effectiveOldGross;
+    
+    let diffCell = document.getElementById('edit-single-nh-diff');
+    let sign = diff > 0 ? '+' : '';
+    diffCell.style.color = diff > 0 ? 'var(--success)' : (diff < 0 ? 'var(--danger)' : 'var(--primary)');
+    diffCell.innerText = sign + formatTien(diff) + " đ";
 }
 
 function confirmSingleBankEdit() {
-    let newNHData = [...(masterData[currentDay].nh || [])];
-    if(!masterData.nh_history) masterData.nh_history = [];
-    let nowTime = getGMT7Time();
+    let newNHData = [...(masterData[currentDay].nh || [])];
+    if(!masterData.nh_history) masterData.nh_history = [];
+    let nowTime = getGMT7Time();
 
-    let newValStr = document.getElementById('edit-single-nh-new').value;
-    let rawInputVal = newValStr !== "" ? cleanTien(newValStr) : null; 
-    
-    let linkedFundTotal = 0;
-    if(masterData[currentDay].quy) {
-        masterData[currentDay].quy.forEach(q => {
-            let s = q.storages.find(x => x.name === currentEditBankShortName && x.isLinked === true);
-            if(s) linkedFundTotal += s.v;
-        });
-    }
+    let newValStr = document.getElementById('edit-single-nh-new').value;
+    let rawInputVal = newValStr !== "" ? cleanTien(newValStr) : null; 
+    
+    let linkedFundTotal = 0;
+    if(masterData[currentDay].quy) {
+        masterData[currentDay].quy.forEach(q => {
+            let s = q.storages.find(x => x.name === currentEditBankShortName && x.isLinked === true);
+            if(s) linkedFundTotal += s.v;
+        });
+    }
 
-    let newVal = null;
-    let diff = 0;
-    let calcNewVal = 0;
+    let newVal = null;
+    let diff = 0;
+    let calcNewVal = 0;
 
-    if (rawInputVal !== null) {
-        newVal = rawInputVal - linkedFundTotal;
-        if (newVal < 0) newVal = 0;
-        calcNewVal = newVal;
-        let effectiveOldGross = currentEditBankOldVal + linkedFundTotal;
-        diff = rawInputVal - effectiveOldGross;
-    }
+    if (rawInputVal !== null) {
+        newVal = rawInputVal - linkedFundTotal;
+        if (newVal < 0) newVal = 0;
+        calcNewVal = newVal;
+        let effectiveOldGross = currentEditBankOldVal + linkedFundTotal;
+        diff = rawInputVal - effectiveOldGross;
+    }
 
-    let reasonSelect = document.getElementById('sel-single-nh-reason').value;
-    
-    let idx = newNHData.findIndex(x => x.n === currentEditBankShortName);
-    if (idx > -1) {
-        if (newVal === null) newNHData[idx].v = ""; 
-        else newNHData[idx].v = newVal.toString();
-    }
-    else {
-        if (newVal !== null) newNHData.push({ n: currentEditBankShortName, v: newVal.toString() });
-    }
-    
-    if (rawInputVal !== null && diff !== 0) {
-        masterData.nh_history.push({ date: currentDay, time: nowTime, bank: currentEditBankShortName, oldVal: currentEditBankOldVal, newVal: calcNewVal, diff: diff, reason: reasonSelect });
-    }
-    
-    if (diff < 0) { 
-        let amountToDeduct = Math.abs(diff);
-        if(masterData[currentDay].quy) {
-            masterData[currentDay].quy.forEach(q => {
-                let storageItem = q.storages.find(s => s.name === currentEditBankShortName && s.isLinked === true);
-                if (storageItem && amountToDeduct > 0) {
-                    let deduct = Math.min(storageItem.v, amountToDeduct);
-                    storageItem.v -= deduct;
-                    amountToDeduct -= deduct;
-                    if(!q.history) q.history = [];
-                    q.history.push({ d: currentDay, type: 'rut', amount: deduct, storage: currentEditBankShortName, reason: 'Trừ tự động do giảm NH: ' + reasonSelect });
-                }
-            });
-        }
-    }
+    let reasonSelect = document.getElementById('sel-single-nh-reason').value;
+    
+    let idx = newNHData.findIndex(x => x.n === currentEditBankShortName);
+    if (idx > -1) {
+        if (newVal === null) newNHData[idx].v = ""; 
+        else newNHData[idx].v = newVal.toString();
+    }
+    else {
+        if (newVal !== null) newNHData.push({ n: currentEditBankShortName, v: newVal.toString() });
+    }
+    
+    if (rawInputVal !== null && diff !== 0) {
+        masterData.nh_history.push({ date: currentDay, time: nowTime, bank: currentEditBankShortName, oldVal: currentEditBankOldVal, newVal: calcNewVal, diff: diff, reason: reasonSelect });
+    }
+    
+    if (diff < 0) { 
+        let amountToDeduct = Math.abs(diff);
+        if(masterData[currentDay].quy) {
+            masterData[currentDay].quy.forEach(q => {
+                let storageItem = q.storages.find(s => s.name === currentEditBankShortName && s.isLinked === true);
+                if (storageItem && amountToDeduct > 0) {
+                    let deduct = Math.min(storageItem.v, amountToDeduct);
+                    storageItem.v -= deduct;
+                    amountToDeduct -= deduct;
+                    if(!q.history) q.history = [];
+                    q.history.push({ d: currentDay, type: 'rut', amount: deduct, storage: currentEditBankShortName, reason: 'Trừ tự động do giảm NH: ' + reasonSelect });
+                }
+            });
+        }
+    }
 
-    masterData[currentDay].nh = newNHData;
-    saveMaster(); loadDay(); closeModal('modal-edit-single-nh');
-    alert("Đã cập nhật số dư Ngân hàng!");
+    masterData[currentDay].nh = newNHData;
+    saveMaster(); loadDay(); closeModal('modal-edit-single-nh');
+    alert("Đã cập nhật số dư Ngân hàng!");
 }
 
 function refreshBankReasonOptions() {
-    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
-    let html = masterData.bankReasons.map(r => `<option value="${r}">${r}</option>`).join('');
-    let sel = document.getElementById('sel-single-nh-reason');
-    if(sel) {
-        let currentVal = sel.value;
-        sel.innerHTML = html;
-        if(masterData.bankReasons.includes(currentVal)) sel.value = currentVal;
-    }
+    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
+    let html = masterData.bankReasons.map(r => `<option value="${r}">${r}</option>`).join('');
+    let sel = document.getElementById('sel-single-nh-reason');
+    if(sel) {
+        let currentVal = sel.value;
+        sel.innerHTML = html;
+        if(masterData.bankReasons.includes(currentVal)) sel.value = currentVal;
+    }
 }
 
 function openBankReasonManager() {
-    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
-    document.getElementById('in-new-bank-reason').value = "";
-    renderBankReasonsList();
-    openModal('modal-bank-reasons');
+    if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
+    document.getElementById('in-new-bank-reason').value = "";
+    renderBankReasonsList();
+    openModal('modal-bank-reasons');
 }
 
 function closeBankReasonManager() {
-    closeModal('modal-bank-reasons');
-    refreshBankReasonOptions();
+    closeModal('modal-bank-reasons');
+    refreshBankReasonOptions();
 }
 
 function renderBankReasonsList() {
-    let listHtml = "";
-    masterData.bankReasons.forEach((r, i) => {
-        listHtml += `<tr><td style="font-weight:bold">${r}</td><td align="center"><span onclick="deleteBankReason(${i})" style="color:red; cursor:pointer; font-weight:bold;">✖</span></td></tr>`;
-    });
-    document.getElementById('body-bank-reasons-list').innerHTML = listHtml;
+    let listHtml = "";
+    masterData.bankReasons.forEach((r, i) => {
+        listHtml += `<tr><td style="font-weight:bold">${r}</td><td align="center"><span onclick="deleteBankReason(${i})" style="color:red; cursor:pointer; font-weight:bold;">✖</span></td></tr>`;
+    });
+    document.getElementById('body-bank-reasons-list').innerHTML = listHtml;
 }
 
 function saveNewBankReason() {
-    let reason = document.getElementById('in-new-bank-reason').value.trim();
-    if (reason !== "") {
-        if (!masterData.bankReasons.includes(reason)) { 
-            masterData.bankReasons.push(reason); 
-            saveMaster(); 
-            renderBankReasonsList(); 
-            document.getElementById('in-new-bank-reason').value = "";
-        } else { 
-            alert("Lý do này đã tồn tại!"); 
-        }
-    }
+    let reason = document.getElementById('in-new-bank-reason').value.trim();
+    if (reason !== "") {
+        if (!masterData.bankReasons.includes(reason)) { 
+            masterData.bankReasons.push(reason); 
+            saveMaster(); 
+            renderBankReasonsList(); 
+            document.getElementById('in-new-bank-reason').value = "";
+        } else { 
+            alert("Lý do này đã tồn tại!"); 
+        }
+    }
 }
 
-function deleteBankReason(index) { 
-    if(confirm("Xóa lý do này?")) { 
-        masterData.bankReasons.splice(index, 1); 
-        saveMaster(); 
-        renderBankReasonsList(); 
-    } 
+function deleteBankReason(index) { 
+    if(confirm("Xóa lý do này?")) { 
+        masterData.bankReasons.splice(index, 1); 
+        saveMaster(); 
+        renderBankReasonsList(); 
+    } 
 }
 
 
@@ -1730,11 +1725,11 @@ let filterSel = document.getElementById('quy-detail-filter');
 filterSel.innerHTML = `<option value="all">Tất cả tài khoản</option>`;
 
 q.storages.forEach((s) => {
-    let isLinkedChecked = s.isLinked ? "checked" : "";
-    let linkToggle = s.name !== 'Tiền mặt' ? `<label class="switch" style="margin-top:4px;"><input type="checkbox" onchange="toggleQuyLink(${q.id}, '${s.name}', this.checked)" ${isLinkedChecked}><span class="slider"></span></label>` : '<span style="color:#aaa">-</span>';
-    
-    b.innerHTML += `<tr><td style="font-weight:bold">${s.name}</td><td align="center">${linkToggle}</td><td align="right" style="color:var(--success); font-weight:bold; font-size:16px;">${formatTien(s.v)} đ</td></tr>`;
-    filterSel.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+    let isLinkedChecked = s.isLinked ? "checked" : "";
+    let linkToggle = s.name !== 'Tiền mặt' ? `<label class="switch" style="margin-top:4px;"><input type="checkbox" onchange="toggleQuyLink(${q.id}, '${s.name}', this.checked)" ${isLinkedChecked}><span class="slider"></span></label>` : '<span style="color:#aaa">-</span>';
+    
+    b.innerHTML += `<tr><td style="font-weight:bold">${s.name}</td><td align="center">${linkToggle}</td><td align="right" style="color:var(--success); font-weight:bold; font-size:16px;">${formatTien(s.v)} đ</td></tr>`;
+    filterSel.innerHTML += `<option value="${s.name}">${s.name}</option>`;
 });
 
 filterQuyHistory();
@@ -1742,44 +1737,44 @@ openModal('modal-quy-detail');
 }
 
 window.toggleQuyLink = function(quyId, storageName, isChecked) {
-    let q = masterData[currentDay].quy.find(x => x.id === quyId);
-    if(q) {
-        let s = q.storages.find(x => x.name === storageName);
-        if(s) {
-            s.isLinked = isChecked;
-            saveMaster();
-        }
-    }
+    let q = masterData[currentDay].quy.find(x => x.id === quyId);
+    if(q) {
+        let s = q.storages.find(x => x.name === storageName);
+        if(s) {
+            s.isLinked = isChecked;
+            saveMaster();
+        }
+    }
 };
 
 function filterQuyHistory() {
-    let q = masterData[currentDay].quy.find(x => x.id === currentQuyDetailId); if(!q) return;
-    let filterVal = document.getElementById('quy-detail-filter').value;
-    let hBody = document.getElementById('quy-history-tbody');
-    hBody.innerHTML = "";
-    
-    let historyToRender = q.history || [];
-    if (filterVal !== 'all') {
-        historyToRender = historyToRender.filter(h => h.storage === filterVal);
-    }
-    
-    if (historyToRender.length > 0) {
-        let sortedHistory = [...historyToRender].reverse();
-        sortedHistory.forEach(h => {
-            let typeText = h.type === 'init' ? 'Khởi tạo' : (h.type === 'nop' ? 'Nộp thêm' : 'Rút ra');
-            let color = h.type === 'rut' ? 'var(--danger)' : 'var(--success)';
-            let sign = h.type === 'rut' ? '-' : '+';
-            hBody.innerHTML += `<tr>
-                <td align="center">${vnDate(h.d)}</td>
-                <td align="center" style="font-weight:bold; color:${color}">${typeText}</td>
-                <td align="right" style="font-weight:bold; color:${color}">${sign}${formatTien(h.amount)} đ</td>
-                <td>${h.storage}</td>
-                <td>${h.reason || ''}</td>
-            </tr>`;
-        });
-    } else {
-        hBody.innerHTML = `<tr><td colspan="5" align="center" style="color:#888; font-style:italic; padding:15px;">Chưa có lịch sử giao dịch nào ở tài khoản này.</td></tr>`;
-    }
+    let q = masterData[currentDay].quy.find(x => x.id === currentQuyDetailId); if(!q) return;
+    let filterVal = document.getElementById('quy-detail-filter').value;
+    let hBody = document.getElementById('quy-history-tbody');
+    hBody.innerHTML = "";
+    
+    let historyToRender = q.history || [];
+    if (filterVal !== 'all') {
+        historyToRender = historyToRender.filter(h => h.storage === filterVal);
+    }
+    
+    if (historyToRender.length > 0) {
+        let sortedHistory = [...historyToRender].reverse();
+        sortedHistory.forEach(h => {
+            let typeText = h.type === 'init' ? 'Khởi tạo' : (h.type === 'nop' ? 'Nộp thêm' : 'Rút ra');
+            let color = h.type === 'rut' ? 'var(--danger)' : 'var(--success)';
+            let sign = h.type === 'rut' ? '-' : '+';
+            hBody.innerHTML += `<tr>
+                <td align="center">${vnDate(h.d)}</td>
+                <td align="center" style="font-weight:bold; color:${color}">${typeText}</td>
+                <td align="right" style="font-weight:bold; color:${color}">${sign}${formatTien(h.amount)} đ</td>
+                <td>${h.storage}</td>
+                <td>${h.reason || ''}</td>
+            </tr>`;
+        });
+    } else {
+        hBody.innerHTML = `<tr><td colspan="5" align="center" style="color:#888; font-style:italic; padding:15px;">Chưa có lịch sử giao dịch nào ở tài khoản này.</td></tr>`;
+    }
 }
 
 function openEditQuyStorage(id) {
@@ -1805,7 +1800,7 @@ function openNopQuy(id) {
 let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
 document.getElementById('hid-quy-nop-id').value = id;
 document.getElementById('in-quy-nop-val').value = "";
-document.getElementById('in-quy-nop-date').value = currentDay; 
+document.getElementById('in-quy-nop-date').value = currentDay; 
 document.getElementById('in-quy-nop-date').max = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
 let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
 document.getElementById('sel-quy-nop-storage').innerHTML = storageHtml;
@@ -1813,20 +1808,20 @@ openModal('modal-quy-nop');
 }
 
 function confirmNopQuy() {
-let id = parseInt(document.getElementById('hid-quy-nop-id').value), 
-    val = cleanTien(document.getElementById('in-quy-nop-val').value), 
-    storageName = document.getElementById('sel-quy-nop-storage').value,
-    nopDate = document.getElementById('in-quy-nop-date').value;
+let id = parseInt(document.getElementById('hid-quy-nop-id').value), 
+    val = cleanTien(document.getElementById('in-quy-nop-val').value), 
+    storageName = document.getElementById('sel-quy-nop-storage').value,
+    nopDate = document.getElementById('in-quy-nop-date').value;
 if (val <= 0 || !nopDate) { alert("Vui lòng nhập số tiền và ngày nộp hợp lệ!"); return; }
 let q = masterData[currentDay].quy.find(x => x.id === id);
 if (q) {
-    let storageIndex = q.storages.findIndex(s => s.name === storageName);
-    if (storageIndex > -1) {
-        q.storages[storageIndex].v += val;
-        if(!q.history) q.history = [];
-        q.history.push({ d: nopDate, type: 'nop', amount: val, storage: storageName, reason: 'Nộp thêm tiền' });
-        saveMaster(); closeModal('modal-quy-nop'); loadDay();
-    }
+    let storageIndex = q.storages.findIndex(s => s.name === storageName);
+    if (storageIndex > -1) {
+        q.storages[storageIndex].v += val;
+        if(!q.history) q.history = [];
+        q.history.push({ d: nopDate, type: 'nop', amount: val, storage: storageName, reason: 'Nộp thêm tiền' });
+        saveMaster(); closeModal('modal-quy-nop'); loadDay();
+    }
 }
 }
 
@@ -1867,22 +1862,22 @@ openModal('modal-quy-rut');
 }
 
 function confirmRutQuy() {
-let id = parseInt(document.getElementById('hid-quy-rut-id').value), 
-    val = cleanTien(document.getElementById('in-quy-rut-val').value), 
-    storageName = document.getElementById('sel-quy-rut-storage').value,
-    reason = document.getElementById('sel-quy-rut-reason').value,
-    rutDate = document.getElementById('in-quy-rut-date').value;
+let id = parseInt(document.getElementById('hid-quy-rut-id').value), 
+    val = cleanTien(document.getElementById('in-quy-rut-val').value), 
+    storageName = document.getElementById('sel-quy-rut-storage').value,
+    reason = document.getElementById('sel-quy-rut-reason').value,
+    rutDate = document.getElementById('in-quy-rut-date').value;
 if (val <= 0 || !rutDate) { alert("Vui lòng nhập số tiền và ngày rút hợp lệ!"); return; }
 let q = masterData[currentDay].quy.find(x => x.id === id);
 if (q) {
-    let storageIndex = q.storages.findIndex(s => s.name === storageName);
-    if (storageIndex > -1) {
-        if (q.storages[storageIndex].v < val) { alert("Lỗi: Số dư không đủ!"); return; }
-        q.storages[storageIndex].v -= val;
-        if(!q.history) q.history = [];
-        q.history.push({ d: rutDate, type: 'rut', amount: val, storage: storageName, reason: reason });
-        saveMaster(); closeModal('modal-quy-rut'); loadDay();
-    }
+    let storageIndex = q.storages.findIndex(s => s.name === storageName);
+    if (storageIndex > -1) {
+        if (q.storages[storageIndex].v < val) { alert("Lỗi: Số dư không đủ!"); return; }
+        q.storages[storageIndex].v -= val;
+        if(!q.history) q.history = [];
+        q.history.push({ d: rutDate, type: 'rut', amount: val, storage: storageName, reason: reason });
+        saveMaster(); closeModal('modal-quy-rut'); loadDay();
+    }
 }
 }
 
@@ -1921,16 +1916,16 @@ alert("Đã xóa quỹ thành công!");
 // FILTER CHO SỔ TIẾT KIỆM
 // =====================================
 function filterSTK(type, btn) {
-    currentSTKFilter = type;
-    document.querySelectorAll('.stk-filter-btn').forEach(b => {
-        b.style.background = '#fff';
-        b.style.color = '#000';
-    });
-    btn.style.background = 'var(--primary)';
-    btn.style.color = 'var(--accent)';
-    
-    let list = masterData[currentDay]?.stk || [];
-    renderSTK(list);
+    currentSTKFilter = type;
+    document.querySelectorAll('.stk-filter-btn').forEach(b => {
+        b.style.background = '#fff';
+        b.style.color = '#000';
+    });
+    btn.style.background = 'var(--primary)';
+    btn.style.color = 'var(--accent)';
+    
+    let list = masterData[currentDay]?.stk || [];
+    renderSTK(list);
 }
 
 // =====================================
@@ -1956,12 +1951,12 @@ const dToday = new Date(currentDay).getTime();
 
 let filteredList = list;
 if (currentSTKFilter !== 'all') {
-    filteredList = list.filter(s => s.type === currentSTKFilter);
+    filteredList = list.filter(s => s.type === currentSTKFilter);
 }
 
 if(filteredList.length === 0) {
-    cont.innerHTML = `<div style="text-align:center; padding:20px; color:#666; font-style:italic;">Không có sổ tiết kiệm nào trong danh mục này.</div>`;
-    return;
+    cont.innerHTML = `<div style="text-align:center; padding:20px; color:#666; font-style:italic;">Không có sổ tiết kiệm nào trong danh mục này.</div>`;
+    return;
 }
 
 filteredList.forEach(s => {
@@ -2029,12 +2024,12 @@ b.innerHTML += `<tr><td align="center">${vnDate(h.d)}</td><td style="text-align:
 openModal('modal-stk-detail');
 }
 
-function openNop(id) { 
-    document.getElementById('hid-nop-id').value = id; 
-    document.getElementById('in-nop-val').value = ""; 
-    document.getElementById('in-stk-nop-date').value = currentDay;
-    document.getElementById('in-stk-nop-date').max = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
-    openModal('modal-stk-nop'); 
+function openNop(id) { 
+    document.getElementById('hid-nop-id').value = id; 
+    document.getElementById('in-nop-val').value = ""; 
+    document.getElementById('in-stk-nop-date').value = currentDay;
+    document.getElementById('in-stk-nop-date').max = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
+    openModal('modal-stk-nop'); 
 }
 
 function confirmNop() {
@@ -2124,15 +2119,15 @@ for(let j=0; j<3; j++) {
 let cellVal = printCells[i * 3 + j];
 if (cellVal === null) { tmPrintHtml += `<td class="tm-empty"></td><td class="tm-empty"></td><td class="tm-empty"></td>`;
 } else {
-let originIdx = denoms.indexOf(cellVal); 
+let originIdx = denoms.indexOf(cellVal); 
 let rawVal = data.tm && data.tm[originIdx] !== undefined && data.tm[originIdx] !== "" ? data.tm[originIdx] : null;
 if (rawVal !== null) {
-    let slg = parseInt(rawVal) || 0;
-    let tong = cellVal * slg;
-    let tongDisplay = tong === 0 ? '0' : formatTien(tong);
-    tmPrintHtml += `<td class="tm-val">${formatTien(cellVal)}</td><td class="tm-sl">${slg}</td><td>${tongDisplay}</td>`;
+    let slg = parseInt(rawVal) || 0;
+    let tong = cellVal * slg;
+    let tongDisplay = tong === 0 ? '0' : formatTien(tong);
+    tmPrintHtml += `<td class="tm-val">${formatTien(cellVal)}</td><td class="tm-sl">${slg}</td><td>${tongDisplay}</td>`;
 } else {
-    tmPrintHtml += `<td class="tm-val">${formatTien(cellVal)}</td><td class="tm-sl"></td><td>-</td>`;
+    tmPrintHtml += `<td class="tm-val">${formatTien(cellVal)}</td><td class="tm-sl"></td><td>-</td>`;
 }
 } } tmPrintHtml += `</tr>`; }
 document.getElementById('p-tm-grid-tbody').innerHTML = tmPrintHtml;
@@ -2140,22 +2135,22 @@ document.getElementById('p-tm-grid-tbody').innerHTML = tmPrintHtml;
 let activeBanks = (data.nh || []).filter(n => cleanTien(n.v) > 0);
 let nhPrintHtml = "";
 if (activeBanks.length > 2) {
-    document.querySelector('#p-nh-table thead').innerHTML = `<tr><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th></tr>`;
-    document.querySelector('#p-nh-table tfoot td:first-child').setAttribute('colspan', '3');
-    for (let i = 0; i < activeBanks.length; i += 2) {
-        let b1 = activeBanks[i];
-        let b2 = activeBanks[i+1];
-        nhPrintHtml += `<tr>
-            <td style="text-align:left;">${b1.n}</td><td align="right">${formatTien(cleanTien(b1.v))} đ</td>
-            <td style="text-align:left;">${b2 ? b2.n : ''}</td><td align="right">${b2 ? formatTien(cleanTien(b2.v)) + ' đ' : ''}</td>
-        </tr>`;
-    }
+    document.querySelector('#p-nh-table thead').innerHTML = `<tr><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th></tr>`;
+    document.querySelector('#p-nh-table tfoot td:first-child').setAttribute('colspan', '3');
+    for (let i = 0; i < activeBanks.length; i += 2) {
+        let b1 = activeBanks[i];
+        let b2 = activeBanks[i+1];
+        nhPrintHtml += `<tr>
+            <td style="text-align:left;">${b1.n}</td><td align="right">${formatTien(cleanTien(b1.v))} đ</td>
+            <td style="text-align:left;">${b2 ? b2.n : ''}</td><td align="right">${b2 ? formatTien(cleanTien(b2.v)) + ' đ' : ''}</td>
+        </tr>`;
+    }
 } else {
-    document.querySelector('#p-nh-table thead').innerHTML = `<tr><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th></tr>`;
-    document.querySelector('#p-nh-table tfoot td:first-child').removeAttribute('colspan');
-    activeBanks.forEach(n => { 
-        nhPrintHtml += `<tr><td style="text-align:left;">${n.n}</td><td align="right">${formatTien(cleanTien(n.v))} đ</td></tr>`; 
-    });
+    document.querySelector('#p-nh-table thead').innerHTML = `<tr><th style="text-align:left;">Loại tài khoản / Ngân hàng</th><th style="text-align:right;">Tổng dư nợ</th></tr>`;
+    document.querySelector('#p-nh-table tfoot td:first-child').removeAttribute('colspan');
+    activeBanks.forEach(n => { 
+        nhPrintHtml += `<tr><td style="text-align:left;">${n.n}</td><td align="right">${formatTien(cleanTien(n.v))} đ</td></tr>`; 
+    });
 }
 document.querySelector('#p-nh-table tbody').innerHTML = nhPrintHtml;
 document.getElementById('p-nh-total').innerText = formatTien(tNH) + " đ";
@@ -2191,28 +2186,28 @@ closeModal('modal-print-setup'); buildPrintLayout(printDate);
 
 // Chạy lệnh in trực tiếp, không sử dụng setTimeout để tránh bị trình duyệt di động chặn
 try {
-    let asciiCode = generateASCII(12); let nowTime = getGMT7Time();
-    document.getElementById('p-auditor').innerText = auditor; 
-    document.getElementById('p-address').innerText = address; 
+    let asciiCode = generateASCII(12); let nowTime = getGMT7Time();
+    document.getElementById('p-auditor').innerText = auditor; 
+    document.getElementById('p-address').innerText = address; 
 
-    document.getElementById('p-sign-name-1').innerText = ""; 
-    document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
+    document.getElementById('p-sign-name-1').innerText = ""; 
+    document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
 
-    let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(printDate + 'T00:00:00');
-    let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-    document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
-    let dObj = new Date(printDate);
-    document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
-    document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = nowTime; document.getElementById('p-title').innerText = getDayName(printDate); document.getElementById('p-ascii').innerText = asciiCode; document.getElementById('p-copy-info').style.display = 'none';
+    let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(printDate + 'T00:00:00');
+    let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+    document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
+    let dObj = new Date(printDate);
+    document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
+    document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = nowTime; document.getElementById('p-title').innerText = getDayName(printDate); document.getElementById('p-ascii').innerText = asciiCode; document.getElementById('p-copy-info').style.display = 'none';
 
-    if(!masterData.printHistory) masterData.printHistory = [];
-    masterData.printHistory.push({ date: printDate, time: nowTime, code: asciiCode, auditor: auditor, address: address });
-    saveMaster(); renderPrintHistory(); 
-    
-    // Gọi lệnh in ngay lập tức
-    window.print();
+    if(!masterData.printHistory) masterData.printHistory = [];
+    masterData.printHistory.push({ date: printDate, time: nowTime, code: asciiCode, auditor: auditor, address: address });
+    saveMaster(); renderPrintHistory(); 
+    
+    // Gọi lệnh in ngay lập tức
+    window.print();
 } catch(e) {
-    alert("Có lỗi xảy ra khi tạo bản in: " + e);
+    alert("Có lỗi xảy ra khi tạo bản in: " + e);
 }
 }
 
@@ -2222,21 +2217,21 @@ buildPrintLayout(dateStr);
 
 // Chạy lệnh in trực tiếp
 try {
-    document.getElementById('p-auditor').innerText = record.auditor; 
-    document.getElementById('p-address').innerText = record.address; 
-    document.getElementById('p-sign-name-1').innerText = ""; 
-    document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
+    document.getElementById('p-auditor').innerText = record.auditor; 
+    document.getElementById('p-address').innerText = record.address; 
+    document.getElementById('p-sign-name-1').innerText = ""; 
+    document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
 
-    let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(dateStr + 'T00:00:00'); let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-    document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
-    let dObj = new Date(dateStr);
-    document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
-    document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = record.time; document.getElementById('p-title').innerText = getDayName(dateStr); document.getElementById('p-ascii').innerText = codeStr;
-    const copyBox = document.getElementById('p-copy-info'); copyBox.style.display = 'block'; copyBox.innerHTML = `BẢN SAO<br><span style="font-size:10px; font-weight:normal;">Thời gian in lại: ${getGMT7Time()}</span>`;
-    
-    window.print();
+    let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(dateStr + 'T00:00:00'); let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+    document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
+    let dObj = new Date(dateStr);
+    document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
+    document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = record.time; document.getElementById('p-title').innerText = getDayName(dateStr); document.getElementById('p-ascii').innerText = codeStr;
+    const copyBox = document.getElementById('p-copy-info'); copyBox.style.display = 'block'; copyBox.innerHTML = `BẢN SAO<br><span style="font-size:10px; font-weight:normal;">Thời gian in lại: ${getGMT7Time()}</span>`;
+    
+    window.print();
 } catch(e) {
-    alert("Có lỗi xảy ra khi in lại: " + e);
+    alert("Có lỗi xảy ra khi in lại: " + e);
 }
 }
 
@@ -2257,9 +2252,9 @@ if (window.innerWidth < 850) toggleMenu();
 if(id === 'sheet-print') renderPrintHistory();
 
 setTimeout(() => {
-    let contentBox = document.querySelector('.app-content');
-    if(contentBox) contentBox.scrollTop = 0;
-    window.scrollTo(0, 0);
+    let contentBox = document.querySelector('.app-content');
+    if(contentBox) contentBox.scrollTop = 0;
+    window.scrollTo(0, 0);
 }, 10);
 }
 
