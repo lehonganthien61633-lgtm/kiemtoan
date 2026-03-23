@@ -646,6 +646,21 @@ body * { visibility: hidden; }
 </div>
 </div>
 
+<div class="modal-overlay" id="modal-quy-delete">
+<div class="modal-content" style="max-width:450px;">
+<div class="modal-title" style="color:var(--danger); border-bottom-color:var(--danger)">XÓA QUỸ KHỎI HỆ THỐNG</div>
+<div class="form-group"><label>Tên quỹ xóa</label><div class="readonly-text" style="text-align:left; color:var(--primary);" id="del-quy-name"></div></div>
+<div class="form-group"><label>Thời gian đã mở</label><div class="readonly-text" style="text-align:left; color:#666;" id="del-quy-duration"></div></div>
+<div class="form-group"><label>Số tiền hiện có</label><div class="readonly-text" style="text-align:left; color:var(--danger); font-size:24px;" id="del-quy-amount"></div></div>
+<div class="form-group"><label>Mật khẩu xác nhận</label><input type="password" id="in-del-quy-pass" placeholder="Nhập mật khẩu tài khoản để xóa..."></div>
+<input type="hidden" id="hid-del-quy-id">
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-delete')">HỦY BỎ</button>
+<button class="btn-main" style="background:var(--danger); color:#fff; border-color:var(--danger); flex:2" onclick="confirmDeleteQuy()">XÓA VĨNH VIỄN</button>
+</div>
+</div>
+</div>
+
 <div class="modal-overlay" id="modal-bank-add-settings">
 <div class="modal-content" style="max-width:450px;">
 <div class="modal-title">THÊM NGÂN HÀNG MỚI</div>
@@ -1842,12 +1857,36 @@ if (q) {
 }
 }
 
+// ==== THÊM HÀM GỌI MODAL XÓA QUỸ MỚI ====
 function deleteQuy(id) {
-if(confirm("Bạn có chắc chắn muốn xóa quỹ này không?")) {
+let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
+document.getElementById('hid-del-quy-id').value = id;
+document.getElementById('del-quy-name').innerText = q.name;
+document.getElementById('del-quy-amount').innerText = formatTien(getQuyTotalAmt(q)) + " đ";
+
+let createDate = new Date(q.date);
+let today = new Date(Date.now() + 7 * 3600 * 1000);
+let timeDiff = today.getTime() - createDate.getTime();
+let daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+let durationText = daysDiff === 0 ? "Mới tạo hôm nay" : (daysDiff > 0 ? daysDiff + " ngày" : "Chưa tới ngày mở");
+
+document.getElementById('del-quy-duration').innerText = durationText;
+document.getElementById('in-del-quy-pass').value = "";
+openModal('modal-quy-delete');
+}
+
+function confirmDeleteQuy() {
+let id = parseInt(document.getElementById('hid-del-quy-id').value);
+let passInput = document.getElementById('in-del-quy-pass').value;
+
+if (!passInput) { alert("Vui lòng nhập mật khẩu để xác nhận!"); return; }
+if (systemDB[activeUserPhone].password !== passInput) { alert("Mật khẩu không chính xác!"); return; }
+
 masterData[currentDay].quy = masterData[currentDay].quy.filter(x => x.id !== id);
-saveMaster(); loadDay();
+saveMaster(); loadDay(); closeModal('modal-quy-delete');
+alert("Đã xóa quỹ thành công!");
 }
-}
+// ==========================================
 
 // =====================================
 // FILTER CHO SỔ TIẾT KIỆM
@@ -2185,7 +2224,6 @@ setTimeout(() => {
 function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('active'); }
 function switchInternalTab(tab) { document.getElementById('content-stk').style.display = (tab === 'stk' ? 'block' : 'none'); document.getElementById('content-quy').style.display = (tab === 'quy' ? 'block' : 'none'); document.getElementById('btn-tab-stk').classList.remove('active'); document.getElementById('btn-tab-quy').classList.remove('active'); document.getElementById('btn-tab-' + tab).classList.add('active'); }
 function switchSettingsTab(tab) { document.getElementById('content-set-acc').style.display = (tab === 'acc' ? 'block' : 'none'); document.getElementById('content-set-bank').style.display = (tab === 'bank' ? 'block' : 'none'); document.getElementById('btn-tab-set-acc').classList.remove('active'); document.getElementById('btn-tab-set-bank').classList.remove('active'); document.getElementById('btn-tab-set-' + tab).classList.add('active'); }
-function deleteSTK(id) { if(confirm("Xóa bỏ hoàn toàn sổ tiết kiệm này?")) { masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id); saveMaster(); renderSTK(masterData[currentDay].stk); calcTotal(); } }
 function openModal(id) { document.getElementById(id).classList.add('active'); document.body.classList.add('modal-open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.classList.remove('modal-open'); }
 function formatTien(n) { return new Intl.NumberFormat('vi-VN').format(n); }
