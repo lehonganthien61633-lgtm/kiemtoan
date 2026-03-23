@@ -28,6 +28,11 @@ display: flex;
 justify-content: center;
 }
 
+/* Base64 Data URI cho Background Watermark để tránh lỗi in ấn */
+.watermark-bg {
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgoJPGRlZnM+CgkJPHBhdHRlcm4gaWQ9IndhdGVybWFyayIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8dGV4dCB4PSIxNTAiIHk9IjEwMCIgZm9udC1zaXplPSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiYSgyMDAsIDIwMCwgMjAwLCAwLjE1KSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCwgMTUwLCAxMDApIj5LSUVNIFRPQU48L3RleHQ+CgkJPC9wYXR0ZXJuPgoJPC9kZWZzPgoJPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCN3YXRlcm1hcmspIiAvPjwvc3ZnPg==') center/cover no-repeat;
+}
+
 /* === CSS HỆ THỐNG AUTH === */
 .auth-wrapper {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -79,7 +84,7 @@ justify-content: center;
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: url('https://lh3.googleusercontent.com/d/1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa') center/cover no-repeat;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgoJPGRlZnM+CgkJPHBhdHRlcm4gaWQ9IndhdGVybWFyayIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8dGV4dCB4PSIxNTAiIHk9IjEwMCIgZm9udC1zaXplPSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiYSgyMDAsIDIwMCwgMjAwLCAwLjE1KSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCwgMTUwLCAxMDApIj5LSUVNIFRPQU48L3RleHQ+CgkJPC9wYXR0ZXJuPgoJPC9kZWZzPgoJPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCN3YXRlcm1hcmspIiAvPjwvc3ZnPg==') center/cover no-repeat;
     opacity: 0.08;
     pointer-events: none;
     z-index: 1;
@@ -152,7 +157,7 @@ input:checked + .slider:before { transform: translateX(16px); }
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 99999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
 .modal-overlay.active { display: flex; }
 .modal-content { background: #fff; width: 100%; max-width: 550px; border: 2px solid var(--accent); padding: 35px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 60px rgba(0,0,0,0.6); border-radius: 8px; }
-.modal-content::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://lh3.googleusercontent.com/d/1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa') center/cover no-repeat; opacity: 0.08; pointer-events: none; z-index: 0; border-radius: 8px; }
+.modal-content::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgoJPGRlZnM+CgkJPHBhdHRlcm4gaWQ9IndhdGVybWFyayIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8dGV4dCB4PSIxNTAiIHk9IjEwMCIgZm9udC1zaXplPSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiYSgyMDAsIDIwMCwgMjAwLCAwLjE1KSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCwgMTUwLCAxMDApIj5LSUVNIFRPQU48L3RleHQ+CgkJPC9wYXR0ZXJuPgoJPC9kZWZzPgoJPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCN3YXRlcm1hcmspIiAvPjwvc3ZnPg==') center/cover no-repeat; opacity: 0.08; pointer-events: none; z-index: 0; border-radius: 8px; }
 .modal-content > * { position: relative; z-index: 1; }
 .modal-title { font-size: 22px; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 25px; border-bottom: 1px solid #ccc; padding-bottom: 15px; }
 .form-group { margin-bottom: 20px; }
@@ -185,7 +190,7 @@ html, body { background: #fff !important; padding: 0 !important; margin: 0 !impo
 #auth-screen, .app-container, .modal-overlay { display: none !important; }
 #print-area { display: block !important; position: relative !important; left: 0; top: 0; width: 100%; font-family: "Times New Roman", Times, serif; font-size: 13px; color: #000; box-sizing: border-box; }
 .p-wrap { border: 2px solid #000; padding: 20px; min-height: 95vh; display: flex; flex-direction: column; position: relative;}
-.p-wrap::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://lh3.googleusercontent.com/d/1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa') center/contain no-repeat; opacity: 0.1; pointer-events: none; z-index: -1; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+.p-wrap::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgoJPGRlZnM+CgkJPHBhdHRlcm4gaWQ9IndhdGVybWFyayIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgoJCQk8dGV4dCB4PSIxNTAiIHk9IjEwMCIgZm9udC1zaXplPSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0icmdiYSgyMDAsIDIwMCwgMjAwLCAwLjE1KSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCwgMTUwLCAxMDApIj5LSUVNIFRPQU48L3RleHQ+CgkJPC9wYXR0ZXJuPgoJPC9kZWZzPgoJPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCN3YXRlcm1hcmspIiAvPjwvc3ZnPg==') center/contain no-repeat; opacity: 0.1; pointer-events: none; z-index: -1; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 .p-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px;}
 .p-title { text-align: center; text-transform: uppercase; font-weight: bold; font-size: 20px; margin: 15px 0 20px 0; }
 .p-info { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; font-size: 14px;}
@@ -412,7 +417,7 @@ html, body { background: #fff !important; padding: 0 !important; margin: 0 !impo
 
         <div style="text-align: center; margin-top: auto; padding: 30px 20px; color: #333; width: 100%; position: relative; z-index: 2;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <img src="https://lh3.googleusercontent.com/d/17dh-SYcmGxXsFiFOvZihF8PgsM3vHEEV" alt="[LOGO]" style="height: 80px; display: inline-block;"> 
+                <img src="https://lh3.googleusercontent.com/d/1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa" alt="[LOGO]" style="height: 80px; display: inline-block;"> 
                 <span style="font-size: 16px; font-weight: bold; color: #1a1a1a;">Copyright © 2026 Thiên Trường Software. All rights reserved.</span>
             </div>
             <div style="max-width: 650px; margin: 15px auto 0; border-top: 1px solid #ccc; padding-top: 10px; font-size: 13px; color: #444; line-height: 1.6;">
@@ -743,7 +748,7 @@ html, body { background: #fff !important; padding: 0 !important; margin: 0 !impo
 </div>
 
 <div id="print-area">
-<div class="p-wrap">
+<div class="p-wrap watermark-bg">
 <div class="p-header">
 <div>
 <h2 style="margin:0; font-size:18px;">TỔNG CỤC QUẢN LÝ KINH TẾ</h2>
@@ -829,7 +834,7 @@ html, body { background: #fff !important; padding: 0 !important; margin: 0 !impo
 
 <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #000; text-align: center; -webkit-print-color-adjust: exact;">
     <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <img src="https://lh3.googleusercontent.com/d/17dh-SYcmGxXsFiFOvZihF8PgsM3vHEEV" alt="[LOGO]" style="height: 60px; display: inline-block;"> 
+        <img src="https://lh3.googleusercontent.com/d/1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa" alt="[LOGO]" style="height: 60px; display: inline-block;"> 
         <span style="font-size: 14px; font-weight: bold; color: #000;">Copyright © 2026 Thiên Trường Software. All rights reserved.</span>
     </div>
     <div style="margin-top: 8px; font-size: 11px; color: #000;">
@@ -2184,55 +2189,55 @@ let address = document.getElementById('in-print-address').value.trim() || "Chưa
 
 closeModal('modal-print-setup'); buildPrintLayout(printDate);
 
-setTimeout(() => {
-    try {
-        let asciiCode = generateASCII(12); let nowTime = getGMT7Time();
-        document.getElementById('p-auditor').innerText = auditor; 
-        document.getElementById('p-address').innerText = address; 
+// Chạy lệnh in trực tiếp, không sử dụng setTimeout để tránh bị trình duyệt di động chặn
+try {
+    let asciiCode = generateASCII(12); let nowTime = getGMT7Time();
+    document.getElementById('p-auditor').innerText = auditor; 
+    document.getElementById('p-address').innerText = address; 
 
-        document.getElementById('p-sign-name-1').innerText = ""; 
-        document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
+    document.getElementById('p-sign-name-1').innerText = ""; 
+    document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
 
-        let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(printDate + 'T00:00:00');
-        let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-        document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
-        let dObj = new Date(printDate);
-        document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
-        document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = nowTime; document.getElementById('p-title').innerText = getDayName(printDate); document.getElementById('p-ascii').innerText = asciiCode; document.getElementById('p-copy-info').style.display = 'none';
+    let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(printDate + 'T00:00:00');
+    let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+    document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
+    let dObj = new Date(printDate);
+    document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
+    document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = nowTime; document.getElementById('p-title').innerText = getDayName(printDate); document.getElementById('p-ascii').innerText = asciiCode; document.getElementById('p-copy-info').style.display = 'none';
 
-        if(!masterData.printHistory) masterData.printHistory = [];
-        masterData.printHistory.push({ date: printDate, time: nowTime, code: asciiCode, auditor: auditor, address: address });
-        saveMaster(); renderPrintHistory(); 
-        
-        window.print();
-    } catch(e) {
-        alert("Có lỗi xảy ra khi tạo bản in: " + e);
-    }
-}, 300);
+    if(!masterData.printHistory) masterData.printHistory = [];
+    masterData.printHistory.push({ date: printDate, time: nowTime, code: asciiCode, auditor: auditor, address: address });
+    saveMaster(); renderPrintHistory(); 
+    
+    // Gọi lệnh in ngay lập tức
+    window.print();
+} catch(e) {
+    alert("Có lỗi xảy ra khi tạo bản in: " + e);
+}
 }
 
 function printOldRecord(dateStr, codeStr) {
 let history = masterData.printHistory || []; let record = history.find(x => x.code === codeStr); if(!record) return;
 buildPrintLayout(dateStr);
-setTimeout(() => {
-    try {
-        document.getElementById('p-auditor').innerText = record.auditor; 
-        document.getElementById('p-address').innerText = record.address; 
-        document.getElementById('p-sign-name-1').innerText = ""; 
-        document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
 
-        let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(dateStr + 'T00:00:00'); let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-        document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
-        let dObj = new Date(dateStr);
-        document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
-        document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = record.time; document.getElementById('p-title').innerText = getDayName(dateStr); document.getElementById('p-ascii').innerText = codeStr;
-        const copyBox = document.getElementById('p-copy-info'); copyBox.style.display = 'block'; copyBox.innerHTML = `BẢN SAO<br><span style="font-size:10px; font-weight:normal;">Thời gian in lại: ${getGMT7Time()}</span>`;
-        
-        window.print();
-    } catch(e) {
-        alert("Có lỗi xảy ra khi in lại: " + e);
-    }
-}, 300);
+// Chạy lệnh in trực tiếp
+try {
+    document.getElementById('p-auditor').innerText = record.auditor; 
+    document.getElementById('p-address').innerText = record.address; 
+    document.getElementById('p-sign-name-1').innerText = ""; 
+    document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
+
+    let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(dateStr + 'T00:00:00'); let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+    document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
+    let dObj = new Date(dateStr);
+    document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
+    document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = record.time; document.getElementById('p-title').innerText = getDayName(dateStr); document.getElementById('p-ascii').innerText = codeStr;
+    const copyBox = document.getElementById('p-copy-info'); copyBox.style.display = 'block'; copyBox.innerHTML = `BẢN SAO<br><span style="font-size:10px; font-weight:normal;">Thời gian in lại: ${getGMT7Time()}</span>`;
+    
+    window.print();
+} catch(e) {
+    alert("Có lỗi xảy ra khi in lại: " + e);
+}
 }
 
 function renderPrintHistory() {
