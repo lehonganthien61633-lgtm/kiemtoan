@@ -31,7 +31,7 @@ justify-content: center;
 /* === CSS HỆ THỐNG AUTH === */
 .auth-wrapper {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: url('https://images.unsplash.com/photo-1616075133610-8dc0388cdce8?q=80&w=2000&auto=format&fit=crop') center/cover;
+    background: url('https://lh3.googleusercontent.com/d/1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa') center/cover no-repeat;
     display: flex; justify-content: center; align-items: center; z-index: 100000;
 }
 .auth-overlay {
@@ -72,6 +72,17 @@ justify-content: center;
     width: 100%;
     height: 100vh; 
     overflow: hidden; 
+    background-color: var(--ivory);
+    position: relative;
+}
+.main-wrapper::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('https://lh3.googleusercontent.com/d/1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa') center/cover no-repeat;
+    opacity: 0.08;
+    pointer-events: none;
+    z-index: 1;
 }
 
 /* HEADER - GẮN CỐ ĐỊNH TRÊN CÙNG */
@@ -92,12 +103,13 @@ justify-content: center;
     flex: 1;
     overflow-y: auto; 
     padding: 25px 20px;
-    background-color: var(--ivory);
+    background-color: transparent;
     display: flex;
     flex-direction: column;
+    z-index: 2;
 }
 
-.page { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 40px; width: 100%; }
+.page { display: none; max-width: 850px; margin: 0 auto; padding-bottom: 40px; width: 100%; position: relative; z-index: 1; }
 .page.active { display: block; animation: fadeIn 0.4s; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -140,6 +152,8 @@ input:checked + .slider:before { transform: translateX(16px); }
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 99999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
 .modal-overlay.active { display: flex; }
 .modal-content { background: #fff; width: 100%; max-width: 550px; border: 2px solid var(--accent); padding: 35px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 60px rgba(0,0,0,0.6); border-radius: 8px; }
+.modal-content::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://lh3.googleusercontent.com/d/1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa') center/cover no-repeat; opacity: 0.08; pointer-events: none; z-index: 0; border-radius: 8px; }
+.modal-content > * { position: relative; z-index: 1; }
 .modal-title { font-size: 22px; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 25px; border-bottom: 1px solid #ccc; padding-bottom: 15px; }
 .form-group { margin-bottom: 20px; }
 .form-group label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #333; text-transform: uppercase; }
@@ -167,11 +181,11 @@ body { padding: 40px; background-color: #e0e0e0;}
 /* KHU VỰC IN ẤN ĐẶC BIỆT (PRINT CSS) */
 #print-area { display: none; }
 @media print {
-body { background: #fff; padding: 0; margin: 0; overflow: auto; }
-body * { visibility: hidden; }
-#print-area, #print-area * { visibility: visible; }
-#print-area { display: block; position: absolute; left: 0; top: 0; width: 100%; font-family: "Times New Roman", Times, serif; font-size: 13px; color: #000; box-sizing: border-box; }
-.p-wrap { border: 2px solid #000; padding: 20px; min-height: 95vh; display: flex; flex-direction: column;}
+html, body { background: #fff !important; padding: 0 !important; margin: 0 !important; overflow: auto !important; display: block !important; height: auto !important; min-height: auto !important; }
+#auth-screen, .app-container, .modal-overlay { display: none !important; }
+#print-area { display: block !important; position: relative !important; left: 0; top: 0; width: 100%; font-family: "Times New Roman", Times, serif; font-size: 13px; color: #000; box-sizing: border-box; }
+.p-wrap { border: 2px solid #000; padding: 20px; min-height: 95vh; display: flex; flex-direction: column; position: relative;}
+.p-wrap::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://lh3.googleusercontent.com/d/1qciQecix9BW1ZJWu-ysj2GeF-P1Nmqsa') center/contain no-repeat; opacity: 0.1; pointer-events: none; z-index: -1; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 .p-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px;}
 .p-title { text-align: center; text-transform: uppercase; font-weight: bold; font-size: 20px; margin: 15px 0 20px 0; }
 .p-info { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; font-size: 14px;}
@@ -396,9 +410,9 @@ body * { visibility: hidden; }
         </div>
         </div>
 
-        <div style="text-align: center; margin-top: auto; padding: 30px 20px; color: #333; width: 100%;">
+        <div style="text-align: center; margin-top: auto; padding: 30px 20px; color: #333; width: 100%; position: relative; z-index: 2;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <img src="https://lh3.googleusercontent.com/d/17dh-SYcmGxXsFiFOvZihF8PgsM3vHEEV" alt="[LOGO]" style="height: 40px; display: inline-block;"> 
+                <img src="https://lh3.googleusercontent.com/d/17dh-SYcmGxXsFiFOvZihF8PgsM3vHEEV" alt="[LOGO]" style="height: 80px; display: inline-block;"> 
                 <span style="font-size: 16px; font-weight: bold; color: #1a1a1a;">Copyright © 2026 Thiên Trường Software. All rights reserved.</span>
             </div>
             <div style="max-width: 650px; margin: 15px auto 0; border-top: 1px solid #ccc; padding-top: 10px; font-size: 13px; color: #444; line-height: 1.6;">
@@ -793,12 +807,8 @@ body * { visibility: hidden; }
 
 <div style="margin-top:10px; border-top: 2px dashed #000; padding-top:15px;">
 <div style="display:flex; justify-content:center; gap:20px; font-size:16px;">
-<div style="text-align:right; width:50%; font-weight:bold;">TỔNG TÀI SẢN (I + II + III + IV) =</div>
+<div style="text-align:right; width:50%; font-weight:bold;">TỔNG TÀI SẢN BÀN GIAO =</div>
 <div style="width:50%;"><span id="p-final-total" style="font-weight:bold; font-size:18px;">0 đ</span></div>
-</div>
-<div style="display:flex; justify-content:center; gap:20px; font-size:16px; margin-top:10px;">
-<div style="text-align:right; width:50%; font-weight:bold;">Số tiền bàn giao =</div>
-<div style="width:50%;"><span id="p-final-total-2" style="font-weight:bold; font-size:18px;">0 đ</span></div>
 </div>
 <div style="text-align:center; font-style:italic; margin-top:10px; font-size:14px;">(Bằng chữ: <span id="p-text-total" style="font-weight:bold;"></span>)</div>
 </div>
@@ -819,7 +829,7 @@ body * { visibility: hidden; }
 
 <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #000; text-align: center; -webkit-print-color-adjust: exact;">
     <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <img src="https://lh3.googleusercontent.com/d/17dh-SYcmGxXsFiFOvZihF8PgsM3vHEEV" alt="[LOGO]" style="height: 30px; display: inline-block;"> 
+        <img src="https://lh3.googleusercontent.com/d/17dh-SYcmGxXsFiFOvZihF8PgsM3vHEEV" alt="[LOGO]" style="height: 60px; display: inline-block;"> 
         <span style="font-size: 14px; font-weight: bold; color: #000;">Copyright © 2026 Thiên Trường Software. All rights reserved.</span>
     </div>
     <div style="margin-top: 8px; font-size: 11px; color: #000;">
@@ -892,6 +902,20 @@ let currentEditBankShortName = "";
 let currentEditBankOldVal = 0;
 let currentCaptchaCode = "";
 let currentSTKFilter = 'all';
+
+// Hàm lấy giờ GMT+7 tránh lỗi timeZone trên thiết bị cũ
+function getGMT7Time() {
+    let d = new Date();
+    let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    let gmt7Date = new Date(utc + (3600000 * 7));
+    let h = String(gmt7Date.getHours()).padStart(2, '0');
+    let m = String(gmt7Date.getMinutes()).padStart(2, '0');
+    let s = String(gmt7Date.getSeconds()).padStart(2, '0');
+    let dd = String(gmt7Date.getDate()).padStart(2, '0');
+    let mo = String(gmt7Date.getMonth() + 1).padStart(2, '0');
+    let yyyy = gmt7Date.getFullYear();
+    return `${h}:${m}:${s} ${dd}/${mo}/${yyyy}`;
+}
 
 // Hàm tạo Captcha
 function generateCaptcha() {
@@ -1491,7 +1515,7 @@ function updateSingleNHDiff() {
 function confirmSingleBankEdit() {
     let newNHData = [...(masterData[currentDay].nh || [])];
     if(!masterData.nh_history) masterData.nh_history = [];
-    let nowTime = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+    let nowTime = getGMT7Time();
 
     let newValStr = document.getElementById('edit-single-nh-new').value;
     let rawInputVal = newValStr !== "" ? cleanTien(newValStr) : null; 
@@ -2058,6 +2082,7 @@ let tTM = 0; denoms.forEach((m, i) => { let v = (parseInt(data.tm[i])||0); let v
 let tNH = (data.nh || []).reduce((s,x)=>s+cleanTien(x.v),0);
 let tQuy = (data.quy || []).reduce((s,q)=>s+getQuyTotalAmt(q),0);
 let tSTK = (data.stk || []).reduce((s,x)=>s+(x.amt||0),0);
+
 let finalT = tTM + tNH + tQuy + tSTK;
 
 if(document.getElementById('val-tm')) document.getElementById('val-tm').innerText = formatTien(tTM);
@@ -2069,6 +2094,7 @@ if(document.getElementById('fin-tm')) document.getElementById('fin-tm').innerTex
 if(document.getElementById('fin-nh')) document.getElementById('fin-nh').innerText = formatTien(tNH);
 if(document.getElementById('fin-quy')) document.getElementById('fin-quy').innerText = formatTien(tQuy);
 if(document.getElementById('fin-stk')) document.getElementById('fin-stk').innerText = formatTien(tSTK);
+
 if(document.getElementById('fin-total')) document.getElementById('fin-total').innerText = formatTien(finalT);
 }
 
@@ -2159,43 +2185,54 @@ let address = document.getElementById('in-print-address').value.trim() || "Chưa
 closeModal('modal-print-setup'); buildPrintLayout(printDate);
 
 setTimeout(() => {
-let asciiCode = generateASCII(12); let nowTime = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
-document.getElementById('p-auditor').innerText = auditor; 
-document.getElementById('p-address').innerText = address; 
+    try {
+        let asciiCode = generateASCII(12); let nowTime = getGMT7Time();
+        document.getElementById('p-auditor').innerText = auditor; 
+        document.getElementById('p-address').innerText = address; 
 
-document.getElementById('p-sign-name-1').innerText = ""; 
-document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
+        document.getElementById('p-sign-name-1').innerText = ""; 
+        document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
 
-let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(printDate + 'T00:00:00');
-let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
-let dObj = new Date(printDate);
-document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
-document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = nowTime; document.getElementById('p-title').innerText = getDayName(printDate); document.getElementById('p-ascii').innerText = asciiCode; document.getElementById('p-copy-info').style.display = 'none';
+        let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(printDate + 'T00:00:00');
+        let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+        document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
+        let dObj = new Date(printDate);
+        document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
+        document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = nowTime; document.getElementById('p-title').innerText = getDayName(printDate); document.getElementById('p-ascii').innerText = asciiCode; document.getElementById('p-copy-info').style.display = 'none';
 
-if(!masterData.printHistory) masterData.printHistory = [];
-masterData.printHistory.push({ date: printDate, time: nowTime, code: asciiCode, auditor: auditor, address: address });
-saveMaster(); renderPrintHistory(); window.print();
-}, 100);
+        if(!masterData.printHistory) masterData.printHistory = [];
+        masterData.printHistory.push({ date: printDate, time: nowTime, code: asciiCode, auditor: auditor, address: address });
+        saveMaster(); renderPrintHistory(); 
+        
+        window.print();
+    } catch(e) {
+        alert("Có lỗi xảy ra khi tạo bản in: " + e);
+    }
+}, 300);
 }
 
 function printOldRecord(dateStr, codeStr) {
 let history = masterData.printHistory || []; let record = history.find(x => x.code === codeStr); if(!record) return;
 buildPrintLayout(dateStr);
 setTimeout(() => {
-document.getElementById('p-auditor').innerText = record.auditor; 
-document.getElementById('p-address').innerText = record.address; 
-document.getElementById('p-sign-name-1').innerText = ""; 
-document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
+    try {
+        document.getElementById('p-auditor').innerText = record.auditor; 
+        document.getElementById('p-address').innerText = record.address; 
+        document.getElementById('p-sign-name-1').innerText = ""; 
+        document.getElementById('p-sign-name-2').innerText = systemDB[activeUserPhone].name;
 
-let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(dateStr + 'T00:00:00'); let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
-let dObj = new Date(dateStr);
-document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
-document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = record.time; document.getElementById('p-title').innerText = getDayName(dateStr); document.getElementById('p-ascii').innerText = codeStr;
-const copyBox = document.getElementById('p-copy-info'); copyBox.style.display = 'block'; copyBox.innerHTML = `BẢN SAO<br><span style="font-size:10px; font-weight:normal;">Thời gian in lại: ${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}</span>`;
-window.print();
-}, 100);
+        let startDate = new Date('2026-01-01T00:00:00'); let targetDate = new Date(dateStr + 'T00:00:00'); let diffDays = Math.floor((targetDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+        document.getElementById('p-phieu').innerText = diffDays > 0 ? String(diffDays).padStart(3, '0') : '001';
+        let dObj = new Date(dateStr);
+        document.getElementById('p-d').innerText = String(dObj.getDate()).padStart(2, '0'); document.getElementById('p-m').innerText = String(dObj.getMonth()+1).padStart(2, '0'); document.getElementById('p-y').innerText = dObj.getFullYear();
+        document.getElementById('p-tuan').innerText = getWeekNumber(dObj); document.getElementById('p-time').innerText = record.time; document.getElementById('p-title').innerText = getDayName(dateStr); document.getElementById('p-ascii').innerText = codeStr;
+        const copyBox = document.getElementById('p-copy-info'); copyBox.style.display = 'block'; copyBox.innerHTML = `BẢN SAO<br><span style="font-size:10px; font-weight:normal;">Thời gian in lại: ${getGMT7Time()}</span>`;
+        
+        window.print();
+    } catch(e) {
+        alert("Có lỗi xảy ra khi in lại: " + e);
+    }
+}, 300);
 }
 
 function renderPrintHistory() {
