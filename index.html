@@ -2021,6 +2021,7 @@ document.getElementById('hid-dh-id').value = id; document.getElementById('in-dh-
 document.getElementById('in-dh-ls').value = s.ls; document.getElementById('in-dh-mo').value = "";
 openModal('modal-stk-dh');
 }
+
 function confirmDH(isRenew) {
 let id = parseInt(document.getElementById('hid-dh-id').value);
 if (!isRenew) {
@@ -2034,6 +2035,17 @@ s.end = d.toISOString().split('T')[0];
 s.history = [{id: Date.now(), d: s.start, n: `Tái tục (Cộng ${formatTien(lai)}đ)`, v: s.amt, ls: ls}];
 }
 saveMaster(); closeModal('modal-stk-dh'); loadDay();
+}
+
+function deleteSTK(id) {
+    let s = masterData[currentDay].stk.find(x => x.id === id);
+    if (!s) return;
+    if (confirm(`BẠN CÓ CHẮC CHẮN MUỐN XÓA SỔ TIẾT KIỆM NÀY?\n\nTên sổ: ${s.name}\nNgân hàng: ${s.nh}\nSố tiền: ${formatTien(s.amt)} đ\n\nLưu ý: Hành động này không thể hoàn tác!`)) {
+        masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id);
+        saveMaster();
+        loadDay();
+        alert("Đã xóa sổ tiết kiệm thành công!");
+    }
 }
 
 function getLocation() {
