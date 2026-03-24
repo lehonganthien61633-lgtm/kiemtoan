@@ -534,6 +534,19 @@ body * { visibility: hidden; }
 </div>
 </div>
 
+<div class="modal-overlay" id="modal-edit-nh-hist-time" style="z-index: 100000;">
+<div class="modal-content" style="max-width:400px;">
+<div class="modal-title">ĐIỀU CHỈNH THỜI GIAN</div>
+<div class="form-group"><label>Ngày Giao Dịch</label><input type="date" id="edit-hist-date"></div>
+<div class="form-group"><label>Thời Gian Giao Dịch</label><input type="time" id="edit-hist-time"></div>
+<input type="hidden" id="edit-hist-index">
+<div style="display:flex; gap:15px; margin-top:30px;">
+<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="cancelEditHistTime()">HỦY BỎ</button>
+<button class="btn-main" style="background:var(--info); color:#fff; border-color:var(--info); flex:2" onclick="confirmEditHistTime()">CẬP NHẬT</button>
+</div>
+</div>
+</div>
+
 <div class="modal-overlay" id="modal-stk-add">
 <div class="modal-content">
 <div class="modal-title">LẬP SỔ TIẾT KIỆM</div>
@@ -1432,13 +1445,34 @@ function openBankInfo(fullName, shortName, balance) {
     let tbody = document.getElementById('info-bank-history');
     tbody.innerHTML = '';
     let history = masterData.nh_history || [];
-    let bankHist = history.filter(h => h.bank === shortName).reverse();
+    
+    // Gắn thêm index gốc vào array trước khi filter để map đúng vào nút sửa
+    let bankHist = history.map((h, index) => ({...h, originalIndex: index}))
+                          .filter(h => h.bank === shortName)
+                          .reverse();
+
     if(bankHist.length > 0) {
         bankHist.forEach(h => {
             let color = h.diff > 0 ? 'var(--success)' : (h.diff < 0 ? 'var(--danger)' : '#333');
             let sign = h.diff > 0 ? '+' : '';
+            
+            // Rút gọn hiển thị thời gian để không bị tràn cột
+            let displayTime = h.time ? h.time.split(' ')[0].replace(',', '') : '';
+            if (h.time && h.time.includes(':') && h.time.length <= 8) {
+                displayTime = h.time;
+            } else if (h.time) {
+                let match = h.time.match(/(\d{1,2}:\d{2}(:\d{2})?)/);
+                if (match) displayTime = match[0];
+            }
+
             tbody.innerHTML += `<tr>
-                <td align="center">${vnDate(h.date)} <br> <span style="font-size:11px;">${h.time.split(' ')[1]}</span></td>
+                <td align="center">
+                    ${vnDate(h.date)} <br> 
+                    <span style="font-size:12px; font-weight:bold; color:var(--primary);">${displayTime}</span>
+                    <div style="margin-top: 5px;">
+                        <button class="btn-sm" style="padding: 3px 8px; font-size: 10px; background: #eee;" onclick="openEditHistTime(${h.originalIndex})">Sửa thời gian</button>
+                    </div>
+                </td>
                 <td align="right" style="color:${color}; font-weight:bold;">${sign}${formatTien(h.diff)} đ</td>
                 <td>${h.reason}</td>
             </tr>`;
@@ -1448,6 +1482,60 @@ function openBankInfo(fullName, shortName, balance) {
     }
     
     openModal('modal-bank-info');
+}
+
+// Hàm mới: Mở modal chỉnh sửa thời gian
+function openEditHistTime(idx) {
+    closeModal('modal-bank-info'); // Đóng tạm modal thông tin NH
+    
+    let h = masterData.nh_history[idx];
+    if (!h) return;
+    
+    document.getElementById('edit-hist-index').value = idx;
+    document.getElementById('edit-hist-date').value = h.date;
+    
+    let hhmm = "00:00";
+    if (h.time) {
+        let match = h.time.match(/(\d{1,2}):(\d{2})/);
+        if(match) hhmm = match[1].padStart(2, '0') + ':' + match[2];
+    }
+    document.getElementById('edit-hist-time').value = hhmm;
+    
+    openModal('modal-edit-nh-hist-time');
+}
+
+// Hàm mới: Lưu lại thay đổi ngày giờ
+function confirmEditHistTime() {
+    let idx = document.getElementById('edit-hist-index').value;
+    let newDate = document.getElementById('edit-hist-date').value;
+    let newTime = document.getElementById('edit-hist-time').value;
+    
+    if(!newDate || !newTime) {
+        alert("Vui lòng nhập đầy đủ ngày và giờ!"); 
+        return;
+    }
+    
+    if (masterData.nh_history[idx]) {
+        masterData.nh_history[idx].date = newDate;
+        masterData.nh_history[idx].time = newTime + ":00"; // format lại cho đồng bộ
+        saveMaster();
+        
+        // Mở lại modal bank info để render thay đổi
+        let bank = masterData.nh_history[idx].bank;
+        let fullName = document.getElementById('info-bank-full').innerText;
+        let balance = document.getElementById('info-bank-balance').innerText;
+        
+        closeModal('modal-edit-nh-hist-time');
+        openBankInfo(fullName, bank, balance);
+    }
+}
+
+// Hàm mới: Hủy việc chỉnh sửa và quay lại modal cũ
+function cancelEditHistTime() {
+    let fullName = document.getElementById('info-bank-full').innerText;
+    let balance = document.getElementById('info-bank-balance').innerText;
+    closeModal('modal-edit-nh-hist-time');
+    openBankInfo(fullName, currentEditBankShortName, balance);
 }
 
 function openSingleBankEdit() {
