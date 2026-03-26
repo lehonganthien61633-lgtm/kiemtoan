@@ -971,9 +971,25 @@ function saveSystemDB() {
     fetch(FIREBASE_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(systemDB) });
 }
 
-function saveMaster() { 
+function saveMaster() {
     if(activeUserPhone) {
         if(!systemDB[activeUserPhone]) systemDB[activeUserPhone] = {};
+        
+        let allDates = Object.keys(masterData).filter(d => d.match(/^\d{4}-\d{2}-\d{2}$/)).sort();
+        let currentIndex = allDates.indexOf(currentDay);
+
+        if (currentIndex !== -1 && currentIndex < allDates.length - 1) {
+            for (let i = currentIndex; i < allDates.length - 1; i++) {
+                let dCurr = allDates[i];
+                let dNext = allDates[i+1];
+                
+                masterData[dNext].tm = JSON.parse(JSON.stringify(masterData[dCurr].tm || []));
+                masterData[dNext].nh = JSON.parse(JSON.stringify(masterData[dCurr].nh || []));
+                masterData[dNext].quy = JSON.parse(JSON.stringify(masterData[dCurr].quy || []));
+                masterData[dNext].stk = JSON.parse(JSON.stringify(masterData[dCurr].stk || []));
+            }
+        }
+        
         systemDB[activeUserPhone].data = masterData;
         saveSystemDB(); 
     }
