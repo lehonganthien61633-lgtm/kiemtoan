@@ -269,6 +269,7 @@ body * { visibility: hidden; }
         <div class="nav-item" onclick="showSheet('sheet-nh', this)">2. Ngân Hàng</div>
         <div class="nav-item" onclick="showSheet('sheet-stk-quy', this)">3. Tiết Kiệm & Quỹ</div>
         <div class="nav-item" onclick="showSheet('sheet-tk', this)" style="color:var(--success)">4. Tổng Kết</div>
+        <div class="nav-item" onclick="showSheet('sheet-data', this)" style="color:var(--info)">5. Dữ Liệu</div>
         <div class="nav-item hide-on-mobile" onclick="showSheet('sheet-print', this)" style="color:var(--info); border-top: 2px solid #eee;">🖨️ In Báo Cáo</div>
         <div class="nav-item" onclick="showSheet('sheet-settings', this)" style="color:var(--accent);">⚙️ Cài Đặt</div>
         <div class="nav-item" id="nav-admin" onclick="showSheet('sheet-admin', this)" style="display:none; color:var(--danger); border-top: 2px solid #eee;">
@@ -335,6 +336,31 @@ body * { visibility: hidden; }
         <button class="btn-main" style="background:#eee; color:#000; margin-top:30px; border-color:#ccc" onclick="clearDayData()">XOÁ TOÀN BỘ DỮ LIỆU NGÀY NÀY</button>
         </div>
 
+        <div id="sheet-data" class="page">
+        <h2>Quản Lý Dữ Liệu Kiểm Toán</h2>
+        <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
+            <div class="form-group" style="margin-bottom:0;">
+                <label>Chọn ngày tạo dữ liệu mới</label>
+                <div style="display:flex; gap:15px;">
+                    <input type="date" id="new-data-date" style="flex:2">
+                    <button class="btn-main" style="margin-top:0; flex:1; background:var(--success); color:white; border:none;" onclick="createNewData()">TẠO DỮ LIỆU</button>
+                </div>
+                <p style="font-size: 13px; color: #666; font-style: italic; margin-top: 5px;">* Dữ liệu sẽ được kế thừa từ ngày có số liệu gần nhất trước đó. Ngày tạo không được lớn hơn ngày hiện tại (GMT+7).</p>
+            </div>
+        </div>
+
+        <h3 style="text-align:left; border-bottom:2px solid var(--primary); padding-bottom:10px;">Danh Sách Dữ Liệu Các Ngày</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width:60px">STT</th>
+                    <th style="text-align:center">Ngày Kiểm toán</th>
+                    <th style="width:120px">Xóa dữ liệu</th>
+                </tr>
+            </thead>
+            <tbody id="body-data-list"></tbody>
+        </table>
+        </div>
         <div id="sheet-print" class="page">
         <h2>In Báo Cáo</h2>
         <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
@@ -1277,6 +1303,10 @@ function initializeApp() {
     document.getElementById('header-date-picker').value = currentDay;
     document.getElementById('in-print-date').value = currentDay;
     
+    // Cài đặt ngày tối đa cho Date Picker tạo dữ liệu
+    document.getElementById('new-data-date').max = today;
+    document.getElementById('new-data-date').value = currentDay;
+    
     document.getElementById('set-user-name').value = systemDB[activeUserPhone].name || "";
     document.getElementById('set-user-dob').value = systemDB[activeUserPhone].dob || "";
     document.getElementById('set-user-phone').value = activeUserPhone;
@@ -1289,6 +1319,7 @@ function initializeApp() {
     refreshBankSettings();
     toggleCalcType();
     renderPrintHistory();
+    renderDataList();
     loadDay(); 
     showSheet('sheet-tm', document.querySelector('.nav-item.active'));
     
@@ -1299,17 +1330,9 @@ function loadDay() {
     if(isPrinting) return;
 
     if (!masterData[currentDay]) {
+        // CHỈNH SỬA TẠI ĐÂY: KHÔNG TỰ ĐỘNG KHỞI TẠO VÀ LƯU DỮ LIỆU LUÂN CHUYỂN
+        // Tạo biến ảo memory để hệ thống không bị lỗi nếu người dùng không tạo Dữ Liệu
         masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
-        // TỰ ĐỘNG LUÂN CHUYỂN DỮ LIỆU TỪ NGÀY GẦN NHẤT
-        let pastDates = Object.keys(masterData).filter(d => d < currentDay && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
-        if (pastDates.length > 0) {
-            let prevDate = pastDates[0];
-            if(masterData[prevDate].tm && masterData[prevDate].tm.length > 0) masterData[currentDay].tm = JSON.parse(JSON.stringify(masterData[prevDate].tm));
-            if(masterData[prevDate].nh && masterData[prevDate].nh.length > 0) masterData[currentDay].nh = JSON.parse(JSON.stringify(masterData[prevDate].nh));
-            if(masterData[prevDate].quy && masterData[prevDate].quy.length > 0) masterData[currentDay].quy = JSON.parse(JSON.stringify(masterData[prevDate].quy));
-            if(masterData[prevDate].stk && masterData[prevDate].stk.length > 0) masterData[currentDay].stk = JSON.parse(JSON.stringify(masterData[prevDate].stk));
-        }
-        saveMaster();
     }
 
     let data = masterData[currentDay];
@@ -2321,6 +2344,63 @@ tbody.innerHTML += `<tr><td align="center">${index + 1}</td><td style="font-weig
 });
 }
 
+function renderDataList() {
+    let tbody = document.getElementById('body-data-list');
+    tbody.innerHTML = '';
+    let dates = Object.keys(masterData).filter(d => d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
+    let stt = 1;
+    dates.forEach((d) => {
+        tbody.innerHTML += `<tr>
+            <td align="center">${stt++}</td>
+            <td align="center" style="font-weight:bold">${vnDate(d)}</td>
+            <td align="center">
+                <button class="btn-sm" style="background:var(--danger); color:white; border:none;" onclick="deleteDataDay('${d}')">Xóa</button>
+            </td>
+        </tr>`;
+    });
+}
+
+function createNewData() {
+    let dateVal = document.getElementById('new-data-date').value;
+    if (!dateVal) { alert("Vui lòng chọn ngày!"); return; }
+    
+    let today = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
+    if (dateVal > today) { alert("Không được tạo dữ liệu cho ngày trong tương lai!"); return; }
+    
+    if (masterData[dateVal] && (masterData[dateVal].tm.length > 0 || masterData[dateVal].nh.length > 0 || masterData[dateVal].quy.length > 0 || masterData[dateVal].stk.length > 0)) {
+        if(!confirm("Ngày này đã có dữ liệu. Bạn có chắc muốn ghi đè (sao chép lại từ ngày trước đó) không? Toàn bộ số liệu cũ của ngày này sẽ bị mất!")) return;
+    }
+
+    masterData[dateVal] = { tm: [], nh: [], quy: [], stk: [] };
+    
+    // Tìm kiếm ngày gần nhất trước đó để luân chuyển thủ công
+    let pastDates = Object.keys(masterData).filter(d => d < dateVal && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
+    let validPrevDate = pastDates.find(d => masterData[d].tm.length > 0 || masterData[d].nh.length > 0 || masterData[d].quy.length > 0 || masterData[d].stk.length > 0);
+
+    if (validPrevDate) {
+        if(masterData[validPrevDate].tm && masterData[validPrevDate].tm.length > 0) masterData[dateVal].tm = JSON.parse(JSON.stringify(masterData[validPrevDate].tm));
+        if(masterData[validPrevDate].nh && masterData[validPrevDate].nh.length > 0) masterData[dateVal].nh = JSON.parse(JSON.stringify(masterData[validPrevDate].nh));
+        if(masterData[validPrevDate].quy && masterData[validPrevDate].quy.length > 0) masterData[dateVal].quy = JSON.parse(JSON.stringify(masterData[validPrevDate].quy));
+        if(masterData[validPrevDate].stk && masterData[validPrevDate].stk.length > 0) masterData[dateVal].stk = JSON.parse(JSON.stringify(masterData[validPrevDate].stk));
+    }
+
+    saveMaster();
+    renderDataList();
+    if (currentDay === dateVal) loadDay();
+    alert("Khởi tạo dữ liệu thành công cho ngày " + vnDate(dateVal));
+}
+
+function deleteDataDay(dateStr) {
+    if(confirm("Bạn có chắc chắn muốn XÓA TOÀN BỘ dữ liệu kiểm toán của ngày " + vnDate(dateStr) + " không?")) {
+        delete masterData[dateStr];
+        saveMaster();
+        renderDataList();
+        if(currentDay === dateStr) {
+            loadDay();
+        }
+    }
+}
+
 function showSheet(id, el) {
 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -2329,6 +2409,7 @@ if(el) el.classList.add('active');
 document.getElementById('current-title').innerText = el ? (el.innerText.split('. ')[1] || el.innerText.replace('🖨️ ', '').replace('⚙️ ', '').replace('🛡️ ', '')) : "Quyết Toán";
 if (window.innerWidth < 850) toggleMenu();
 if(id === 'sheet-print') renderPrintHistory();
+if(id === 'sheet-data') renderDataList();
 
 setTimeout(() => {
     let contentBox = document.querySelector('.app-content');
@@ -2348,7 +2429,7 @@ function formatInput(i) { let v = i.value.replace(/\D/g, ''); i.value = v ? form
 function formatSoLuong(i) { i.value = i.value.replace(/\D/g, ''); }
 function vnDate(s) { if(!s) return "--"; let p = s.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
 function changeDate() { currentDay = document.getElementById('header-date-picker').value; loadDay(); }
-function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạch dữ liệu Tiền mặt, Ngân hàng, Quỹ và Sổ tiết kiệm của ngày hiển thị. Bạn chắc chắn?")) { delete masterData[currentDay]; saveMaster(); loadDay(); } }
+function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạch dữ liệu Tiền mặt, Ngân hàng, Quỹ và Sổ tiết kiệm của ngày hiển thị. Bạn chắc chắn?")) { delete masterData[currentDay]; saveMaster(); loadDay(); renderDataList(); } }
 
 generateCaptcha(); // Initialize Captcha on first load
 </script>
