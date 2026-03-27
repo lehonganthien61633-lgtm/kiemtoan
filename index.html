@@ -345,7 +345,7 @@ body * { visibility: hidden; }
                     <input type="date" id="new-data-date" style="flex:2">
                     <button class="btn-main" style="margin-top:0; flex:1; background:var(--success); color:white; border:none;" onclick="createNewData()">TẠO DỮ LIỆU</button>
                 </div>
-                <p style="font-size: 13px; color: #666; font-style: italic; margin-top: 5px;">* Dữ liệu sẽ được kế thừa từ ngày có số liệu gần nhất trước đó. Ngày tạo không được lớn hơn ngày hiện tại (GMT+7).</p>
+                <p style="font-size: 13px; color: #666; font-style: italic; margin-top: 5px;">* Tiền mặt, Ngân hàng, Sổ tiết kiệm & Quỹ sẽ được copy y hệt từ ngày gần nhất. Không được tạo ở tương lai.</p>
             </div>
         </div>
 
@@ -921,7 +921,16 @@ const FIREBASE_URL = 'https://kiemdem-b7042-default-rtdb.asia-southeast1.firebas
 let systemDB = {};
 let activeUserPhone = null;
 let masterData = {}; 
-let currentDay = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
+
+// Hàm lấy đúng chuẩn giờ GMT+7
+function getGMT7Date() {
+    let d = new Date();
+    let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    let gmt7 = new Date(utc + (3600000 * 7));
+    return gmt7.toISOString().split('T')[0];
+}
+
+let currentDay = getGMT7Date();
 let isPrinting = false;
 const denoms = [500000, 200000, 100000, 50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100];
 let pendingTMChanges = [];
@@ -1001,6 +1010,8 @@ function saveMaster() {
     if(activeUserPhone) {
         if(!systemDB[activeUserPhone]) systemDB[activeUserPhone] = {};
         
+        // KIỂM TRA LUÂN CHUYỂN DỮ LIỆU
+        // Dữ liệu từ STK, NH, Quỹ tự động chuyển tiếp sang các ngày tương lai ĐÃ ĐƯỢC TẠO
         let allDates = Object.keys(masterData).filter(d => d.match(/^\d{4}-\d{2}-\d{2}$/)).sort();
         let currentIndex = allDates.indexOf(currentDay);
 
@@ -1009,10 +1020,12 @@ function saveMaster() {
                 let dCurr = allDates[i];
                 let dNext = allDates[i+1];
                 
-                masterData[dNext].tm = JSON.parse(JSON.stringify(masterData[dCurr].tm || []));
-                masterData[dNext].nh = JSON.parse(JSON.stringify(masterData[dCurr].nh || []));
-                masterData[dNext].quy = JSON.parse(JSON.stringify(masterData[dCurr].quy || []));
-                masterData[dNext].stk = JSON.parse(JSON.stringify(masterData[dCurr].stk || []));
+                if(!masterData[dNext]) masterData[dNext] = { tm: [], nh: [], quy: [], stk: [] };
+                
+                // Tự động đẩy STK, NH, QUY sang tương lai
+                if(masterData[dCurr].nh) masterData[dNext].nh = JSON.parse(JSON.stringify(masterData[dCurr].nh));
+                if(masterData[dCurr].stk) masterData[dNext].stk = JSON.parse(JSON.stringify(masterData[dCurr].stk));
+                if(masterData[dCurr].quy) masterData[dNext].quy = JSON.parse(JSON.stringify(masterData[dCurr].quy));
             }
         }
         
@@ -1298,7 +1311,7 @@ function adminDeleteUser(phone) {
 // KHỞI CHẠY APP
 // =====================================
 function initializeApp() {
-    let today = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
+    let today = getGMT7Date();
     document.getElementById('header-date-picker').max = today; 
     document.getElementById('header-date-picker').value = currentDay;
     document.getElementById('in-print-date').value = currentDay;
@@ -1329,13 +1342,12 @@ function initializeApp() {
 function loadDay() {
     if(isPrinting) return;
 
-    if (!masterData[currentDay]) {
-        // CHỈNH SỬA TẠI ĐÂY: KHÔNG TỰ ĐỘNG KHỞI TẠO VÀ LƯU DỮ LIỆU LUÂN CHUYỂN
-        // Tạo biến ảo memory để hệ thống không bị lỗi nếu người dùng không tạo Dữ Liệu
-        masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
-    }
-
     let data = masterData[currentDay];
+    if (!data) {
+        // Trả về view rỗng. Tuyệt đối KHÔNG tự động khởi tạo masterData[currentDay] = {}
+        // Điều này đảm bảo khi xóa, ngày đó biến mất hoàn toàn
+        data = { tm: [], nh: [], quy: [], stk: [] };
+    }
 
     const tbTM = document.getElementById('body-tm'); tbTM.innerHTML = "";
     denoms.forEach((m, i) => {
@@ -1369,7 +1381,7 @@ function loadDay() {
 // CHỈNH SỬA TIỀN MẶT (HIỂN THỊ TẤT CẢ MỆNH GIÁ)
 // =====================================
 function openEditTM() {
-    let data = masterData[currentDay].tm || [];
+    let data = masterData[currentDay]?.tm || [];
     let tbody = document.getElementById('edit-tm1-tbody');
     tbody.innerHTML = '';
     pendingTMChanges = [...data];
@@ -1429,6 +1441,7 @@ function proceedEditTM() {
     });
     
     if (pendingTMDiff === 0) {
+        if (!masterData[currentDay]) masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
         masterData[currentDay].tm = pendingTMChanges;
         saveMaster(); loadDay(); closeModal('modal-edit-tm1');
         return;
@@ -1467,6 +1480,7 @@ function confirmEditTM() {
         alert(`Tổng số tiền giải trình (${formatTien(sum)}đ) phải BẰNG số tiền chênh lệch (${formatTien(Math.abs(pendingTMDiff))}đ)!`);
         return;
     }
+    if (!masterData[currentDay]) masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
     masterData[currentDay].tm = pendingTMChanges;
     saveMaster(); loadDay(); closeModal('modal-edit-tm2');
     alert("Cập nhật số liệu Tiền Mặt thành công!");
@@ -1580,7 +1594,7 @@ function cancelEditHistTime() {
 function openSingleBankEdit() {
     closeModal('modal-bank-info');
     
-    let dataNH = masterData[currentDay].nh || [];
+    let dataNH = masterData[currentDay]?.nh || [];
     let oldValRaw = dataNH.find(x => x.n === currentEditBankShortName)?.v;
     currentEditBankOldVal = oldValRaw ? cleanTien(oldValRaw) : 0;
     
@@ -1599,7 +1613,7 @@ function updateSingleNHDiff() {
     let newVal = newValStr !== "" ? cleanTien(newValStr) : 0;
     
     let linkedFundTotal = 0;
-    if(masterData[currentDay].quy) {
+    if(masterData[currentDay] && masterData[currentDay].quy) {
         masterData[currentDay].quy.forEach(q => {
             let s = q.storages.find(x => x.name === currentEditBankShortName && x.isLinked === true);
             if(s) linkedFundTotal += s.v;
@@ -1616,6 +1630,7 @@ function updateSingleNHDiff() {
 }
 
 function confirmSingleBankEdit() {
+    if (!masterData[currentDay]) masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
     let newNHData = [...(masterData[currentDay].nh || [])];
     if(!masterData.nh_history) masterData.nh_history = [];
     let nowTime = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
@@ -1812,6 +1827,7 @@ amt = cleanTien(document.getElementById('in-quy-amt').value),
 storage = document.getElementById('sel-quy-storage').value;
 if (amt < 0 || !date || name.trim() === "") { alert("Vui lòng nhập đủ Tên quỹ, Ngày và Số tiền khởi tạo!"); return; }
 let quyObj = { id: Date.now(), name: name, date: date, storages: [{name: storage, v: amt}], history: [{ d: date, type: 'init', amount: amt, storage: storage, reason: 'Khởi tạo quỹ' }] };
+if(!masterData[currentDay]) masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
 if(!masterData[currentDay].quy) masterData[currentDay].quy = [];
 masterData[currentDay].quy.push(quyObj);
 saveMaster(); closeModal('modal-quy-add'); loadDay();
@@ -1819,7 +1835,7 @@ document.getElementById('in-quy-name').value = ""; document.getElementById('in-q
 }
 
 function openDetailQuy(id) {
-let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
+let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); if(!q) return;
 currentQuyDetailId = id;
 document.getElementById('quy-detail-summary').innerHTML = `Tên Quỹ: <b>${q.name}</b><br>Ngày lập: <b>${vnDate(q.date)}</b><br>Tổng tài sản quỹ: <b style="color:var(--danger)">${formatTien(getQuyTotalAmt(q))} đ</b>`;
 
@@ -1840,7 +1856,7 @@ openModal('modal-quy-detail');
 }
 
 window.toggleQuyLink = function(quyId, storageName, isChecked) {
-    let q = masterData[currentDay].quy.find(x => x.id === quyId);
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === quyId);
     if(q) {
         let s = q.storages.find(x => x.name === storageName);
         if(s) {
@@ -1851,7 +1867,7 @@ window.toggleQuyLink = function(quyId, storageName, isChecked) {
 };
 
 function filterQuyHistory() {
-    let q = masterData[currentDay].quy.find(x => x.id === currentQuyDetailId); if(!q) return;
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === currentQuyDetailId); if(!q) return;
     let filterVal = document.getElementById('quy-detail-filter').value;
     let hBody = document.getElementById('quy-history-tbody');
     hBody.innerHTML = "";
@@ -1881,7 +1897,7 @@ function filterQuyHistory() {
 }
 
 function openEditQuyStorage(id) {
-let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
+let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); if(!q) return;
 document.getElementById('hid-quy-edit-id').value = id;
 document.getElementById('in-quy-edit-amt').value = "";
 openModal('modal-quy-edit-storage');
@@ -1889,7 +1905,7 @@ openModal('modal-quy-edit-storage');
 
 function confirmEditQuyStorage() {
 let id = parseInt(document.getElementById('hid-quy-edit-id').value), newStorage = document.getElementById('sel-quy-edit-storage').value, amount = cleanTien(document.getElementById('in-quy-edit-amt').value);
-let q = masterData[currentDay].quy.find(x => x.id === id);
+let q = (masterData[currentDay]?.quy || []).find(x => x.id === id);
 if(q) {
 let existingStorage = q.storages.find(s => s.name === newStorage);
 if(existingStorage) { existingStorage.v += amount; } else { q.storages.push({name: newStorage, v: amount}); }
@@ -1900,11 +1916,11 @@ saveMaster(); closeModal('modal-quy-edit-storage'); loadDay();
 }
 
 function openNopQuy(id) {
-let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
+let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); if(!q) return;
 document.getElementById('hid-quy-nop-id').value = id;
 document.getElementById('in-quy-nop-val').value = "";
 document.getElementById('in-quy-nop-date').value = currentDay; 
-document.getElementById('in-quy-nop-date').max = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
+document.getElementById('in-quy-nop-date').max = getGMT7Date();
 let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
 document.getElementById('sel-quy-nop-storage').innerHTML = storageHtml;
 openModal('modal-quy-nop');
@@ -1916,7 +1932,7 @@ let id = parseInt(document.getElementById('hid-quy-nop-id').value),
     storageName = document.getElementById('sel-quy-nop-storage').value,
     nopDate = document.getElementById('in-quy-nop-date').value;
 if (val <= 0 || !nopDate) { alert("Vui lòng nhập số tiền và ngày nộp hợp lệ!"); return; }
-let q = masterData[currentDay].quy.find(x => x.id === id);
+let q = (masterData[currentDay]?.quy || []).find(x => x.id === id);
 if (q) {
     let storageIndex = q.storages.findIndex(s => s.name === storageName);
     if (storageIndex > -1) {
@@ -1953,11 +1969,11 @@ if (!masterData.quyReasons.includes(reason)) { masterData.quyReasons.push(reason
 function deleteReason(index) { if(confirm("Xóa nguyên do này?")) { masterData.quyReasons.splice(index, 1); saveMaster(); refreshQuyReasons(); } }
 
 function openRutQuy(id) {
-let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
+let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); if(!q) return;
 document.getElementById('hid-quy-rut-id').value = id;
 document.getElementById('in-quy-rut-val').value = "";
 document.getElementById('in-quy-rut-date').value = currentDay;
-document.getElementById('in-quy-rut-date').max = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
+document.getElementById('in-quy-rut-date').max = getGMT7Date();
 let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
 document.getElementById('sel-quy-rut-storage').innerHTML = storageHtml;
 refreshQuyReasons();
@@ -1971,7 +1987,7 @@ let id = parseInt(document.getElementById('hid-quy-rut-id').value),
     reason = document.getElementById('sel-quy-rut-reason').value,
     rutDate = document.getElementById('in-quy-rut-date').value;
 if (val <= 0 || !rutDate) { alert("Vui lòng nhập số tiền và ngày rút hợp lệ!"); return; }
-let q = masterData[currentDay].quy.find(x => x.id === id);
+let q = (masterData[currentDay]?.quy || []).find(x => x.id === id);
 if (q) {
     let storageIndex = q.storages.findIndex(s => s.name === storageName);
     if (storageIndex > -1) {
@@ -1986,13 +2002,15 @@ if (q) {
 
 // ==== THÊM HÀM GỌI MODAL XÓA QUỸ MỚI ====
 function deleteQuy(id) {
-let q = masterData[currentDay].quy.find(x => x.id === id); if(!q) return;
+let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); if(!q) return;
 document.getElementById('hid-del-quy-id').value = id;
 document.getElementById('del-quy-name').innerText = q.name;
 document.getElementById('del-quy-amount').innerText = formatTien(getQuyTotalAmt(q)) + " đ";
 
 let createDate = new Date(q.date);
-let today = new Date(Date.now() + 7 * 3600 * 1000);
+let d = new Date();
+let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+let today = new Date(utc + (3600000 * 7));
 let timeDiff = today.getTime() - createDate.getTime();
 let daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
 let durationText = daysDiff === 0 ? "Mới tạo hôm nay" : (daysDiff > 0 ? daysDiff + " ngày" : "Chưa tới ngày mở");
@@ -2009,7 +2027,7 @@ let passInput = document.getElementById('in-del-quy-pass').value;
 if (!passInput) { alert("Vui lòng nhập mật khẩu để xác nhận!"); return; }
 if (systemDB[activeUserPhone].password !== passInput) { alert("Mật khẩu không chính xác!"); return; }
 
-masterData[currentDay].quy = masterData[currentDay].quy.filter(x => x.id !== id);
+masterData[currentDay].quy = (masterData[currentDay]?.quy || []).filter(x => x.id !== id);
 saveMaster(); loadDay(); closeModal('modal-quy-delete');
 alert("Đã xóa quỹ thành công!");
 }
@@ -2042,6 +2060,7 @@ type = document.getElementById('sel-stk-type').value, mo = parseInt(document.get
 
 if (amt < 0 || !end) { alert("Vui lòng nhập Ngày đáo hạn hợp lệ."); return; }
 let stkObj = { id: Date.now(), name, nh, amt, ls, start, end, type, mo, history: [{id: Date.now(), d: start, n: "Mở sổ ban đầu", v: amt, ls: ls}] };
+if (!masterData[currentDay]) masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
 if (!masterData[currentDay].stk) masterData[currentDay].stk = [];
 masterData[currentDay].stk.push(stkObj);
 saveMaster(); closeModal('modal-stk-add'); loadDay();
@@ -2092,14 +2111,14 @@ if(type === 'tich-luy') { alert("Không áp dụng cho sổ tích lũy."); retur
 document.getElementById('hid-rut-id').value = id;
 document.getElementById('in-rut-val').value = "";
 document.getElementById('in-stk-rut-date').value = currentDay;
-document.getElementById('in-stk-rut-date').max = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
+document.getElementById('in-stk-rut-date').max = getGMT7Date();
 let warning = document.getElementById('stk-rut-warning');
 if (type === 'ky-han') { warning.innerText = "* Rút sổ Kỳ Hạn: Rút tối thiểu 100k và Gốc còn lại >= 100k."; }
 openModal('modal-stk-rut');
 }
 
 function confirmRut() {
-let id = parseInt(document.getElementById('hid-rut-id').value), v = cleanTien(document.getElementById('in-rut-val').value), rutDate = document.getElementById('in-stk-rut-date').value, s = masterData[currentDay].stk.find(x => x.id === id);
+let id = parseInt(document.getElementById('hid-rut-id').value), v = cleanTien(document.getElementById('in-rut-val').value), rutDate = document.getElementById('in-stk-rut-date').value, s = (masterData[currentDay]?.stk || []).find(x => x.id === id);
 if (!rutDate) { alert("Vui lòng chọn ngày rút!"); return; }
 if (!s) return;
 if (s.type === 'ky-han') {
@@ -2117,7 +2136,7 @@ return {days, lai: Math.round(h.v * (h.ls / 100) * (days / 365))};
 }
 
 function openDetail(id) {
-let s = masterData[currentDay].stk.find(x => x.id === id); if(!s) return;
+let s = (masterData[currentDay]?.stk || []).find(x => x.id === id); if(!s) return;
 document.getElementById('detail-summary').innerHTML = `Sổ tiết kiệm: <b>${s.name}</b><br>Ngân hàng: <b>${s.nh}</b><br>Kỳ hạn gửi: <b>${vnDate(s.start)}</b> đến <b>${vnDate(s.end)}</b>`;
 let b = document.getElementById('detail-tbody'); b.innerHTML = "";
 s.history.forEach((h) => {
@@ -2131,18 +2150,18 @@ function openNop(id) {
     document.getElementById('hid-nop-id').value = id; 
     document.getElementById('in-nop-val').value = ""; 
     document.getElementById('in-stk-nop-date').value = currentDay;
-    document.getElementById('in-stk-nop-date').max = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
+    document.getElementById('in-stk-nop-date').max = getGMT7Date();
     openModal('modal-stk-nop'); 
 }
 
 function confirmNop() {
-let id = parseInt(document.getElementById('hid-nop-id').value), v = cleanTien(document.getElementById('in-nop-val').value), ls = parseFloat(document.getElementById('in-nop-ls').value)||0, nopDate = document.getElementById('in-stk-nop-date').value, s = masterData[currentDay].stk.find(x => x.id === id);
+let id = parseInt(document.getElementById('hid-nop-id').value), v = cleanTien(document.getElementById('in-nop-val').value), ls = parseFloat(document.getElementById('in-nop-ls').value)||0, nopDate = document.getElementById('in-stk-nop-date').value, s = (masterData[currentDay]?.stk || []).find(x => x.id === id);
 if (!nopDate) { alert("Vui lòng chọn ngày nộp!"); return; }
 if(s && v > 0) { s.amt += v; s.history.push({id: Date.now(), d: nopDate, n: "Nộp thêm", v, ls}); saveMaster(); closeModal('modal-stk-nop'); loadDay(); }
 }
 
 function openDH(id) {
-let s = masterData[currentDay].stk.find(x => x.id === id); if(!s) return;
+let s = (masterData[currentDay]?.stk || []).find(x => x.id === id); if(!s) return;
 let lai = s.history.reduce((a,h)=>a+(h.v>0?calcH(h,s.end).lai:0),0);
 document.getElementById('hid-dh-id').value = id; document.getElementById('in-dh-lai').value = formatTien(lai);
 document.getElementById('in-dh-ls').value = s.ls; document.getElementById('in-dh-mo').value = "";
@@ -2152,9 +2171,9 @@ openModal('modal-stk-dh');
 function confirmDH(isRenew) {
 let id = parseInt(document.getElementById('hid-dh-id').value);
 if (!isRenew) {
-if(confirm("Tất toán sổ sẽ xóa toàn bộ số dư khỏi hệ thống?")) { masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id); } else return;
+if(confirm("Tất toán sổ sẽ xóa toàn bộ số dư khỏi hệ thống?")) { masterData[currentDay].stk = (masterData[currentDay]?.stk || []).filter(x => x.id !== id); } else return;
 } else {
-let s = masterData[currentDay].stk.find(x => x.id === id), lai = cleanTien(document.getElementById('in-dh-lai').value), ls = parseFloat(document.getElementById('in-dh-ls').value)||0, mo = parseInt(document.getElementById('in-dh-mo').value)||s.mo||1;
+let s = (masterData[currentDay]?.stk || []).find(x => x.id === id), lai = cleanTien(document.getElementById('in-dh-lai').value), ls = parseFloat(document.getElementById('in-dh-ls').value)||0, mo = parseInt(document.getElementById('in-dh-mo').value)||s.mo||1;
 s.amt += lai; s.ls = ls; s.mo = mo; s.start = s.end;
 let d = new Date(s.start); d.setMonth(d.getMonth() + mo);
 while(d.getDay()===0 || d.getDay()===6) d.setDate(d.getDate()+1);
@@ -2165,10 +2184,10 @@ saveMaster(); closeModal('modal-stk-dh'); loadDay();
 }
 
 function deleteSTK(id) {
-    let s = masterData[currentDay].stk.find(x => x.id === id);
+    let s = (masterData[currentDay]?.stk || []).find(x => x.id === id);
     if (!s) return;
     if (confirm(`BẠN CÓ CHẮC CHẮN MUỐN XÓA SỔ TIẾT KIỆM NÀY?\n\nTên sổ: ${s.name}\nNgân hàng: ${s.nh}\nSố tiền: ${formatTien(s.amt)} đ\n\nLưu ý: Hành động này không thể hoàn tác!`)) {
-        masterData[currentDay].stk = masterData[currentDay].stk.filter(x => x.id !== id);
+        masterData[currentDay].stk = (masterData[currentDay]?.stk || []).filter(x => x.id !== id);
         saveMaster();
         loadDay();
         alert("Đã xóa sổ tiết kiệm thành công!");
@@ -2193,7 +2212,7 @@ function docTien(so) { if (so === 0) return "KHÔNG ĐỒNG"; let chuSo = ["KHÔ
 function calcTotal() {
 if(isPrinting) return;
 let data = masterData[currentDay] || {tm:[], nh:[], quy:[], stk:[]};
-let tTM = 0; denoms.forEach((m, i) => { let v = (parseInt(data.tm[i])||0); let val = v*m; tTM += val; });
+let tTM = 0; denoms.forEach((m, i) => { let v = (parseInt(data.tm && data.tm[i])||0); tTM += v*m; });
 let tNH = (data.nh || []).reduce((s,x)=>s+cleanTien(x.v),0);
 let tQuy = (data.quy || []).reduce((s,q)=>s+getQuyTotalAmt(q),0);
 let tSTK = (data.stk || []).reduce((s,x)=>s+(x.amt||0),0);
@@ -2364,10 +2383,10 @@ function createNewData() {
     let dateVal = document.getElementById('new-data-date').value;
     if (!dateVal) { alert("Vui lòng chọn ngày!"); return; }
     
-    let today = new Date(Date.now() + 7 * 3600 * 1000).toISOString().split('T')[0];
+    let today = getGMT7Date();
     if (dateVal > today) { alert("Không được tạo dữ liệu cho ngày trong tương lai!"); return; }
     
-    if (masterData[dateVal] && (masterData[dateVal].tm.length > 0 || masterData[dateVal].nh.length > 0 || masterData[dateVal].quy.length > 0 || masterData[dateVal].stk.length > 0)) {
+    if (masterData[dateVal] && (masterData[dateVal].tm?.length > 0 || masterData[dateVal].nh?.length > 0 || masterData[dateVal].quy?.length > 0 || masterData[dateVal].stk?.length > 0)) {
         if(!confirm("Ngày này đã có dữ liệu. Bạn có chắc muốn ghi đè (sao chép lại từ ngày trước đó) không? Toàn bộ số liệu cũ của ngày này sẽ bị mất!")) return;
     }
 
@@ -2375,7 +2394,7 @@ function createNewData() {
     
     // Tìm kiếm ngày gần nhất trước đó để luân chuyển thủ công
     let pastDates = Object.keys(masterData).filter(d => d < dateVal && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
-    let validPrevDate = pastDates.find(d => masterData[d].tm.length > 0 || masterData[d].nh.length > 0 || masterData[d].quy.length > 0 || masterData[d].stk.length > 0);
+    let validPrevDate = pastDates.find(d => masterData[d].tm?.length > 0 || masterData[d].nh?.length > 0 || masterData[d].quy?.length > 0 || masterData[d].stk?.length > 0);
 
     if (validPrevDate) {
         if(masterData[validPrevDate].tm && masterData[validPrevDate].tm.length > 0) masterData[dateVal].tm = JSON.parse(JSON.stringify(masterData[validPrevDate].tm));
@@ -2398,6 +2417,7 @@ function deleteDataDay(dateStr) {
         if(currentDay === dateStr) {
             loadDay();
         }
+        alert("Đã xóa dữ liệu thành công!");
     }
 }
 
