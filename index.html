@@ -282,7 +282,7 @@ body * { visibility: hidden; }
 <div class="main-wrapper">
     <div class="header-main">
         <div class="header-left"><div class="hamburger-btn" onclick="toggleMenu()">☰</div><div class="header-title" id="current-title">Tiền Mặt</div></div>
-        <div class="header-right"><input type="date" id="header-date-picker" onchange="changeDate()"></div>
+        <div class="header-right"><input type="date" id="header-date-picker" disabled style="opacity:1; cursor:not-allowed; background-color:#e9ecef;" title="Hãy chọn ngày trong mục Dữ Liệu"></div>
     </div>
 
     <div class="app-content">
@@ -2370,12 +2370,23 @@ function renderDataList() {
     dates.forEach((d) => {
         tbody.innerHTML += `<tr>
             <td align="center">${stt++}</td>
-            <td align="center" style="font-weight:bold">${vnDate(d)}</td>
+            <td align="center" style="font-weight:bold; color:var(--info); cursor:pointer; text-decoration:underline;" onclick="jumpToDate('${d}')" title="Bấm để chuyển sang nhập liệu ngày này">${vnDate(d)}</td>
             <td align="center">
                 <button class="btn-sm" style="background:var(--danger); color:white; border:none;" onclick="deleteDataDay('${d}')">Xóa</button>
             </td>
         </tr>`;
     });
+}
+    // Hàm mới: Bấm vào ngày để chuyển hướng và nhập liệu
+function jumpToDate(dateStr) {
+    currentDay = dateStr;
+    document.getElementById('header-date-picker').value = currentDay;
+    loadDay();
+    
+    // Chuyển hướng về tab Tiền mặt (hoặc tab đầu tiên) để bắt đầu nhập
+    let navTM = document.querySelector('.nav-item'); 
+    showSheet('sheet-tm', navTM);
+    alert("Đã chuyển sang ngày " + vnDate(dateStr) + " để nhập liệu.");
 }
 
 function createNewData() {
