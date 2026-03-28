@@ -345,7 +345,7 @@ body * { visibility: hidden; }
                     <input type="date" id="new-data-date" style="flex:2">
                     <button class="btn-main" style="margin-top:0; flex:1; background:var(--success); color:white; border:none;" onclick="createNewData()">TẠO DỮ LIỆU</button>
                 </div>
-                <p style="font-size: 13px; color: #666; font-style: italic; margin-top: 5px;">* Tiền mặt, Ngân hàng, Sổ tiết kiệm & Quỹ sẽ được copy y hệt từ ngày gần nhất. Không được tạo ở tương lai.</p>
+                <p style="font-size: 13px; color: #666; font-style: italic; margin-top: 5px;">* Tiền mặt và Ngân hàng sẽ được copy y hệt từ ngày gần nhất. Không được tạo ở tương lai.</p>
             </div>
         </div>
 
@@ -1010,11 +1010,10 @@ function saveMaster() {
     if(activeUserPhone) {
         if(!systemDB[activeUserPhone]) systemDB[activeUserPhone] = {};
         
-        // KIỂM TRA LUÂN CHUYỂN DỮ LIỆU
-        // Dữ liệu từ STK, NH, Quỹ tự động chuyển tiếp sang các ngày tương lai ĐÃ ĐƯỢC TẠO
         let allDates = Object.keys(masterData).filter(d => d.match(/^\d{4}-\d{2}-\d{2}$/)).sort();
         let currentIndex = allDates.indexOf(currentDay);
 
+        // KHI LƯU: Forward dữ liệu STK, NH, Quỹ cho tất cả các ngày tương lai đã tồn tại trong mảng
         if (currentIndex !== -1 && currentIndex < allDates.length - 1) {
             for (let i = currentIndex; i < allDates.length - 1; i++) {
                 let dCurr = allDates[i];
@@ -1022,10 +1021,11 @@ function saveMaster() {
                 
                 if(!masterData[dNext]) masterData[dNext] = { tm: [], nh: [], quy: [], stk: [] };
                 
-                // Tự động đẩy STK, NH, QUY sang tương lai
-                if(masterData[dCurr].nh) masterData[dNext].nh = JSON.parse(JSON.stringify(masterData[dCurr].nh));
-                if(masterData[dCurr].stk) masterData[dNext].stk = JSON.parse(JSON.stringify(masterData[dCurr].stk));
-                if(masterData[dCurr].quy) masterData[dNext].quy = JSON.parse(JSON.stringify(masterData[dCurr].quy));
+                // Dùng toán tử 3 ngôi ( ? ... : [] ) để fallback mảng rỗng
+                // Tránh lỗi Firebase bỏ qua mảng rỗng khiến tính năng Xóa không đồng bộ được
+                masterData[dNext].stk = masterData[dCurr].stk ? JSON.parse(JSON.stringify(masterData[dCurr].stk)) : [];
+                masterData[dNext].nh  = masterData[dCurr].nh  ? JSON.parse(JSON.stringify(masterData[dCurr].nh))  : [];
+                masterData[dNext].quy = masterData[dCurr].quy ? JSON.parse(JSON.stringify(masterData[dCurr].quy)) : [];
             }
         }
         
@@ -1344,8 +1344,7 @@ function loadDay() {
 
     let data = masterData[currentDay];
     if (!data) {
-        // Trả về view rỗng. Tuyệt đối KHÔNG tự động khởi tạo masterData[currentDay] = {}
-        // Điều này đảm bảo khi xóa, ngày đó biến mất hoàn toàn
+        // Đảm bảo không tự động lưu/sinh file rác vào masterData
         data = { tm: [], nh: [], quy: [], stk: [] };
     }
 
@@ -2405,7 +2404,12 @@ function createNewData() {
 
     saveMaster();
     renderDataList();
-    if (currentDay === dateVal) loadDay();
+    
+    // Đổi view sang ngày vừa tạo
+    currentDay = dateVal;
+    document.getElementById('header-date-picker').value = currentDay;
+    loadDay();
+    
     alert("Khởi tạo dữ liệu thành công cho ngày " + vnDate(dateVal));
 }
 
@@ -2414,7 +2418,14 @@ function deleteDataDay(dateStr) {
         delete masterData[dateStr];
         saveMaster();
         renderDataList();
+        
+        // Nếu xóa ngày đang xem, tự động đổi view về ngày gần nhất
         if(currentDay === dateStr) {
+            let remainingDates = Object.keys(masterData).filter(d => d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
+            if (remainingDates.length > 0) {
+                currentDay = remainingDates[0];
+                document.getElementById('header-date-picker').value = currentDay;
+            }
             loadDay();
         }
         alert("Đã xóa dữ liệu thành công!");
