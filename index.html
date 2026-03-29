@@ -930,9 +930,15 @@ let masterData = {};
 // Hàm lấy đúng chuẩn giờ GMT+7
 function getGMT7Date() {
     let d = new Date();
-    let utc = d.getTime() + (d.getTimezoneOffset() * 60000);
-    let gmt7 = new Date(utc + (3600000 * 7));
-    return gmt7.toISOString().split('T')[0];
+    // Chuyển đối tượng Date về múi giờ Việt Nam
+    let vnTime = new Date(d.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
+    
+    let year = vnTime.getFullYear();
+    let month = String(vnTime.getMonth() + 1).padStart(2, '0');
+    let day = String(vnTime.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
+}
 }
 
 let currentDay = getGMT7Date();
