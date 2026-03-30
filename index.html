@@ -2166,6 +2166,13 @@ function openDetail(id) {
     openModal('modal-stk-detail');
 }
     function editSTKInterest(stkId, histId, currentLs) {
+    // KÍCH HOẠT CHẶN: Kiểm tra lại thời gian một lần nữa trước khi cho phép nhập
+    let now = Date.now();
+    if (now - histId > 259200000) {
+        alert("LỖI BẢO MẬT: Giao dịch này đã qua thời hạn 3 ngày và bị khóa hoàn toàn. Bạn không thể chỉnh sửa!");
+        return;
+    }
+
     let newLsStr = prompt(`ĐIỀU CHỈNH LÃI SUẤT\n(Chỉ hỗ trợ sửa trong 3 ngày đầu)\n\nNhập mức lãi suất mới (%):`, currentLs);
     
     if (newLsStr === null || newLsStr.trim() === "") return; // Người dùng ấn Hủy
