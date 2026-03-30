@@ -1127,8 +1127,6 @@ function handleLogout() {
         document.getElementById('auth-screen').style.display = 'flex';
         document.getElementById('main-app').style.display = 'none';
         document.getElementById('login-pass').value = '';
-        document.getElementById('login-captcha').value = '';
-        generateCaptcha();
     }
 }
 
@@ -2184,8 +2182,6 @@ function openDetail(id) {
     loadDay(); 
     openDetail(stkId); 
     alert("Đã cập nhật lãi suất thành công!");
-}
-    }
 }
 
 function openNop(id) { 
