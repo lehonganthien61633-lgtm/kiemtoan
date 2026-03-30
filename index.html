@@ -2153,12 +2153,18 @@ function openDetail(id) {
     document.getElementById('detail-summary').innerHTML = `Sổ tiết kiệm: <b>${s.name}</b><br>Ngân hàng: <b>${s.nh}</b><br>Kỳ hạn gửi: <b>${vnDate(s.start)}</b> đến <b>${vnDate(s.end)}</b>`;
     let b = document.getElementById('detail-tbody'); b.innerHTML = "";
     
-    let now = Date.now();
+    // Lấy ngày thực tế hôm nay để làm mốc so sánh
+    let realTodayMs = new Date(getGMT7Date()).getTime();
+
     s.history.forEach((h) => {
         let r = calcH(h, s.end);
         
-        // Kiểm tra: Là sổ tích lũy VÀ thời gian từ lúc tạo giao dịch (h.id) đến hiện tại <= 3 ngày (259,200,000 ms)
-        let isEditable = (s.type === 'tich-luy') && ((now - h.id) <= 259200000);
+        // Tính khoảng cách từ Ngày Nộp (h.d) đến Ngày Hôm Nay
+        let transMs = new Date(h.d).getTime();
+        let diffDays = (realTodayMs - transMs) / 86400000;
+        
+        // Điều kiện hiện nút Sửa: Sổ tích lũy VÀ chưa quá 3 ngày kể từ ngày nộp
+        let isEditable = (s.type === 'tich-luy') && (diffDays <= 3) && (diffDays >= 0);
         let editBtnHtml = isEditable ? `<button class="btn-sm" style="padding: 2px 6px; font-size: 10px; margin-left: 5px; background: var(--info); color: #fff; border: none;" onclick="editSTKInterest(${s.id}, ${h.id}, ${h.ls})">Sửa</button>` : '';
 
         b.innerHTML += `<tr><td align="center">${vnDate(h.d)}</td><td style="text-align:left; font-weight:bold">${h.n}</td><td align="center">${h.ls}% ${editBtnHtml}</td><td align="center">${r.days} ngày</td><td style="color:green; font-weight:bold">${h.v>0 ? '+'+formatTien(r.lai) : '--'}</td><td style="font-weight:bold; color:${h.v>0?'var(--success)':'var(--danger)'}">${h.v>0 ? '+'+formatTien(h.v) : formatTien(h.v)}</td></tr>`;
@@ -2166,16 +2172,24 @@ function openDetail(id) {
     openModal('modal-stk-detail');
 }
     function editSTKInterest(stkId, histId, currentLs) {
-    // KÍCH HOẠT CHẶN: Kiểm tra lại thời gian một lần nữa trước khi cho phép nhập
-    let now = Date.now();
-    if (now - histId > 259200000) {
-        alert("LỖI BẢO MẬT: Giao dịch này đã qua thời hạn 3 ngày và bị khóa hoàn toàn. Bạn không thể chỉnh sửa!");
+    let s = (masterData[currentDay]?.stk || []).find(x => x.id === stkId);
+    if (!s) return;
+    let h = s.history.find(x => x.id === histId);
+    if (!h) return;
+
+    // Chặn ngay lập tức nếu dùng code để gọi hàm khi đã quá 3 ngày
+    let realTodayMs = new Date(getGMT7Date()).getTime();
+    let transMs = new Date(h.d).getTime();
+    let diffDays = (realTodayMs - transMs) / 86400000;
+
+    if (diffDays > 3) {
+        alert("LỖI BẢO MẬT: Giao dịch này đã qua thời hạn 3 ngày kể từ ngày nộp. Không thể chỉnh sửa!");
         return;
     }
 
-    let newLsStr = prompt(`ĐIỀU CHỈNH LÃI SUẤT\n(Chỉ hỗ trợ sửa trong 3 ngày đầu)\n\nNhập mức lãi suất mới (%):`, currentLs);
+    let newLsStr = prompt(`ĐIỀU CHỈNH LÃI SUẤT\n(Chỉ hỗ trợ sửa trong vòng 3 ngày kể từ ngày nhập)\n\nNhập mức lãi suất mới (%):`, currentLs);
     
-    if (newLsStr === null || newLsStr.trim() === "") return; // Người dùng ấn Hủy
+    if (newLsStr === null || newLsStr.trim() === "") return; 
     
     let newLs = parseFloat(newLsStr);
     if (isNaN(newLs) || newLs < 0) {
@@ -2183,20 +2197,15 @@ function openDetail(id) {
         return;
     }
     
-    let s = (masterData[currentDay]?.stk || []).find(x => x.id === stkId);
-    if (s) {
-        let h = s.history.find(x => x.id === histId);
-        if (h) {
-            h.ls = newLs;
-            // Nếu giao dịch được sửa là "Mở sổ ban đầu", đồng bộ luôn lãi suất gốc của sổ
-            if (h.n === "Mở sổ ban đầu") {
-                s.ls = newLs;
-            }
-            saveMaster();
-            loadDay(); // Cập nhật lại số liệu bên ngoài
-            openDetail(stkId); // Tải lại giao diện chi tiết sổ
-            alert("Đã cập nhật lãi suất thành công!");
-        }
+    h.ls = newLs;
+    if (h.n === "Mở sổ ban đầu") {
+        s.ls = newLs;
+    }
+    saveMaster();
+    loadDay(); 
+    openDetail(stkId); 
+    alert("Đã cập nhật lãi suất thành công!");
+}
     }
 }
 
