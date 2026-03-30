@@ -2149,14 +2149,48 @@ return {days, lai: Math.round(h.v * (h.ls / 100) * (days / 365))};
 }
 
 function openDetail(id) {
-let s = (masterData[currentDay]?.stk || []).find(x => x.id === id); if(!s) return;
-document.getElementById('detail-summary').innerHTML = `Sổ tiết kiệm: <b>${s.name}</b><br>Ngân hàng: <b>${s.nh}</b><br>Kỳ hạn gửi: <b>${vnDate(s.start)}</b> đến <b>${vnDate(s.end)}</b>`;
-let b = document.getElementById('detail-tbody'); b.innerHTML = "";
-s.history.forEach((h) => {
-let r = calcH(h, s.end);
-b.innerHTML += `<tr><td align="center">${vnDate(h.d)}</td><td style="text-align:left; font-weight:bold">${h.n}</td><td align="center">${h.ls}%</td><td align="center">${r.days} ngày</td><td style="color:green; font-weight:bold">${h.v>0 ? '+'+formatTien(r.lai) : '--'}</td><td style="font-weight:bold; color:${h.v>0?'var(--success)':'var(--danger)'}">${h.v>0 ? '+'+formatTien(h.v) : formatTien(h.v)}</td></tr>`;
-});
-openModal('modal-stk-detail');
+    let s = (masterData[currentDay]?.stk || []).find(x => x.id === id); if(!s) return;
+    document.getElementById('detail-summary').innerHTML = `Sổ tiết kiệm: <b>${s.name}</b><br>Ngân hàng: <b>${s.nh}</b><br>Kỳ hạn gửi: <b>${vnDate(s.start)}</b> đến <b>${vnDate(s.end)}</b>`;
+    let b = document.getElementById('detail-tbody'); b.innerHTML = "";
+    
+    let now = Date.now();
+    s.history.forEach((h) => {
+        let r = calcH(h, s.end);
+        
+        // Kiểm tra: Là sổ tích lũy VÀ thời gian từ lúc tạo giao dịch (h.id) đến hiện tại <= 3 ngày (259,200,000 ms)
+        let isEditable = (s.type === 'tich-luy') && ((now - h.id) <= 259200000);
+        let editBtnHtml = isEditable ? `<button class="btn-sm" style="padding: 2px 6px; font-size: 10px; margin-left: 5px; background: var(--info); color: #fff; border: none;" onclick="editSTKInterest(${s.id}, ${h.id}, ${h.ls})">Sửa</button>` : '';
+
+        b.innerHTML += `<tr><td align="center">${vnDate(h.d)}</td><td style="text-align:left; font-weight:bold">${h.n}</td><td align="center">${h.ls}% ${editBtnHtml}</td><td align="center">${r.days} ngày</td><td style="color:green; font-weight:bold">${h.v>0 ? '+'+formatTien(r.lai) : '--'}</td><td style="font-weight:bold; color:${h.v>0?'var(--success)':'var(--danger)'}">${h.v>0 ? '+'+formatTien(h.v) : formatTien(h.v)}</td></tr>`;
+    });
+    openModal('modal-stk-detail');
+}
+    function editSTKInterest(stkId, histId, currentLs) {
+    let newLsStr = prompt(`ĐIỀU CHỈNH LÃI SUẤT\n(Chỉ hỗ trợ sửa trong 3 ngày đầu)\n\nNhập mức lãi suất mới (%):`, currentLs);
+    
+    if (newLsStr === null || newLsStr.trim() === "") return; // Người dùng ấn Hủy
+    
+    let newLs = parseFloat(newLsStr);
+    if (isNaN(newLs) || newLs < 0) {
+        alert("Lãi suất nhập vào không hợp lệ!");
+        return;
+    }
+    
+    let s = (masterData[currentDay]?.stk || []).find(x => x.id === stkId);
+    if (s) {
+        let h = s.history.find(x => x.id === histId);
+        if (h) {
+            h.ls = newLs;
+            // Nếu giao dịch được sửa là "Mở sổ ban đầu", đồng bộ luôn lãi suất gốc của sổ
+            if (h.n === "Mở sổ ban đầu") {
+                s.ls = newLs;
+            }
+            saveMaster();
+            loadDay(); // Cập nhật lại số liệu bên ngoài
+            openDetail(stkId); // Tải lại giao diện chi tiết sổ
+            alert("Đã cập nhật lãi suất thành công!");
+        }
+    }
 }
 
 function openNop(id) { 
