@@ -210,16 +210,9 @@ body * { visibility: hidden; }
         </div>
         <div class="form-group">
             <label>Mật khẩu</label>
-            <input type="password" id="login-pass" placeholder="Nhập mật khẩu...">
+            <input type="password" id="login-pass" placeholder="Nhập mật khẩu..." onkeydown="if(event.key === 'Enter') handleLogin()">
         </div>
-        <div class="form-group">
-            <label>Mã xác nhận (Captcha)</label>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <canvas id="captchaCanvas" width="130" height="42" style="border: 1px solid #ccc; border-radius: 4px; cursor: pointer; background: #fff;" onclick="generateCaptcha()" title="Bấm để đổi mã mới"></canvas>
-                <input type="text" id="login-captcha" placeholder="Nhập mã..." style="flex: 1;" onkeydown="if(event.key === 'Enter') handleLogin()">
-            </div>
-            <div style="font-size: 11px; color: #666; margin-top: 5px; font-style: italic;">* Bấm vào ảnh để đổi mã mới</div>
-        </div>
+        
         <div style="text-align:right; margin-top:-10px; margin-bottom:15px;">
             <span style="font-size:13px; color:var(--danger); cursor:pointer; font-style:italic;" onclick="switchAuth('forgot')">Quên mật khẩu?</span>
         </div>
@@ -1050,32 +1043,19 @@ function switchAuth(type) {
 function handleLogin() {
     let phone = document.getElementById('login-phone').value.trim();
     let pass = document.getElementById('login-pass').value;
-    let captchaInput = document.getElementById('login-captcha').value.trim();
 
-    if (!phone || !pass || !captchaInput) { 
-        alert("Vui lòng nhập đủ Số điện thoại, Mật khẩu và Mã Captcha!"); 
+    if (!phone || !pass) { 
+        alert("Vui lòng nhập đủ Số điện thoại và Mật khẩu!"); 
         return; 
-    }
-
-    if (captchaInput.toUpperCase() !== currentCaptchaCode.toUpperCase()) {
-        alert("Mã Captcha không chính xác!");
-        generateCaptcha();
-        document.getElementById('login-captcha').value = '';
-        document.getElementById('login-captcha').focus();
-        return;
     }
 
     if (!systemDB[phone]) { 
         alert("Tài khoản không tồn tại hoặc dữ liệu đang tải, vui lòng thử lại sau vài giây!"); 
-        generateCaptcha();
-        document.getElementById('login-captcha').value = '';
         return; 
     }
     
     if (systemDB[phone].password !== pass) { 
         alert("Sai mật khẩu!"); 
-        generateCaptcha();
-        document.getElementById('login-captcha').value = '';
         return; 
     }
 
@@ -1100,7 +1080,6 @@ function handleLogin() {
     }
 
     document.getElementById('login-pass').value = '';
-    document.getElementById('login-captcha').value = '';
 
     initializeApp();
 }
