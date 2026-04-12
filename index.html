@@ -361,7 +361,7 @@ body * { visibility: hidden; }
         <div class="form-group" style="margin-bottom:0;">
         <label>Chọn ngày muốn in</label>
         <div style="display:flex; gap:15px;">
-        <input type="date" id="in-print-date" style="flex:2">
+        <<select id="in-print-date" style="flex:2; padding: 10px; font-family: 'Times New Roman'; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;"></select>
         <button class="btn-main" style="margin-top:0; flex:1; background:var(--info); color:white; border:none;" onclick="openPrintSetup()">TẠO BẢN IN</button>
         </div>
         </div>
@@ -1297,8 +1297,7 @@ function initializeApp() {
     let today = getGMT7Date();
     document.getElementById('header-date-picker').max = today; 
     document.getElementById('header-date-picker').value = currentDay;
-    document.getElementById('in-print-date').value = currentDay;
-    
+
     // Cài đặt ngày tối đa cho Date Picker tạo dữ liệu
     document.getElementById('new-data-date').max = today;
     document.getElementById('new-data-date').value = currentDay;
@@ -2338,7 +2337,25 @@ document.getElementById('p-quy-total-print').innerText = formatTien(tQuy) + " đ
 }
 
 function generateASCII(length) { let result = ''; const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; for (let i = 0; i < length; i++) result += chars.charAt(Math.floor(Math.random() * chars.length)); return result; }
+function refreshPrintDateSelect() {
+    let selectEl = document.getElementById('in-print-date');
+    if (!selectEl) return;
+    selectEl.innerHTML = '';
+    
+    // Lấy danh sách các ngày đã có dữ liệu trong masterData
+    let dates = Object.keys(masterData).filter(d => d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
+    
+    if (dates.length === 0) {
+        selectEl.innerHTML = `<option value="">Chưa có dữ liệu</option>`;
+        return;
+    }
 
+    // Đổ vào danh sách thả xuống, mặc định chọn ngày đang kiểm toán (currentDay)
+    dates.forEach(d => {
+        let isSelected = (d === currentDay) ? "selected" : "";
+        selectEl.innerHTML += `<option value="${d}" ${isSelected}>${vnDate(d)}</option>`;
+    });
+}
 function openPrintSetup() {
 let printDate = document.getElementById('in-print-date').value;
 if(!printDate) { alert("Vui lòng chọn ngày in!"); return; }
@@ -2490,7 +2507,10 @@ document.getElementById(id).classList.add('active');
 if(el) el.classList.add('active');
 document.getElementById('current-title').innerText = el ? (el.innerText.split('. ')[1] || el.innerText.replace('🖨️ ', '').replace('⚙️ ', '').replace('🛡️ ', '')) : "Quyết Toán";
 if (window.innerWidth < 850) toggleMenu();
-if(id === 'sheet-print') renderPrintHistory();
+if(id === 'sheet-print') {
+    refreshPrintDateSelect();
+    renderPrintHistory();
+}
 if(id === 'sheet-data') renderDataList();
 
 setTimeout(() => {
