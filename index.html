@@ -280,6 +280,10 @@ body * { visibility: hidden; }
             <input type="tel" id="reg-phone" placeholder="Nhập số điện thoại...">
         </div>
         <div class="form-group">
+            <label>SỐ CCCD (12 SỐ KHÔNG ĐỔI)</label>
+            <input type="text" id="reg-cccd" placeholder="Nhập 12 số CCCD..." maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+        <div class="form-group">
             <label>MẬT KHẨU</label>
             <input type="password" id="reg-pass" placeholder="Tạo mật khẩu...">
         </div>
@@ -289,13 +293,17 @@ body * { visibility: hidden; }
 
     <div class="auth-box" id="forgot-box" style="display:none;">
         <div class="auth-title">QUÊN MẬT KHẨU</div>
-        <div class="auth-subtitle">Khôi phục quyền truy cập</div>
-        <p style="font-size:13px; text-align:center; margin-bottom:25px; color:#555; line-height: 1.6;">Yêu cầu cấp lại mật khẩu sẽ được gửi trực tiếp đến Ban Quản Trị hệ thống.</p>
+        <div class="auth-subtitle">Khôi phục tự động</div>
+        <p style="font-size:13px; text-align:center; margin-bottom:20px; color:#555; line-height: 1.6;">Hệ thống sẽ đối chiếu CCCD và tự động cấp mật khẩu gồm 5 ký tự ngẫu nhiên.</p>
         <div class="form-group">
-            <label>SỐ ĐIỆN THOẠI ĐÃ ĐĂNG KÝ</label>
+            <label>SỐ ĐIỆN THOẠI</label>
             <input type="tel" id="forgot-phone" placeholder="Nhập số điện thoại...">
         </div>
-        <button class="btn-main" style="background: linear-gradient(135deg, var(--danger), #5a0000); color: white;" onclick="handleForgotPassword()">GỬI YÊU CẦU</button>
+        <div class="form-group">
+            <label>SỐ CCCD (XÁC MINH)</label>
+            <input type="text" id="forgot-cccd" placeholder="Nhập 12 số CCCD..." maxlength="12">
+        </div>
+        <button class="btn-main" style="background: linear-gradient(135deg, var(--danger), #5a0000); color: white;" onclick="handleForgotPassword()">XÁC MINH & LẤY MẬT KHẨU</button>
         <div class="auth-switch" onclick="switchAuth('login')">← Hủy và quay lại</div>
     </div>
 </div>
@@ -435,7 +443,14 @@ body * { visibility: hidden; }
                 <div class="form-group"><label>Họ và tên tài khoản</label><input type="text" id="set-user-name" oninput="this.value = this.value.toUpperCase()"></div>
                 <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
                 <div class="form-group"><label>Số điện thoại</label><input type="tel" id="set-user-phone" readonly></div>
-                
+                <div class="form-group">
+                    <label>Số CCCD</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="set-user-cccd" readonly style="flex:2; background-color:#e9ecef; cursor:not-allowed;">
+                        <button class="btn-sm" style="background:var(--accent); color:white; flex:1;" onclick="openReqCccd()">YÊU CẦU ĐỔI</button>
+                    </div>
+                    <div style="font-size:12px; color:#666; margin-top:5px; font-style:italic;" id="set-cccd-info">Số lần đổi: 0 | Lần cuối: --</div>
+                </div>
                 <div style="display:flex; gap:15px; margin-top:20px; flex-wrap:wrap;">
                     <button class="btn-main" style="background:var(--info); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="openUserChangePass()">ĐỔI MẬT KHẨU</button>
                     <button class="btn-main" style="background:var(--success); color:white; border:none; margin-top:0; flex:1.5; min-width:160px;" onclick="saveUserInfo()">CẬP NHẬT THÔNG TIN</button>
@@ -456,6 +471,13 @@ body * { visibility: hidden; }
 
         <div id="sheet-admin" class="page">
         <h2>Bảng Điều Khiển Quản Trị Hệ Thống <span id="admin-bell" style="display:none;">🔔</span></h2>
+            <div style="background:white; padding:20px 30px; border:2px solid var(--info); overflow-x: auto; margin-bottom: 20px;">
+            <h3 style="margin-top:0; color:var(--info)">YÊU CẦU THAY ĐỔI CCCD (ẨN DANH)</h3>
+            <table class="data-table" style="min-width: 500px; margin-bottom:0;">
+                <thead><tr><th>Tài khoản yêu cầu (SĐT)</th><th style="width:150px">Trạng thái</th><th style="width:150px">Hành động</th></tr></thead>
+                <tbody id="body-admin-cccd"></tbody>
+            </table>
+        </div>
         <div style="background:white; padding:30px; border:2px solid var(--danger); overflow-x: auto;">
             <h3 style="margin-top:0; color:var(--danger)">Danh sách tài khoản</h3>
             <table class="data-table" style="min-width: 750px;">
@@ -958,7 +980,18 @@ body * { visibility: hidden; }
 </div>
 </div>
 </div>
-
+<div class="modal-overlay" id="modal-req-cccd">
+    <div class="modal-content" style="max-width:400px;">
+        <div class="modal-title">YÊU CẦU ĐỔI CCCD</div>
+        <p style="font-size:13px; text-align:center; color:var(--danger); font-style:italic;">Yêu cầu sẽ được gửi tới Admin. Quá trình xét duyệt diễn ra ẩn danh.</p>
+        <div class="form-group"><label>CCCD Cũ (Không thể sửa)</label><input type="text" id="req-cccd-old" readonly style="background:#e9ecef; cursor:not-allowed;"></div>
+        <div class="form-group"><label>CCCD Mới (12 số)</label><input type="text" id="req-cccd-new" maxlength="12" placeholder="Nhập số CCCD mới..." oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+        <div style="display:flex; gap:15px; margin-top:30px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-req-cccd')">HỦY BỎ</button>
+            <button class="btn-main" style="background:var(--info); color:#fff; border-color:var(--info); flex:2" onclick="submitReqCccd()">GỬI YÊU CẦU</button>
+        </div>
+    </div>
+</div>
 <script>
 // =====================================
 // HỆ THỐNG XÁC THỰC & CƠ SỞ DỮ LIỆU ĐÁM MÂY
@@ -988,7 +1021,55 @@ let currentEditBankShortName = "";
 let currentEditBankOldVal = 0;
 let currentCaptchaCode = "";
 let currentSTKFilter = 'all';
+function openReqCccd() {
+    if(systemDB[activeUserPhone].pendingCccd) { alert("Bạn đang có yêu cầu thay đổi chờ Admin duyệt!"); return; }
+    document.getElementById('req-cccd-old').value = systemDB[activeUserPhone].cccd || "";
+    document.getElementById('req-cccd-new').value = "";
+    openModal('modal-req-cccd');
+}
 
+function submitReqCccd() {
+    let newCccd = document.getElementById('req-cccd-new').value;
+    if(newCccd.length !== 12) { alert("Số CCCD mới phải đủ 12 chữ số!"); return; }
+    if(newCccd === systemDB[activeUserPhone].cccd) { alert("Trùng với CCCD cũ!"); return; }
+    
+    systemDB[activeUserPhone].pendingCccd = newCccd;
+    saveSystemDB();
+    closeModal('modal-req-cccd');
+    alert("Yêu cầu đã được gửi lên hệ thống quản trị ẩn danh!");
+}
+
+function approveCccdReq(phone) {
+    if(!confirm("Bạn có chắc muốn duyệt yêu cầu đổi CCCD của User này?")) return;
+    let u = systemDB[phone];
+    u.cccd = u.pendingCccd;
+    u.pendingCccd = null;
+    u.cccdChangeCount = (u.cccdChangeCount || 0) + 1;
+    let now = new Date();
+    u.cccdLastChanged = String(now.getDate()).padStart(2,'0') + '/' + String(now.getMonth()+1).padStart(2,'0') + '/' + now.getFullYear() + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    u.notifyCccd = true;
+    saveSystemDB();
+    renderAdminPanel();
+}
+
+// Hệ thống tự động kiểm tra thông báo mỗi 5 giây
+setInterval(async () => {
+    if (activeUserPhone && activeUserPhone !== '0839578432') {
+        try {
+            let res = await fetch(FIREBASE_URL);
+            let db = await res.json();
+            if (db && db[activeUserPhone] && db[activeUserPhone].notifyCccd) {
+                systemDB = db; // Đồng bộ Data
+                systemDB[activeUserPhone].notifyCccd = false; // Tắt cờ
+                saveSystemDB(); // Lưu đè lại để không báo nữa
+                alert("🎉 THÔNG BÁO TỪ HỆ THỐNG: Yêu cầu thay đổi CCCD của bạn đã được Admin xác nhận!");
+                // Cập nhật ngay UI Settings
+                document.getElementById('set-user-cccd').value = systemDB[activeUserPhone].cccd;
+                document.getElementById('set-cccd-info').innerText = `Số lần đổi: ${systemDB[activeUserPhone].cccdChangeCount} | Lần cuối: ${systemDB[activeUserPhone].cccdLastChanged}`;
+            }
+        } catch (e) {}
+    }
+}, 5000);
 // Hàm tạo Captcha
 function generateCaptcha() {
     const canvas = document.getElementById('captchaCanvas');
@@ -1214,12 +1295,15 @@ function handleRegister() {
     let name = document.getElementById('reg-name').value.trim().toUpperCase();
     let phone = document.getElementById('reg-phone').value.trim();
     let pass = document.getElementById('reg-pass').value;
+    let cccd = document.getElementById('reg-cccd').value.trim();
 
-    if (!name || !phone || !pass) { alert("Vui lòng điền đủ Họ tên, Số điện thoại và Mật khẩu!"); return; }
+    if (!name || !phone || !pass || !cccd) { alert("Vui lòng điền đủ thông tin!"); return; }
+    if (cccd.length !== 12) { alert("Số CCCD bắt buộc phải đủ 12 chữ số!"); return; }
     if (systemDB[phone]) { alert("Số điện thoại này đã được đăng ký!"); return; }
 
     systemDB[phone] = {
         name: name, dob: '', password: pass, role: 'user', forgotPassword: false,
+        cccd: cccd, cccdChangeCount: 0, cccdLastChanged: '--', pendingCccd: null, notifyCccd: false,
         data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
     };
     saveSystemDB();
@@ -1230,19 +1314,18 @@ function handleRegister() {
 
 function handleForgotPassword() {
     let phone = document.getElementById('forgot-phone').value.trim();
-    if (!phone) { alert("Vui lòng nhập số điện thoại!"); return; }
-    if (!systemDB[phone]) { alert("Số điện thoại này không tồn tại trong hệ thống!"); return; }
+    let cccd = document.getElementById('forgot-cccd').value.trim();
 
-    if (systemDB[phone].role === 'admin') {
-        systemDB[phone].password = '123';
-        systemDB[phone].forgotPassword = false;
-        saveSystemDB();
-        alert("Mật khẩu tài khoản Admin đã được reset về '123'.");
-    } else {
-        systemDB[phone].forgotPassword = true;
-        saveSystemDB();
-        alert("Yêu cầu của bạn đã được gửi đến Ban Quản Trị. Vui lòng chờ Admin đổi mật khẩu mới cho bạn.");
-    }
+    if (!phone || !cccd) { alert("Vui lòng nhập số điện thoại và CCCD!"); return; }
+    if (!systemDB[phone]) { alert("Số điện thoại không tồn tại trong hệ thống!"); return; }
+    if (systemDB[phone].cccd !== cccd) { alert("❌ Lỗi: Số CCCD không trùng khớp với hồ sơ!"); return; }
+
+    // Tạo mật khẩu 5 ký tự ngẫu nhiên
+    let randomPass = Math.random().toString(36).substring(2, 7);
+    systemDB[phone].password = randomPass;
+    saveSystemDB();
+    
+    alert(`✅ XÁC MINH THÀNH CÔNG!\nAdmin hiện đang offline. Hệ thống tự động cấp mật khẩu mới cho bạn:\n\nMật khẩu mới: ${randomPass}\n\nVui lòng đăng nhập và đổi mật khẩu ngay!`);
     switchAuth('login');
 }
 
@@ -1316,6 +1399,20 @@ function checkAdminNotifications() {
 function renderAdminPanel() {
     let tbody = document.getElementById('body-admin-users');
     tbody.innerHTML = '';
+    let cccdBody = document.getElementById('body-admin-cccd');
+    cccdBody.innerHTML = '';
+    let hasReq = false;
+    for (const ph in systemDB) {
+        if(systemDB[ph].pendingCccd) {
+            hasReq = true;
+            cccdBody.innerHTML += `<tr>
+                <td align="center" style="font-weight:bold;">${ph}</td>
+                <td align="center" style="color:var(--danger)">*** Đã ẩn số CCCD ***</td>
+                <td align="center"><button class="btn-sm" style="background:var(--success); color:white;" onclick="approveCccdReq('${ph}')">XÁC NHẬN ĐỔI</button></td>
+            </tr>`;
+        }
+    }
+    if(!hasReq) cccdBody.innerHTML = `<tr><td colspan="3" align="center" style="color:#888;">Chưa có yêu cầu nào</td></tr>`;
     let stt = 1;
     for (const phone in systemDB) {
         let isRoot = (phone === '0839578432');
@@ -1430,6 +1527,8 @@ function initializeApp() {
     document.getElementById('set-user-name').value = systemDB[activeUserPhone].name || "";
     document.getElementById('set-user-dob').value = systemDB[activeUserPhone].dob || "";
     document.getElementById('set-user-phone').value = activeUserPhone;
+    document.getElementById('set-user-cccd').value = systemDB[activeUserPhone].cccd || "Chưa cập nhật";
+    document.getElementById('set-cccd-info').innerText = `Số lần đổi: ${systemDB[activeUserPhone].cccdChangeCount || 0} | Lần cuối: ${systemDB[activeUserPhone].cccdLastChanged || '--'}`;
 
     if(!masterData.banks) masterData.banks = [];
     if(!masterData.quyReasons) masterData.quyReasons = [];
