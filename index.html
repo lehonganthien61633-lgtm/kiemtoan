@@ -1353,6 +1353,13 @@ function handleLogin() {
         return; 
     }
 
+    // --- BẮT ĐẦU ĐOẠN MÃ THÊM MỚI ĐỂ PHÁ VÒNG LẶP ---
+    if (systemDB[phone].forceLogout) {
+        systemDB[phone].forceLogout = false; // Tắt cờ đá ra ngoài
+        saveSystemDB(); // Lưu lại ngay lập tức
+    }
+    // --- KẾT THÚC ĐOẠN MÃ THÊM MỚI ---
+
     activeUserPhone = phone;
     
     // Gán dữ liệu với màng bọc an toàn tránh undefined crash toàn hệ thống
@@ -1375,7 +1382,7 @@ function handleLogin() {
 
     document.getElementById('login-pass').value = '';
 
-   initializeApp();
+    initializeApp();
     
     // ÉP ĐỔI MẬT KHẨU TỰ ĐỘNG
     if (systemDB[phone].mustChangePass) {
