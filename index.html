@@ -1107,6 +1107,23 @@ setInterval(async () => {
             saveSystemDB(); 
         }
         else {
+            // KIỂM TRA XEM USER CÓ BỊ ADMIN RESET PASS KHÔNG (ÉP ĐĂNG XUẤT TỪ XA)
+            if (systemDB[activeUserPhone] && systemDB[activeUserPhone].forceLogout) {
+                systemDB[activeUserPhone].forceLogout = false; // Tắt cờ
+                saveSystemDB();
+                
+                alert("⚠️ BẢO MẬT: Mật khẩu của bạn đã được Admin reset. Phiên đăng nhập hiện tại đã hết hạn!");
+                
+                // Thực hiện đá User ra ngoài
+                activeUserPhone = null;
+                masterData = {};
+                document.getElementById('auth-screen').style.display = 'flex';
+                document.getElementById('main-app').style.display = 'none';
+                document.getElementById('login-pass').value = '';
+                switchAuth('login');
+                return;
+            }
+
             // NGƯỜI DÙNG CHỜ DUYỆT CCCD
             if (systemDB[activeUserPhone] && systemDB[activeUserPhone].notifyCccd) {
                 systemDB[activeUserPhone].notifyCccd = false; 
@@ -1544,18 +1561,11 @@ function adminReset123(phone) {
         systemDB[phone].password = '123';
         systemDB[phone].forgotPassword = false;
         systemDB[phone].mustChangePass = true; // Ép người dùng đổi từ 123
+        systemDB[phone].forceLogout = true;    // Thêm cờ ép User văng ra ngoài
         saveSystemDB();
         
-        alert("Đã reset mật khẩu thành công! Hệ thống sẽ chuyển về màn hình đăng nhập.");
-        
-        // Thoát tài khoản admin hiện tại và quay về màn hình đăng nhập
-        activeUserPhone = null;
-        masterData = {};
-        document.getElementById('auth-screen').style.display = 'flex';
-        document.getElementById('main-app').style.display = 'none';
-        document.getElementById('login-pass').value = '';
-        generateCaptcha();
-        switchAuth('login');
+        renderAdminPanel(); // Load lại bảng ngay lập tức
+        alert("✅ Đã reset mật khẩu của tài khoản " + phone + " thành công!");
     }
 }
 function adminOpenChangeName(phone, currentName) {
