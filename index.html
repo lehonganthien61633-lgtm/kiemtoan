@@ -201,6 +201,19 @@ body * { visibility: hidden; }
 <body>
 
 <div id="auth-screen" class="auth-wrapper">
+    <div class="auth-box" id="lookup-box" style="display:none;">
+        <div class="auth-title">TRA CỨU PHIẾU IN</div>
+        <p style="font-size:14px; text-align:center; margin-bottom:20px; color:#666;">Hệ thống sẽ trích xuất dữ liệu tổng hợp dựa trên mã đối soát trên bản in.</p>
+        <div class="form-group">
+            <label>Nhập Mã Đối Soát</label>
+            <input type="text" id="lookup-code" placeholder="VD: aBcDeFgH1234" onkeydown="if(event.key === 'Enter') handleLookup()">
+        </div>
+        <button class="btn-main" style="background:var(--success); color:white; border-color:var(--success);" onclick="handleLookup()">TÌM KIẾM DỮ LIỆU</button>
+        
+        <div id="lookup-result" style="margin-top:20px; font-size:14px; display:none; background:#fff; padding:15px; border:2px dashed var(--primary); border-radius:4px;"></div>
+
+        <div class="auth-switch" onclick="switchAuth('login')">Quay lại đăng nhập.</div>
+    </div>
     <div class="auth-overlay"></div>
     <div class="auth-box" id="login-box">
         <div class="auth-title">PHẦN MỀMKIỂM TOÁN</div>
@@ -214,8 +227,9 @@ body * { visibility: hidden; }
             <input type="password" id="login-pass" placeholder="Nhập mật khẩu..." onkeydown="if(event.key === 'Enter') handleLogin()">
         </div>
         
-        <div style="text-align:right; margin-top:-10px; margin-bottom:15px;">
-            <span style="font-size:13px; color:var(--danger); cursor:pointer; font-style:italic;" onclick="switchAuth('forgot')">Quên mật khẩu?</span>
+       <div style="display:flex; justify-content:space-between; margin-top:-10px; margin-bottom:15px; font-size:13px; font-style:italic;">
+            <span style="color:var(--success); cursor:pointer; font-weight:bold;" onclick="switchAuth('lookup')">🔍 Tra cứu mã đối soát</span>
+            <span style="color:var(--danger); cursor:pointer;" onclick="switchAuth('forgot')">Quên mật khẩu?</span>
         </div>
         <button class="btn-main" onclick="handleLogin()">VÀO HỆ THỐNG</button>
         <div class="auth-switch" onclick="switchAuth('register')">Chưa có tài khoản? Tạo mới ngay.</div>
@@ -1038,7 +1052,13 @@ function switchAuth(type) {
     document.getElementById('login-box').style.display = type === 'login' ? 'block' : 'none';
     document.getElementById('register-box').style.display = type === 'register' ? 'block' : 'none';
     document.getElementById('forgot-box').style.display = type === 'forgot' ? 'block' : 'none';
+    document.getElementById('lookup-box').style.display = type === 'lookup' ? 'block' : 'none';
+    
     if(type === 'login') generateCaptcha();
+    if(type === 'lookup') {
+        document.getElementById('lookup-code').value = '';
+        document.getElementById('lookup-result').style.display = 'none';
+    }
 }
 
 function handleLogin() {
