@@ -505,7 +505,7 @@ body * { visibility: hidden; }
 <div class="modal-overlay" id="modal-user-change-pass">
 <div class="modal-content" style="max-width:400px;">
 <div class="modal-title">ĐỔI MẬT KHẨU</div>
-<div class="form-group">
+<div class="form-group" id="div-current-pass">
     <label>Mật khẩu hiện tại</label>
     <input type="password" id="user-current-pass" placeholder="Nhập mật khẩu hiện tại...">
 </div>
@@ -518,7 +518,7 @@ body * { visibility: hidden; }
     <input type="password" id="user-confirm-pass" placeholder="Xác nhận mật khẩu mới...">
 </div>
 <div style="display:flex; gap:15px; margin-top:30px;">
-<button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-user-change-pass')">HỦY BỎ</button>
+<button class="btn-main" id="btn-cancel-change-pass" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-user-change-pass')">HỦY BỎ</button>
 <button class="btn-main" style="background:var(--info); color:#fff; border-color:var(--info); flex:2" onclick="confirmUserChangePass()">CẬP NHẬT</button>
 </div>
 </div>
@@ -745,7 +745,17 @@ body * { visibility: hidden; }
 </div>
 </div>
 </div>
-
+<div class="modal-overlay" id="modal-admin-cccd">
+    <div class="modal-content" style="max-width:400px;">
+        <div class="modal-title">ĐỔI CCCD NGƯỜI DÙNG</div>
+        <div class="form-group"><label>Tài khoản (SĐT)</label><input type="text" id="admin-target-cccd-user" readonly style="background:#eee;"></div>
+        <div class="form-group"><label>CCCD Mới (12 số)</label><input type="text" id="admin-new-cccd-val" maxlength="12" placeholder="Nhập 12 số CCCD mới..." oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+        <div style="display:flex; gap:15px; margin-top:30px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-admin-cccd')">HỦY BỎ</button>
+            <button class="btn-main" style="background:var(--accent); color:#fff; border-color:var(--accent); flex:2" onclick="adminConfirmChangeCccd()">CẬP NHẬT</button>
+        </div>
+    </div>
+</div>
 <div class="modal-overlay" id="modal-quy-reasons" style="z-index: 100000;">
 <div class="modal-content" style="max-width:400px;">
 <div class="modal-title">QUẢN LÝ LÝ DO RÚT</div>
@@ -1053,49 +1063,47 @@ function approveCccdReq(phone) {
 }
 
 // Hệ thống tự động kiểm tra thông báo mỗi 5 giây
-let knownPendingReqs = []; // Lưu trữ tạm các yêu cầu Admin đã thấy để không popup lặp đi lặp lại
+let knownPendingReqs = []; 
+let knownForgotPass = [];
 
-// Hệ thống vòng lặp tự động kiểm tra Real-time (Mỗi 5 giây)
 setInterval(async () => {
-    if (!activeUserPhone) return; // Nếu chưa đăng nhập thì bỏ qua
+    if (!activeUserPhone) return;
 
     try {
         let res = await fetch(FIREBASE_URL);
         let db = await res.json();
         if (!db) return;
-        
-        systemDB = db; // Tự động đồng bộ Data nền
+        systemDB = db;
 
-        // --- KỊCH BẢN CHO ADMIN ---
         if (activeUserPhone === '0839578432') {
-            let currentReqs = [];
-            let newReqFound = false;
+            let currentReqs = []; let newReqFound = false;
+            let currentForgot = []; let newForgotFound = false;
             
             for (let ph in systemDB) {
                 if (systemDB[ph].pendingCccd) {
                     currentReqs.push(ph);
-                    // Nếu phát hiện có yêu cầu mới (chưa có trong mảng tạm)
                     if (!knownPendingReqs.includes(ph)) newReqFound = true;
+                }
+                if (systemDB[ph].forgotPassword) {
+                    currentForgot.push(ph);
+                    if (!knownForgotPass.includes(ph)) newForgotFound = true;
                 }
             }
             knownPendingReqs = currentReqs;
+            knownForgotPass = currentForgot;
             
-            if (newReqFound) {
-                alert("🔔 CÓ YÊU CẦU ĐỔI CCCD MỚI TỪ NGƯỜI DÙNG!\nHệ thống sẽ tự động chuyển sang trang Quản Trị để bạn xét duyệt.");
-                renderAdminPanel(); // Render lại bảng
-                showSheet('sheet-admin', document.getElementById('nav-admin')); // Tự động mở tab Admin
+            if (newReqFound || newForgotFound) {
+                let msg = newForgotFound ? "🔔 CÓ USER BÁO QUÊN MẬT KHẨU!" : "🔔 CÓ YÊU CẦU ĐỔI CCCD MỚI!";
+                alert(msg + "\nHệ thống tự động chuyển sang trang Quản Trị.");
+                renderAdminPanel();
+                showSheet('sheet-admin', document.getElementById('nav-admin'));
             }
         }
-        
-        // --- KỊCH BẢN CHO USER ---
         else {
             if (systemDB[activeUserPhone] && systemDB[activeUserPhone].notifyCccd) {
-                systemDB[activeUserPhone].notifyCccd = false; // Tắt cờ thông báo
-                saveSystemDB(); // Lưu đè lại để không bị báo liên tục
-                
+                systemDB[activeUserPhone].notifyCccd = false; 
+                saveSystemDB(); 
                 alert("🎉 THÔNG BÁO TỪ HỆ THỐNG: Yêu cầu thay đổi CCCD của bạn đã được Admin xác nhận!\nDữ liệu sẽ được tự động cập nhật ngay bây giờ.");
-                
-                // Soft-Refresh UI (Cập nhật dữ liệu mới hiển thị ngay lập tức mà KHÔNG bị đăng xuất)
                 initializeApp(); 
             }
         }
@@ -1319,8 +1327,16 @@ function handleLogin() {
 
     document.getElementById('login-pass').value = '';
 
-    initializeApp();
-}
+   initializeApp();
+    
+    // ÉP ĐỔI MẬT KHẨU TỰ ĐỘNG
+    if (systemDB[phone].mustChangePass) {
+        setTimeout(() => {
+            alert("⚠️ BẢO MẬT: Bạn đang sử dụng mật khẩu hệ thống cấp. Vui lòng tạo mật khẩu cá nhân mới ngay bây giờ!");
+            showSheet('sheet-settings', document.querySelectorAll('.nav-item')[6]); 
+            openUserChangePass(); 
+        }, 500);
+    }
 
 function handleRegister() {
     let name = document.getElementById('reg-name').value.trim().toUpperCase();
@@ -1348,12 +1364,14 @@ function handleForgotPassword() {
     let cccd = document.getElementById('forgot-cccd').value.trim();
 
     if (!phone || !cccd) { alert("Vui lòng nhập số điện thoại và CCCD!"); return; }
-    if (!/^\d{12}$/.test(cccd)) { alert("Số CCCD xác minh bắt buộc phải đủ 12 chữ số!"); return; } // Bắt lỗi 12 số
+    if (!/^\d{12}$/.test(cccd)) { alert("Số CCCD xác minh bắt buộc phải đủ 12 chữ số!"); return; }
     if (!systemDB[phone]) { alert("Số điện thoại không tồn tại trong hệ thống!"); return; }
     if (systemDB[phone].cccd !== cccd) { alert("❌ Lỗi: Số CCCD không trùng khớp với hồ sơ!"); return; }
 
     let randomPass = Math.random().toString(36).substring(2, 7);
     systemDB[phone].password = randomPass;
+    systemDB[phone].forgotPassword = true; // Báo cho Admin biết
+    systemDB[phone].mustChangePass = true; // Ép User phải đổi mật khẩu
     saveSystemDB();
     
     alert(`✅ XÁC MINH THÀNH CÔNG!\nAdmin hiện đang offline. Hệ thống tự động cấp mật khẩu mới cho bạn:\n\nMật khẩu mới: ${randomPass}\n\nVui lòng đăng nhập và đổi mật khẩu ngay!`);
@@ -1375,6 +1393,11 @@ function openUserChangePass() {
     document.getElementById('user-current-pass').value = '';
     document.getElementById('user-new-pass').value = '';
     document.getElementById('user-confirm-pass').value = '';
+    
+    let isForced = systemDB[activeUserPhone].mustChangePass;
+    document.getElementById('div-current-pass').style.display = isForced ? 'none' : 'block';
+    document.getElementById('btn-cancel-change-pass').style.display = isForced ? 'none' : 'block';
+    
     openModal('modal-user-change-pass');
 }
 
@@ -1382,12 +1405,19 @@ function confirmUserChangePass() {
     let curPass = document.getElementById('user-current-pass').value;
     let newPass = document.getElementById('user-new-pass').value;
     let confirmPass = document.getElementById('user-confirm-pass').value;
+    let isForced = systemDB[activeUserPhone].mustChangePass;
 
-    if(!curPass || !newPass || !confirmPass) { alert("Vui lòng điền đầy đủ thông tin!"); return; }
-    if(systemDB[activeUserPhone].password !== curPass) { alert("Mật khẩu hiện tại không đúng!"); return; }
-    if(newPass !== confirmPass) { alert("Mật khẩu mới và Nhập lại mật khẩu không khớp!"); return; }
+    if(!newPass || !confirmPass) { alert("Vui lòng điền đủ thông tin!"); return; }
+    
+    if(!isForced) {
+        if(!curPass) { alert("Vui lòng nhập mật khẩu hiện tại!"); return; }
+        if(systemDB[activeUserPhone].password !== curPass) { alert("Mật khẩu hiện tại không đúng!"); return; }
+    }
+    
+    if(newPass !== confirmPass) { alert("Mật khẩu mới không khớp!"); return; }
 
     systemDB[activeUserPhone].password = newPass;
+    systemDB[activeUserPhone].mustChangePass = false; // Tắt cờ
     saveSystemDB();
     alert("Đổi mật khẩu thành công!");
     closeModal('modal-user-change-pass');
@@ -1428,22 +1458,10 @@ function checkAdminNotifications() {
 }
 
 function renderAdminPanel() {
+    // ... (Giữ nguyên đoạn render Bảng yêu cầu CCCD ẩn danh ở trên) ...
+
     let tbody = document.getElementById('body-admin-users');
     tbody.innerHTML = '';
-    let cccdBody = document.getElementById('body-admin-cccd');
-    cccdBody.innerHTML = '';
-    let hasReq = false;
-    for (const ph in systemDB) {
-        if(systemDB[ph].pendingCccd) {
-            hasReq = true;
-            cccdBody.innerHTML += `<tr>
-                <td align="center" style="font-weight:bold;">${ph}</td>
-                <td align="center" style="color:var(--danger)">*** Đã ẩn số CCCD ***</td>
-                <td align="center"><button class="btn-sm" style="background:var(--success); color:white;" onclick="approveCccdReq('${ph}')">XÁC NHẬN ĐỔI</button></td>
-            </tr>`;
-        }
-    }
-    if(!hasReq) cccdBody.innerHTML = `<tr><td colspan="3" align="center" style="color:#888;">Chưa có yêu cầu nào</td></tr>`;
     let stt = 1;
     for (const phone in systemDB) {
         let isRoot = (phone === '0839578432');
@@ -1452,19 +1470,23 @@ function renderAdminPanel() {
         let roleHtml = role === 'admin' ? '<span class="admin-badge">ADMIN</span>' : 'USER';
         let displayName = systemDB[phone].name || 'Chưa cập nhật';
         let rowStyle = isForgot ? 'style="background-color: #ffe6e6;"' : '';
-        let warningIcon = isForgot ? '<span style="color:red; font-weight:bold; margin-left:5px;">(!) Yêu cầu Pass</span>' : '';
+        let warningIcon = isForgot ? '<span style="color:red; font-weight:bold; margin-left:5px;">(!) Quên Pass</span>' : '';
         
-        let promoteBtn = ''; let delBtn = '';
         let editNameBtn = `<button class="btn-sm" style="background:var(--info); color:white; border:none;" onclick="adminOpenChangeName('${phone}', '${displayName}')">Tên</button>`;
         let editPassBtn = `<button class="btn-sm" style="background:var(--primary); color:white; border:none;" onclick="adminOpenChangePass('${phone}')">Pass</button>`;
         
+        // --- THÊM NÚT SỬA CCCD VÀ RESET 123 ---
+        let cccdBtn = `<button class="btn-sm" style="background:var(--accent); color:white; border:none;" onclick="adminOpenChangeCccd('${phone}')">CCCD</button>`;
+        let reset123Btn = isForgot ? `<button class="btn-sm" style="background:red; color:white; border:none;" onclick="adminReset123('${phone}')">Reset 123</button>` : '';
+        let promoteBtn = ''; let delBtn = '';
+
         if (activeUserPhone === '0839578432' && !isRoot) {
             promoteBtn = `<button class="btn-sm" style="background:${role==='admin'?'#555':'var(--success)'}; color:white; border:none;" onclick="adminToggleRole('${phone}')">${role==='admin'?'Hạ Quyền':'Cấp Admin'}</button>`;
             delBtn = `<button class="btn-sm" style="background:var(--danger); color:white; border:none;" onclick="adminDeleteUser('${phone}')">Xóa</button>`;
         }
         
-        if (isRoot && activeUserPhone !== '0839578432') { editNameBtn = ''; editPassBtn = ''; }
-        if (isRoot && activeUserPhone === '0839578432') { promoteBtn = ''; delBtn = ''; }
+        if (isRoot && activeUserPhone !== '0839578432') { editNameBtn = ''; editPassBtn = ''; cccdBtn = ''; reset123Btn = ''; }
+        if (isRoot && activeUserPhone === '0839578432') { promoteBtn = ''; delBtn = ''; reset123Btn = ''; }
         
         tbody.innerHTML += `
         <tr ${rowStyle}>
@@ -1474,14 +1496,41 @@ function renderAdminPanel() {
             <td align="center">${roleHtml}</td>
             <td align="center">
                 <div style="display:flex; gap:5px; justify-content:center; flex-wrap:wrap;">
-                    ${editNameBtn} ${editPassBtn} ${promoteBtn} ${delBtn}
+                    ${editNameBtn} ${editPassBtn} ${cccdBtn} ${reset123Btn} ${promoteBtn} ${delBtn}
                 </div>
             </td>
         </tr>`;
     }
     checkAdminNotifications();
 }
+function adminOpenChangeCccd(phone) {
+    if(activeUserPhone !== '0839578432') { alert("Chỉ Admin gốc mới có quyền đổi CCCD tự do!"); return; }
+    document.getElementById('admin-target-cccd-user').value = phone;
+    document.getElementById('admin-new-cccd-val').value = '';
+    openModal('modal-admin-cccd');
+}
 
+function adminConfirmChangeCccd() {
+    let phone = document.getElementById('admin-target-cccd-user').value;
+    let newCccd = document.getElementById('admin-new-cccd-val').value.trim();
+    if(!/^\d{12}$/.test(newCccd)) { alert("Số CCCD bắt buộc phải đúng 12 chữ số!"); return; }
+
+    systemDB[phone].cccd = newCccd;
+    saveSystemDB();
+    alert("Đã cập nhật CCCD mới cho tài khoản: " + phone);
+    closeModal('modal-admin-cccd');
+}
+
+function adminReset123(phone) {
+    if(confirm("Xác nhận reset mật khẩu về '123'? Người dùng sẽ bị ép đổi mật khẩu ở lần đăng nhập tới.")) {
+        systemDB[phone].password = '123';
+        systemDB[phone].forgotPassword = false;
+        systemDB[phone].mustChangePass = true; // Ép người dùng đổi từ 123
+        saveSystemDB();
+        renderAdminPanel();
+        alert("Đã reset mật khẩu thành công!");
+    }
+}
 function adminOpenChangeName(phone, currentName) {
     document.getElementById('admin-target-user-name').value = phone;
     document.getElementById('admin-new-name').value = currentName === 'Chưa cập nhật' ? '' : currentName;
