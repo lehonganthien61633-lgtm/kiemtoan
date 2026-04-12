@@ -28,26 +28,58 @@ display: flex;
 justify-content: center;
 }
 
-/* === CSS HỆ THỐNG AUTH === */
+/* === CSS HỆ THỐNG AUTH (LUXURY THEME) === */
 .auth-wrapper {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: url('https://images.unsplash.com/photo-1616075133610-8dc0388cdce8?q=80&w=2000&auto=format&fit=crop') center/cover;
+    /* Đổi sang hình nền bàn làm việc/tài chính chuyên nghiệp hơn */
+    background: url('https://images.unsplash.com/photo-1556761175-5973dc0f32b7?q=80&w=2000&auto=format&fit=crop') center/cover;
     display: flex; justify-content: center; align-items: center; z-index: 100000;
 }
 .auth-overlay {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    background: linear-gradient(135deg, rgba(15, 15, 15, 0.85) 0%, rgba(0, 0, 0, 0.6) 100%); 
+    backdrop-filter: blur(8px);
 }
 .auth-box {
-    background: var(--ivory); padding: 40px; border-radius: 8px; border-top: 5px solid var(--accent);
-    width: 90%; max-width: 400px; position: relative; z-index: 2; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    background: rgba(255, 255, 255, 0.95); 
+    backdrop-filter: blur(20px);
+    padding: 45px 50px; 
+    border-radius: 16px; 
+    width: 90%; max-width: 440px; 
+    position: relative; z-index: 2; 
+    box-shadow: 0 30px 60px -12px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    animation: authFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.auth-title { text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 25px; text-transform: uppercase; color: var(--primary); }
-.auth-switch { text-align: center; margin-top: 15px; font-size: 14px; cursor: pointer; color: var(--info); font-style: italic; }
-.auth-switch:hover { text-decoration: underline; }
-.admin-badge { background: var(--danger); color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; vertical-align: middle; margin-left: 5px; }
-.badge-notif { background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 12px; margin-left: 5px; font-weight: bold; display: inline-block; animation: pulse 1.5s infinite; }
-@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-
+@keyframes authFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.auth-title { 
+    text-align: center; font-size: 26px; font-weight: 900; margin-bottom: 5px; 
+    text-transform: uppercase; letter-spacing: 1px;
+    background: linear-gradient(45deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.auth-subtitle {
+    text-align: center; font-size: 11px; color: #888; font-weight: bold; margin-bottom: 30px; letter-spacing: 2px; text-transform: uppercase;
+}
+.auth-box .form-group label {
+    font-size: 13px; color: #555; font-weight: bold; letter-spacing: 0.5px;
+}
+.auth-box input {
+    border: 1px solid #ddd; padding: 14px 16px; border-radius: 8px; background: #fcfcfc; transition: all 0.3s ease; width: 100%;
+}
+.auth-box input:focus {
+    border-color: var(--accent); background: #fff; box-shadow: 0 0 0 4px rgba(184, 134, 11, 0.1); outline: none;
+}
+.auth-box .btn-main {
+    background: linear-gradient(135deg, var(--primary), #333); color: var(--accent);
+    border: none; border-radius: 8px; padding: 16px; font-size: 15px; font-weight: bold; letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease; text-transform: uppercase; width: 100%;
+}
+.auth-box .btn-main:hover {
+    transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); background: linear-gradient(135deg, #000, #1a1a1a);
+}
+.auth-switch { text-align: center; margin-top: 25px; font-size: 13px; cursor: pointer; color: #666; transition: color 0.3s ease; }
+.auth-switch:hover { color: var(--accent); }
 /* Cấu trúc Layout Chính */
 .app-container {
     width: 100%; background-color: var(--ivory); height: 100vh;
@@ -201,67 +233,70 @@ body * { visibility: hidden; }
 <body>
 
 <div id="auth-screen" class="auth-wrapper">
+    <div class="auth-overlay"></div>
+    
     <div class="auth-box" id="lookup-box" style="display:none;">
         <div class="auth-title">TRA CỨU PHIẾU IN</div>
-        <p style="font-size:14px; text-align:center; margin-bottom:20px; color:#666;">Hệ thống sẽ trích xuất dữ liệu tổng hợp dựa trên mã đối soát trên bản in.</p>
+        <div class="auth-subtitle">Hệ thống trích xuất tự động</div>
         <div class="form-group">
-            <label style="text-align:center;">Nhập Mã Đối Soát</label>
-            <input type="text" id="lookup-code" placeholder="NHẬP MÃ TẠI ĐÂY" onkeydown="if(event.key === 'Enter') handleLookup()" style="text-align:center; text-transform:uppercase; font-family:monospace; font-size:18px; letter-spacing:2px; font-weight:bold; padding:12px;">
+            <label style="text-align:center; display:block; margin-bottom:12px;">NHẬP MÃ ĐỐI SOÁT BẢN IN</label>
+            <input type="text" id="lookup-code" placeholder="VD: ABC123XYZ" onkeydown="if(event.key === 'Enter') handleLookup()" style="text-align:center; text-transform:uppercase; font-family:monospace; font-size:20px; letter-spacing:3px; font-weight:bold; padding:16px; border:2px dashed #ccc; background:#fff;">
         </div>
-        <button class="btn-main" style="background:var(--success); color:white; border-color:var(--success);" onclick="handleLookup()">TÌM KIẾM DỮ LIỆU</button>
+        <button class="btn-main" style="background: linear-gradient(135deg, var(--success), #1e3f19); color: white;" onclick="handleLookup()">TRÍCH XUẤT DỮ LIỆU</button>
         
         <div id="lookup-result" style="margin-top:20px; display:none;"></div>
-
-        <div class="auth-switch" onclick="switchAuth('login')" style="margin-top: 20px;">Quay lại đăng nhập.</div>
+        <div class="auth-switch" onclick="switchAuth('login')">← Quay lại màn hình đăng nhập</div>
     </div>
-    <div class="auth-overlay"></div>
+
     <div class="auth-box" id="login-box">
-        <div class="auth-title">PHẦN MỀMKIỂM TOÁN</div>
-        <div class="auth-title">DEVELOP BY Lê Hồng Ân Thiên</div>
+        <div class="auth-title">HỆ THỐNG KIỂM TOÁN</div>
+        <div class="auth-subtitle">DEVELOPED BY Lê Hồng Ân Thiên</div>
         <div class="form-group">
-            <label>Số điện thoại</label>
+            <label>SỐ ĐIỆN THOẠI</label>
             <input type="tel" id="login-phone" placeholder="Nhập số điện thoại...">
         </div>
         <div class="form-group">
-            <label>Mật khẩu</label>
+            <label>MẬT KHẨU</label>
             <input type="password" id="login-pass" placeholder="Nhập mật khẩu..." onkeydown="if(event.key === 'Enter') handleLogin()">
         </div>
         
-       <div style="display:flex; justify-content:space-between; margin-top:-10px; margin-bottom:15px; font-size:13px; font-style:italic;">
-            <span style="color:var(--success); cursor:pointer; font-weight:bold;" onclick="switchAuth('lookup')">🔍 Tra cứu mã đối soát</span>
-            <span style="color:var(--danger); cursor:pointer;" onclick="switchAuth('forgot')">Quên mật khẩu?</span>
+        <div style="display:flex; justify-content:space-between; margin-top:-5px; margin-bottom:25px; font-size:13px; font-weight:bold;">
+            <span style="color:var(--success); cursor:pointer; transition:0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--success)'" onclick="switchAuth('lookup')">🔍 Tra cứu mã đối soát</span>
+            <span style="color:#888; cursor:pointer; transition:0.3s;" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='#888'" onclick="switchAuth('forgot')">Quên mật khẩu?</span>
         </div>
-        <button class="btn-main" onclick="handleLogin()">VÀO HỆ THỐNG</button>
-        <div class="auth-switch" onclick="switchAuth('register')">Chưa có tài khoản? Tạo mới ngay.</div>
+        <button class="btn-main" onclick="handleLogin()">ĐĂNG NHẬP HỆ THỐNG</button>
+        <div class="auth-switch" onclick="switchAuth('register')">Chưa có tài khoản? Tạo mới ngay</div>
     </div>
 
     <div class="auth-box" id="register-box" style="display:none;">
-        <div class="auth-title">TẠO TÀI KHOẢN MỚI</div>
+        <div class="auth-title">TẠO TÀI KHOẢN</div>
+        <div class="auth-subtitle">Đăng ký thành viên mới</div>
         <div class="form-group">
-            <label>Họ và tên</label>
-            <input type="text" id="reg-name" placeholder="HỌ VÀ TÊN NGƯỜI SỬ DỤNG..." oninput="this.value = this.value.toUpperCase()">
+            <label>HỌ VÀ TÊN</label>
+            <input type="text" id="reg-name" placeholder="Nhập họ và tên..." oninput="this.value = this.value.toUpperCase()">
         </div>
         <div class="form-group">
-            <label>Số điện thoại</label>
-            <input type="tel" id="reg-phone" placeholder="Số điện thoại của bạn...">
+            <label>SỐ ĐIỆN THOẠI</label>
+            <input type="tel" id="reg-phone" placeholder="Nhập số điện thoại...">
         </div>
         <div class="form-group">
-            <label>Mật khẩu</label>
+            <label>MẬT KHẨU</label>
             <input type="password" id="reg-pass" placeholder="Tạo mật khẩu...">
         </div>
-        <button class="btn-main" style="background:var(--accent); color:white;" onclick="handleRegister()">ĐĂNG KÝ</button>
-        <div class="auth-switch" onclick="switchAuth('login')">Đã có tài khoản? Quay lại đăng nhập.</div>
+        <button class="btn-main" style="background: linear-gradient(135deg, var(--accent), #8b6508); color: white;" onclick="handleRegister()">ĐĂNG KÝ NGAY</button>
+        <div class="auth-switch" onclick="switchAuth('login')">← Đã có tài khoản? Đăng nhập</div>
     </div>
 
     <div class="auth-box" id="forgot-box" style="display:none;">
         <div class="auth-title">QUÊN MẬT KHẨU</div>
-        <p style="font-size:14px; text-align:center; margin-bottom:20px; color:#666;">Hệ thống sẽ gửi thông báo cấp lại mật khẩu tới Ban Quản Trị.</p>
+        <div class="auth-subtitle">Khôi phục quyền truy cập</div>
+        <p style="font-size:13px; text-align:center; margin-bottom:25px; color:#555; line-height: 1.6;">Yêu cầu cấp lại mật khẩu sẽ được gửi trực tiếp đến Ban Quản Trị hệ thống.</p>
         <div class="form-group">
-            <label>Nhập Số điện thoại của bạn</label>
-            <input type="tel" id="forgot-phone" placeholder="Số điện thoại...">
+            <label>SỐ ĐIỆN THOẠI ĐÃ ĐĂNG KÝ</label>
+            <input type="tel" id="forgot-phone" placeholder="Nhập số điện thoại...">
         </div>
-        <button class="btn-main" style="background:var(--danger); color:white;" onclick="handleForgotPassword()">GỬI YÊU CẦU</button>
-        <div class="auth-switch" onclick="switchAuth('login')">Quay lại đăng nhập.</div>
+        <button class="btn-main" style="background: linear-gradient(135deg, var(--danger), #5a0000); color: white;" onclick="handleForgotPassword()">GỬI YÊU CẦU</button>
+        <div class="auth-switch" onclick="switchAuth('login')">← Hủy và quay lại</div>
     </div>
 </div>
 
@@ -1101,31 +1136,32 @@ function handleLookup() {
     let finalT = tTM + tNH + tQuy + tSTK;
 
     // In kết quả ra màn hình với giao diện "Biên lai điện tử"
+    // In kết quả ra màn hình với giao diện "Biên lai điện tử cao cấp"
     resultBox.style.display = 'block';
     resultBox.innerHTML = `
-        <div style="background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); overflow: hidden;">
-            <div style="background: #faf9f6; padding: 20px; border-bottom: 2px dashed #cbd5e1; text-align: center;">
-                <div style="display: inline-block; background: #e8f5e9; color: var(--success); border: 1px solid var(--success); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-bottom: 15px;">
-                    ✅ TRÍCH XUẤT THÀNH CÔNG
+        <div style="background: #fff; border: 1px solid #eaeaea; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; animation: authFadeIn 0.4s;">
+            <div style="background: linear-gradient(135deg, #fdfbf7 0%, #f3f0e9 100%); padding: 20px; border-bottom: 1px dashed #d1c7b1; text-align: center;">
+                <div style="display: inline-block; background: var(--success); color: white; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-bottom: 15px; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(45, 90, 39, 0.2);">
+                    ✓ TRÍCH XUẤT THÀNH CÔNG
                 </div>
-                <div style="font-size: 13px; color: #444; line-height: 1.8; text-align: left; background: #fff; padding: 12px; border-radius: 6px; border: 1px solid #eee;">
-                    <div style="display:flex; justify-content:space-between;"><span>Mã đối soát:</span> <span style="font-family: monospace; font-weight: bold; color: var(--primary); font-size: 14px;">${code.toUpperCase()}</span></div>
-                    <div style="display:flex; justify-content:space-between;"><span>Ngày chốt:</span> <span style="font-weight: bold; color: var(--info);">${vnDate(targetDate)}</span></div>
+                <div style="font-size: 13px; color: #555; line-height: 1.8; text-align: left;">
+                    <div style="display:flex; justify-content:space-between;"><span>Mã phiếu:</span> <span style="font-family: monospace; font-weight: bold; color: var(--primary); font-size: 15px; letter-spacing:1px;">${code.toUpperCase()}</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Ngày chốt:</span> <span style="font-weight: bold; color: var(--accent);">${vnDate(targetDate)}</span></div>
                     <div style="display:flex; justify-content:space-between;"><span>Giờ in:</span> <span style="font-weight:bold;">${foundRecord.time}</span></div>
-                    <div style="display:flex; justify-content:space-between;"><span>Kiểm toán:</span> <span style="font-weight:bold; text-transform: uppercase;">${foundRecord.auditor}</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Kiểm toán viên:</span> <span style="font-weight:bold; text-transform: uppercase;">${foundRecord.auditor}</span></div>
                 </div>
             </div>
             
-            <div style="padding: 20px; font-size: 14px; color: #333;">
-                <div style="display:flex; justify-content:space-between; margin-bottom: 10px;"><span>💵 Tiền mặt:</span> <b style="color: #000;">${formatTien(tTM)} đ</b></div>
-                <div style="display:flex; justify-content:space-between; margin-bottom: 10px;"><span>🏦 Ngân hàng:</span> <b style="color: #000;">${formatTien(tNH)} đ</b></div>
-                <div style="display:flex; justify-content:space-between; margin-bottom: 10px;"><span>📦 Quỹ dự phòng:</span> <b style="color: #000;">${formatTien(tQuy)} đ</b></div>
-                <div style="display:flex; justify-content:space-between; margin-bottom: 10px;"><span>📈 Sổ tiết kiệm:</span> <b style="color: #000;">${formatTien(tSTK)} đ</b></div>
+            <div style="padding: 20px; font-size: 14px; color: #444;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 12px;"><span>Tiền mặt:</span> <b style="color: #111;">${formatTien(tTM)} đ</b></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 12px;"><span>Ngân hàng:</span> <b style="color: #111;">${formatTien(tNH)} đ</b></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 12px;"><span>Quỹ dự phòng:</span> <b style="color: #111;">${formatTien(tQuy)} đ</b></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 12px;"><span>Sổ tiết kiệm:</span> <b style="color: #111;">${formatTien(tSTK)} đ</b></div>
             </div>
             
-            <div style="background: var(--primary); color: #fff; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Tổng Tài Sản</span>
-                <span style="font-size: 20px; font-weight: bold; color: var(--accent);">${formatTien(finalT)} đ</span>
+            <div style="background: linear-gradient(135deg, var(--primary), #222); color: #fff; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; color:#ddd;">Tổng Tài Sản</span>
+                <span style="font-size: 22px; font-weight: bold; color: var(--accent); text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${formatTien(finalT)} đ</span>
             </div>
         </div>
     `;
