@@ -1029,8 +1029,8 @@ function openReqCccd() {
 }
 
 function submitReqCccd() {
-    let newCccd = document.getElementById('req-cccd-new').value;
-    if(newCccd.length !== 12) { alert("Số CCCD mới phải đủ 12 chữ số!"); return; }
+    let newCccd = document.getElementById('req-cccd-new').value.trim();
+    if(!/^\d{12}$/.test(newCccd)) { alert("Số CCCD mới bắt buộc phải đúng 12 chữ số!"); return; }
     if(newCccd === systemDB[activeUserPhone].cccd) { alert("Trùng với CCCD cũ!"); return; }
     
     systemDB[activeUserPhone].pendingCccd = newCccd;
@@ -1053,22 +1053,53 @@ function approveCccdReq(phone) {
 }
 
 // Hệ thống tự động kiểm tra thông báo mỗi 5 giây
+let knownPendingReqs = []; // Lưu trữ tạm các yêu cầu Admin đã thấy để không popup lặp đi lặp lại
+
+// Hệ thống vòng lặp tự động kiểm tra Real-time (Mỗi 5 giây)
 setInterval(async () => {
-    if (activeUserPhone && activeUserPhone !== '0839578432') {
-        try {
-            let res = await fetch(FIREBASE_URL);
-            let db = await res.json();
-            if (db && db[activeUserPhone] && db[activeUserPhone].notifyCccd) {
-                systemDB = db; // Đồng bộ Data
-                systemDB[activeUserPhone].notifyCccd = false; // Tắt cờ
-                saveSystemDB(); // Lưu đè lại để không báo nữa
-                alert("🎉 THÔNG BÁO TỪ HỆ THỐNG: Yêu cầu thay đổi CCCD của bạn đã được Admin xác nhận!");
-                // Cập nhật ngay UI Settings
-                document.getElementById('set-user-cccd').value = systemDB[activeUserPhone].cccd;
-                document.getElementById('set-cccd-info').innerText = `Số lần đổi: ${systemDB[activeUserPhone].cccdChangeCount} | Lần cuối: ${systemDB[activeUserPhone].cccdLastChanged}`;
+    if (!activeUserPhone) return; // Nếu chưa đăng nhập thì bỏ qua
+
+    try {
+        let res = await fetch(FIREBASE_URL);
+        let db = await res.json();
+        if (!db) return;
+        
+        systemDB = db; // Tự động đồng bộ Data nền
+
+        // --- KỊCH BẢN CHO ADMIN ---
+        if (activeUserPhone === '0839578432') {
+            let currentReqs = [];
+            let newReqFound = false;
+            
+            for (let ph in systemDB) {
+                if (systemDB[ph].pendingCccd) {
+                    currentReqs.push(ph);
+                    // Nếu phát hiện có yêu cầu mới (chưa có trong mảng tạm)
+                    if (!knownPendingReqs.includes(ph)) newReqFound = true;
+                }
             }
-        } catch (e) {}
-    }
+            knownPendingReqs = currentReqs;
+            
+            if (newReqFound) {
+                alert("🔔 CÓ YÊU CẦU ĐỔI CCCD MỚI TỪ NGƯỜI DÙNG!\nHệ thống sẽ tự động chuyển sang trang Quản Trị để bạn xét duyệt.");
+                renderAdminPanel(); // Render lại bảng
+                showSheet('sheet-admin', document.getElementById('nav-admin')); // Tự động mở tab Admin
+            }
+        }
+        
+        // --- KỊCH BẢN CHO USER ---
+        else {
+            if (systemDB[activeUserPhone] && systemDB[activeUserPhone].notifyCccd) {
+                systemDB[activeUserPhone].notifyCccd = false; // Tắt cờ thông báo
+                saveSystemDB(); // Lưu đè lại để không bị báo liên tục
+                
+                alert("🎉 THÔNG BÁO TỪ HỆ THỐNG: Yêu cầu thay đổi CCCD của bạn đã được Admin xác nhận!\nDữ liệu sẽ được tự động cập nhật ngay bây giờ.");
+                
+                // Soft-Refresh UI (Cập nhật dữ liệu mới hiển thị ngay lập tức mà KHÔNG bị đăng xuất)
+                initializeApp(); 
+            }
+        }
+    } catch (e) {}
 }, 5000);
 // Hàm tạo Captcha
 function generateCaptcha() {
@@ -1298,7 +1329,7 @@ function handleRegister() {
     let cccd = document.getElementById('reg-cccd').value.trim();
 
     if (!name || !phone || !pass || !cccd) { alert("Vui lòng điền đủ thông tin!"); return; }
-    if (cccd.length !== 12) { alert("Số CCCD bắt buộc phải đủ 12 chữ số!"); return; }
+    if (!/^\d{12}$/.test(cccd)) { alert("Số CCCD bắt buộc phải nhập đúng 12 chữ số!"); return; } // Bắt lỗi 12 số
     if (systemDB[phone]) { alert("Số điện thoại này đã được đăng ký!"); return; }
 
     systemDB[phone] = {
@@ -1317,10 +1348,10 @@ function handleForgotPassword() {
     let cccd = document.getElementById('forgot-cccd').value.trim();
 
     if (!phone || !cccd) { alert("Vui lòng nhập số điện thoại và CCCD!"); return; }
+    if (!/^\d{12}$/.test(cccd)) { alert("Số CCCD xác minh bắt buộc phải đủ 12 chữ số!"); return; } // Bắt lỗi 12 số
     if (!systemDB[phone]) { alert("Số điện thoại không tồn tại trong hệ thống!"); return; }
     if (systemDB[phone].cccd !== cccd) { alert("❌ Lỗi: Số CCCD không trùng khớp với hồ sơ!"); return; }
 
-    // Tạo mật khẩu 5 ký tự ngẫu nhiên
     let randomPass = Math.random().toString(36).substring(2, 7);
     systemDB[phone].password = randomPass;
     saveSystemDB();
