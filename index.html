@@ -1530,24 +1530,38 @@ function checkAdminNotifications() {
 }
 
 function renderAdminPanel() {
-    // ... (Giữ nguyên đoạn render Bảng yêu cầu CCCD ẩn danh ở trên) ...
-
     let tbody = document.getElementById('body-admin-users');
+    let cccdBody = document.getElementById('body-admin-cccd'); // Gọi bảng CCCD
+
     tbody.innerHTML = '';
+    cccdBody.innerHTML = ''; // Làm sạch bảng CCCD trước khi vẽ
+    
+    let hasReq = false;
     let stt = 1;
+
     for (const phone in systemDB) {
         let isRoot = (phone === '0839578432');
-        let role = systemDB[phone].role;
-        let isForgot = systemDB[phone].forgotPassword;
+        let u = systemDB[phone];
+        let role = u.role;
+        let isForgot = u.forgotPassword;
         let roleHtml = role === 'admin' ? '<span class="admin-badge">ADMIN</span>' : 'USER';
-        let displayName = systemDB[phone].name || 'Chưa cập nhật';
+        let displayName = u.name || 'Chưa cập nhật';
         let rowStyle = isForgot ? 'style="background-color: #ffe6e6;"' : '';
         let warningIcon = isForgot ? '<span style="color:red; font-weight:bold; margin-left:5px;">(!) Quên Pass</span>' : '';
         
+        // --- HIỂN THỊ YÊU CẦU CCCD VÀO BẢNG TRÊN CÙNG ---
+        if(u.pendingCccd) {
+            hasReq = true;
+            cccdBody.innerHTML += `<tr>
+                <td align="center" style="font-weight:bold;">${phone}</td>
+                <td align="center" style="color:var(--danger)">*** Đã ẩn số CCCD ***</td>
+                <td align="center"><button class="btn-sm" style="background:var(--success); color:white;" onclick="approveCccdReq('${phone}')">XÁC NHẬN ĐỔI</button></td>
+            </tr>`;
+        }
+
+        // --- CÁC NÚT BẤM CHO BẢNG QUẢN LÝ USER BÊN DƯỚI ---
         let editNameBtn = `<button class="btn-sm" style="background:var(--info); color:white; border:none;" onclick="adminOpenChangeName('${phone}', '${displayName}')">Tên</button>`;
         let editPassBtn = `<button class="btn-sm" style="background:var(--primary); color:white; border:none;" onclick="adminOpenChangePass('${phone}')">Pass</button>`;
-        
-        // --- THÊM NÚT SỬA CCCD VÀ RESET 123 ---
         let reset123Btn = isForgot ? `<button class="btn-sm" style="background:red; color:white; border:none;" onclick="adminReset123('${phone}')">Reset 123</button>` : '';
         let promoteBtn = ''; let delBtn = '';
 
@@ -1556,7 +1570,7 @@ function renderAdminPanel() {
             delBtn = `<button class="btn-sm" style="background:var(--danger); color:white; border:none;" onclick="adminDeleteUser('${phone}')">Xóa</button>`;
         }
         
-        if (isRoot && activeUserPhone !== '0839578432') { editNameBtn = ''; editPassBtn = ''; cccdBtn = ''; reset123Btn = ''; }
+        if (isRoot && activeUserPhone !== '0839578432') { editNameBtn = ''; editPassBtn = ''; reset123Btn = ''; }
         if (isRoot && activeUserPhone === '0839578432') { promoteBtn = ''; delBtn = ''; reset123Btn = ''; }
         
         tbody.innerHTML += `
@@ -1572,6 +1586,12 @@ function renderAdminPanel() {
             </td>
         </tr>`;
     }
+    
+    // Nếu không có ai xin đổi CCCD, hiển thị dòng trống
+    if(!hasReq) {
+        cccdBody.innerHTML = `<tr><td colspan="3" align="center" style="color:#888; font-style:italic;">Chưa có yêu cầu thay đổi CCCD nào.</td></tr>`;
+    }
+
     checkAdminNotifications();
 }
 function adminOpenChangeCccd(phone) {
