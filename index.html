@@ -1495,7 +1495,6 @@ function renderAdminPanel() {
         let editPassBtn = `<button class="btn-sm" style="background:var(--primary); color:white; border:none;" onclick="adminOpenChangePass('${phone}')">Pass</button>`;
         
         // --- THÊM NÚT SỬA CCCD VÀ RESET 123 ---
-        let cccdBtn = `<button class="btn-sm" style="background:var(--accent); color:white; border:none;" onclick="adminOpenChangeCccd('${phone}')">CCCD</button>`;
         let reset123Btn = isForgot ? `<button class="btn-sm" style="background:red; color:white; border:none;" onclick="adminReset123('${phone}')">Reset 123</button>` : '';
         let promoteBtn = ''; let delBtn = '';
 
@@ -1515,7 +1514,7 @@ function renderAdminPanel() {
             <td align="center">${roleHtml}</td>
             <td align="center">
                 <div style="display:flex; gap:5px; justify-content:center; flex-wrap:wrap;">
-                    ${editNameBtn} ${editPassBtn} ${cccdBtn} ${reset123Btn} ${promoteBtn} ${delBtn}
+                    ${editNameBtn} ${editPassBtn} ${reset123Btn} ${promoteBtn} ${delBtn}
                 </div>
             </td>
         </tr>`;
@@ -1546,8 +1545,17 @@ function adminReset123(phone) {
         systemDB[phone].forgotPassword = false;
         systemDB[phone].mustChangePass = true; // Ép người dùng đổi từ 123
         saveSystemDB();
-        renderAdminPanel();
-        alert("Đã reset mật khẩu thành công!");
+        
+        alert("Đã reset mật khẩu thành công! Hệ thống sẽ chuyển về màn hình đăng nhập.");
+        
+        // Thoát tài khoản admin hiện tại và quay về màn hình đăng nhập
+        activeUserPhone = null;
+        masterData = {};
+        document.getElementById('auth-screen').style.display = 'flex';
+        document.getElementById('main-app').style.display = 'none';
+        document.getElementById('login-pass').value = '';
+        generateCaptcha();
+        switchAuth('login');
     }
 }
 function adminOpenChangeName(phone, currentName) {
