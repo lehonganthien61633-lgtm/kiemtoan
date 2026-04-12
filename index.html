@@ -1066,6 +1066,7 @@ function approveCccdReq(phone) {
 let knownPendingReqs = []; 
 let knownForgotPass = [];
 
+// Hệ thống vòng lặp tự động kiểm tra Real-time (Mỗi 5 giây)
 setInterval(async () => {
     if (!activeUserPhone) return;
 
@@ -1076,6 +1077,9 @@ setInterval(async () => {
         systemDB = db;
 
         if (activeUserPhone === '0839578432') {
+            // ADMIN GỬI TÍN HIỆU ONLINE LÊN MÁY CHỦ
+            systemDB['0839578432'].lastPing = Date.now();
+
             let currentReqs = []; let newReqFound = false;
             let currentForgot = []; let newForgotFound = false;
             
@@ -1098,8 +1102,12 @@ setInterval(async () => {
                 renderAdminPanel();
                 showSheet('sheet-admin', document.getElementById('nav-admin'));
             }
+            
+            // Lưu trạng thái Online của Admin lên DB
+            saveSystemDB(); 
         }
         else {
+            // NGƯỜI DÙNG CHỜ DUYỆT CCCD
             if (systemDB[activeUserPhone] && systemDB[activeUserPhone].notifyCccd) {
                 systemDB[activeUserPhone].notifyCccd = false; 
                 saveSystemDB(); 
@@ -1368,16 +1376,27 @@ function handleForgotPassword() {
     if (!systemDB[phone]) { alert("Số điện thoại không tồn tại trong hệ thống!"); return; }
     if (systemDB[phone].cccd !== cccd) { alert("❌ Lỗi: Số CCCD không trùng khớp với hồ sơ!"); return; }
 
-    let randomPass = Math.random().toString(36).substring(2, 7);
-    systemDB[phone].password = randomPass;
-    systemDB[phone].forgotPassword = true; // Báo cho Admin biết
-    systemDB[phone].mustChangePass = true; // Ép User phải đổi mật khẩu
-    saveSystemDB();
-    
-    alert(`✅ XÁC MINH THÀNH CÔNG!\nAdmin hiện đang offline. Hệ thống tự động cấp mật khẩu mới cho bạn:\n\nMật khẩu mới: ${randomPass}\n\nVui lòng đăng nhập và đổi mật khẩu ngay!`);
+    // KIỂM TRA ADMIN ONLINE HAY OFFLINE (Dựa vào tín hiệu ping trong vòng 15 giây)
+    let adminPing = systemDB['0839578432'].lastPing || 0;
+    let isAdminOnline = (Date.now() - adminPing) < 15000;
+
+    if (isAdminOnline) {
+        // ADMIN ĐANG ONLINE -> Bật cờ cho Admin duyệt
+        systemDB[phone].forgotPassword = true; 
+        saveSystemDB();
+        alert("✅ XÁC MINH THÀNH CÔNG!\n\nAdmin hiện ĐANG ONLINE. Yêu cầu cấp lại mật khẩu của bạn đã được báo tới Ban Quản Trị.\n\nVui lòng chờ Admin reset về mật khẩu mặc định (123) rồi hãy đăng nhập.");
+    } else {
+        // ADMIN OFFLINE -> Tự động cấp mật khẩu và ép đổi
+        let randomPass = Math.random().toString(36).substring(2, 7);
+        systemDB[phone].password = randomPass;
+        systemDB[phone].forgotPassword = false; 
+        systemDB[phone].mustChangePass = true; // Bật cờ khóa mật khẩu cũ
+        saveSystemDB();
+        
+        alert(`✅ XÁC MINH THÀNH CÔNG!\nAdmin hiện ĐANG OFFLINE. Hệ thống tự động cấp mật khẩu mới cho bạn:\n\nMật khẩu mới: ${randomPass}\n\nVui lòng đăng nhập và đổi mật khẩu ngay!`);
+    }
     switchAuth('login');
 }
-
 function handleLogout() {
     if(confirm("Bạn có chắc chắn muốn đăng xuất?")) {
         activeUserPhone = null;
