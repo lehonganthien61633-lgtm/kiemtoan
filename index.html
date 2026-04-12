@@ -1060,7 +1060,64 @@ function switchAuth(type) {
         document.getElementById('lookup-result').style.display = 'none';
     }
 }
+function handleLookup() {
+    let code = document.getElementById('lookup-code').value.trim();
+    if (!code) { alert("Vui lòng nhập mã đối soát!"); return; }
 
+    let foundRecord = null;
+    let foundUserData = null;
+
+    // Duyệt qua tất cả người dùng trong database để tìm mã
+    for (let phone in systemDB) {
+        let uData = systemDB[phone].data;
+        if (uData && uData.printHistory) {
+            let record = uData.printHistory.find(r => r.code === code);
+            if (record) {
+                foundRecord = record;
+                foundUserData = uData;
+                break;
+            }
+        }
+    }
+
+    let resultBox = document.getElementById('lookup-result');
+    
+    // Xử lý nếu không tìm thấy
+    if (!foundRecord) {
+        resultBox.style.display = 'block';
+        resultBox.innerHTML = `<div style="color:red; font-weight:bold; text-align:center;">❌ MÃ KHÔNG TỒN TẠI HOẶC SAI!</div>`;
+        return;
+    }
+
+    // Nếu tìm thấy, lấy dữ liệu của ngày ghi trong lịch sử
+    let targetDate = foundRecord.date;
+    let d = foundUserData[targetDate] || {tm:[], nh:[], quy:[], stk:[]};
+    
+    // Tính toán lại tổng tiền từ dữ liệu thô
+    let tTM = 0; denoms.forEach((m, i) => { let v = (parseInt(d.tm && d.tm[i])||0); tTM += v*m; });
+    let tNH = (d.nh || []).reduce((s,x)=>s+cleanTien(x.v),0);
+    let tQuy = (d.quy || []).reduce((s,q)=>s+getQuyTotalAmt(q),0);
+    let tSTK = (d.stk || []).reduce((s,x)=>s+(x.amt||0),0);
+    let finalT = tTM + tNH + tQuy + tSTK;
+
+    // In kết quả ra màn hình
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `
+        <div style="color:var(--success); font-weight:bold; text-align:center; margin-bottom:12px; font-size:16px;">✅ TRÍCH XUẤT THÀNH CÔNG</div>
+        <div style="border-bottom:1px dashed #ccc; padding-bottom:10px; margin-bottom:10px; line-height: 1.5;">
+            <b>Ngày chốt:</b> <span style="color:var(--info)">${vnDate(targetDate)}</span><br>
+            <b>Thời gian in:</b> ${foundRecord.time}<br>
+            <b>Người kiểm toán:</b> ${foundRecord.auditor}
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Tiền mặt:</span> <b>${formatTien(tTM)} đ</b></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Ngân hàng:</span> <b>${formatTien(tNH)} đ</b></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Quỹ dự phòng:</span> <b>${formatTien(tQuy)} đ</b></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Sổ tiết kiệm:</span> <b>${formatTien(tSTK)} đ</b></div>
+        <div style="display:flex; justify-content:space-between; margin-top:12px; padding-top:12px; border-top:3px double var(--primary); font-size:18px; color:var(--danger); font-weight:bold;">
+            <span>TỔNG TÀI SẢN:</span> <span>${formatTien(finalT)} đ</span>
+        </div>
+    `;
+}
 function handleLogin() {
     let phone = document.getElementById('login-phone').value.trim();
     let pass = document.getElementById('login-pass').value;
