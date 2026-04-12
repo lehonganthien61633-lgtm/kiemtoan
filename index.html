@@ -1068,7 +1068,15 @@ let knownForgotPass = [];
 
 // Hệ thống vòng lặp tự động kiểm tra Real-time (Mỗi 5 giây)
 setInterval(async () => {
-    if (!activeUserPhone) return;
+    // KHÔNG CẦN PHẢI ĐĂNG NHẬP (activeUserPhone = null) NGƯỜI DÙNG VẪN CÓ THỂ NHẬN ĐƯỢC THÔNG BÁO RESET PASS
+    // Vì vậy chúng ta kiểm tra bằng cách lấy SĐT từ ô nhập Quên Mật Khẩu (nếu họ đang ở màn hình ngoài)
+    let checkPhone = activeUserPhone;
+    if (!checkPhone) {
+        let forgotPhoneInput = document.getElementById('forgot-phone');
+        if (forgotPhoneInput) checkPhone = forgotPhoneInput.value.trim();
+    }
+
+    if (!checkPhone) return;
 
     try {
         let res = await fetch(FIREBASE_URL);
@@ -1103,11 +1111,26 @@ setInterval(async () => {
                 showSheet('sheet-admin', document.getElementById('nav-admin'));
             }
             
-            // Lưu trạng thái Online của Admin lên DB
             saveSystemDB(); 
         }
         else {
-            // KIỂM TRA XEM USER CÓ BỊ ADMIN RESET PASS KHÔNG (ÉP ĐĂNG XUẤT TỪ XA)
+            // NGƯỜI DÙNG Ở NGOÀI MÀN HÌNH ĐĂNG NHẬP: CHỜ ADMIN RESET MẬT KHẨU
+            if (systemDB[checkPhone] && systemDB[checkPhone].notifyReset) {
+                systemDB[checkPhone].notifyReset = false; // Tắt cờ
+                saveSystemDB();
+                
+                alert("🎉 THÔNG BÁO TỪ HỆ THỐNG: Admin đã phê duyệt yêu cầu của bạn!\n\nMật khẩu của bạn đã được khôi phục về mặc định là: 123\n\nVui lòng đăng nhập và tạo mật khẩu mới ngay lập tức!");
+                
+                // Chuyển UI về box Login
+                switchAuth('login');
+                document.getElementById('login-phone').value = checkPhone;
+                return; // Dừng tại đây
+            }
+
+            // CHỈ CHẠY CÁC LỆNH BÊN DƯỚI NẾU USER ĐÃ ĐĂNG NHẬP VÀO TRONG (activeUserPhone != null)
+            if (!activeUserPhone) return;
+
+            // KIỂM TRA XEM USER CÓ BỊ ADMIN RESET PASS KHÔNG (ÉP ĐĂNG XUẤT TỪ XA KHI ĐANG SỬ DỤNG)
             if (systemDB[activeUserPhone] && systemDB[activeUserPhone].forceLogout) {
                 systemDB[activeUserPhone].forceLogout = false; // Tắt cờ
                 saveSystemDB();
@@ -1561,9 +1584,14 @@ function adminReset123(phone) {
         systemDB[phone].password = '123';
         systemDB[phone].forgotPassword = false;
         systemDB[phone].mustChangePass = true; // Ép người dùng đổi từ 123
-        systemDB[phone].forceLogout = true;    // Thêm cờ ép User văng ra ngoài
-        saveSystemDB();
         
+        // NẾU TÀI KHOẢN ĐÓ ĐANG MỞ, BÁO CHO HỌ BIẾT ĐÃ RESET XONG
+        systemDB[phone].notifyReset = true; 
+        
+        // NẾU HỌ ĐANG ĐĂNG NHẬP, ÉP HỌ VĂNG RA
+        systemDB[phone].forceLogout = true;    
+        
+        saveSystemDB();
         renderAdminPanel(); // Load lại bảng ngay lập tức
         alert("✅ Đã reset mật khẩu của tài khoản " + phone + " thành công!");
     }
