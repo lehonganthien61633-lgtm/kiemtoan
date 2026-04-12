@@ -1032,12 +1032,18 @@ let currentEditBankOldVal = 0;
 let currentCaptchaCode = "";
 let currentSTKFilter = 'all';
 function openReqCccd() {
-    if(systemDB[activeUserPhone].pendingCccd) { alert("Bạn đang có yêu cầu thay đổi chờ Admin duyệt!"); return; }
-    document.getElementById('req-cccd-old').value = systemDB[activeUserPhone].cccd || "";
+    let currentUserData = systemDB[activeUserPhone];
+    
+    // Đảm bảo không bị lỗi undefined nếu trường dữ liệu này chưa từng được tạo
+    if (currentUserData.pendingCccd !== undefined && currentUserData.pendingCccd !== null && currentUserData.pendingCccd !== "") { 
+        alert("Bạn đang có yêu cầu thay đổi chờ Admin duyệt!"); 
+        return; 
+    }
+    
+    document.getElementById('req-cccd-old').value = currentUserData.cccd || "";
     document.getElementById('req-cccd-new').value = "";
     openModal('modal-req-cccd');
 }
-
 function submitReqCccd() {
     let newCccd = document.getElementById('req-cccd-new').value.trim();
     if(!/^\d{12}$/.test(newCccd)) { alert("Số CCCD mới bắt buộc phải đúng 12 chữ số!"); return; }
