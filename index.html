@@ -438,30 +438,41 @@ body * { visibility: hidden; }
         </div>
 
         <div id="content-set-acc">
-            <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
-                <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Thông Tin Cá Nhân</h3>
-                <div id="content-set-acc">
-            <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
-                <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Thông Tin Cá Nhân</h3>
+            <div style="background:white; padding:25px; border:1px solid #ddd; border-radius:8px; margin-bottom:20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:2px solid var(--accent); padding-bottom:10px; margin-bottom: 20px;">Thông Tin Cá Nhân</h3>
                 
-                <div class="form-group"><label>ID TÀI KHOẢN (DUY NHẤT)</label><input type="text" id="set-user-id" readonly style="background-color:#e9ecef; cursor:not-allowed; font-weight:bold; color:var(--danger); letter-spacing: 1px;"></div>
-                <div class="form-group"><label>Họ và tên tài khoản</label><input type="text" id="set-user-name" oninput="this.value = this.value.toUpperCase()"></div>
-                <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
-                <div class="form-group"><label>Họ và tên tài khoản</label><input type="text" id="set-user-name" oninput="this.value = this.value.toUpperCase()"></div>
-                <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
-                <div class="form-group"><label>Số điện thoại</label><input type="tel" id="set-user-phone" readonly></div>
-                <div class="form-group">
-                    <label>Số CCCD</label>
-                    <div style="display:flex; gap:10px;">
-                        <input type="text" id="set-user-cccd" readonly style="flex:2; background-color:#e9ecef; cursor:not-allowed;">
-                        <button class="btn-sm" style="background:var(--accent); color:white; flex:1;" onclick="openReqCccd()">YÊU CẦU ĐỔI</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="color:var(--info);">ID TÀI KHOẢN</label>
+                        <input type="text" id="set-user-id" readonly style="background-color:#f8f9fa; border:1px dashed var(--info); font-weight:bold; color:var(--danger); letter-spacing: 1px;">
                     </div>
-                    <div style="font-size:12px; color:#666; margin-top:5px; font-style:italic;" id="set-cccd-info">Số lần đổi: 0 | Lần cuối: --</div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>SỐ ĐIỆN THOẠI</label>
+                        <input type="tel" id="set-user-phone" readonly style="background-color:#f8f9fa; cursor:not-allowed;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>HỌ VÀ TÊN</label>
+                        <input type="text" id="set-user-name" oninput="this.value = this.value.toUpperCase()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>NGÀY SINH</label>
+                        <input type="date" id="set-user-dob">
+                    </div>
                 </div>
-                <div style="display:flex; gap:15px; margin-top:20px; flex-wrap:wrap;">
-                    <button class="btn-main" style="background:var(--info); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="openUserChangePass()">ĐỔI MẬT KHẨU</button>
-                    <button class="btn-main" style="background:var(--success); color:white; border:none; margin-top:0; flex:1.5; min-width:160px;" onclick="saveUserInfo()">CẬP NHẬT THÔNG TIN</button>
-                    <button class="btn-main" style="background:var(--danger); color:white; border:none; margin-top:0; flex:1; min-width:120px;" onclick="deleteMyAccount()">XÓA TÀI KHOẢN</button>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>SỐ CCCD / MÃ ĐỊNH DANH</label>
+                    <div style="display:flex; gap:10px; align-items: center;">
+                        <input type="text" id="set-user-cccd" readonly style="flex:2; background-color:#f8f9fa; cursor:not-allowed; font-weight:bold;">
+                        <button class="btn-sm" style="background:var(--accent); color:white; flex:1; height: 42px;" onclick="openReqCccd()">YÊU CẦU ĐỔI</button>
+                    </div>
+                    <div style="font-size:12px; color:#888; margin-top:6px; font-style:italic;" id="set-cccd-info">Số lần đổi: 0 | Lần cuối: --</div>
+                </div>
+                
+                <div style="display:flex; gap:10px; margin-top:25px; border-top: 1px solid #eee; padding-top: 20px;">
+                    <button class="btn-main" style="background:var(--info); color:white; border:none; margin-top:0; flex:1; font-size: 14px;" onclick="openUserChangePass()">ĐỔI MẬT KHẨU</button>
+                    <button class="btn-main" style="background:var(--danger); color:white; border:none; margin-top:0; flex:1; font-size: 14px;" onclick="deleteMyAccount()">XÓA TÀI KHOẢN</button>
+                    <button class="btn-main" style="background:var(--success); color:white; border:none; margin-top:0; flex:2; font-size: 14px;" onclick="saveUserInfo()">LƯU THÔNG TIN</button>
                 </div>
             </div>
         </div>
@@ -487,8 +498,14 @@ body * { visibility: hidden; }
         </div>
         <div style="background:white; padding:30px; border:2px solid var(--danger); overflow-x: auto;">
             <h3 style="margin-top:0; color:var(--danger)">Danh sách tài khoản</h3>
-            <table class="data-table" style="min-width: 750px;">
-                <thead><tr><th style="width:40px">STT</th><th style="text-align:left">Họ Tên</th><th style="text-align:left">Số Điện Thoại</th><th style="width:80px">Quyền</th><th style="width:250px">Hành Động</th></tr></thead>
+            <table class="data-table" style="min-width: 900px;">
+                <thead><tr>
+                    <th style="width:40px">STT</th>
+                    <th style="text-align:left">Thông Tin Tài Khoản</th>
+                    <th style="text-align:left">Liên Hệ & Định Danh</th>
+                    <th style="width:80px">Quyền</th>
+                    <th style="width:250px">Hành Động</th>
+                </tr></thead>
                 <tbody id="body-admin-users"></tbody>
             </table>
         </div>
@@ -1571,13 +1588,16 @@ function renderAdminPanel() {
         let u = systemDB[phone];
         let role = u.role;
         let isForgot = u.forgotPassword;
-        let roleHtml = role === 'admin' ? '<span class="admin-badge" style="background:#333; color:white; padding:2px 5px; border-radius:3px;">ADMIN</span>' : 'USER';
+        let roleHtml = role === 'admin' ? '<span class="admin-badge" style="background:#333; color:white; padding:4px 8px; border-radius:4px; font-size:12px;">ADMIN</span>' : 'USER';
         
+        // Khai thác toàn bộ thông tin tài khoản
         let displayName = u.name || 'Chưa cập nhật';
-        let displayId = u.id || '---'; // Lấy ID hiển thị cho Admin
+        let displayId = u.id || '---'; 
+        let displayCccd = u.cccd || 'Chưa cập nhật';
+        let displayDob = u.dob ? vnDate(u.dob) : 'Chưa cập nhật';
         
         let rowStyle = isForgot ? 'style="background-color: #ffe6e6;"' : '';
-        let warningIcon = isForgot ? '<span style="color:red; font-weight:bold; margin-left:5px;">(!) Quên Pass</span>' : '';
+        let warningIcon = isForgot ? '<span style="color:red; font-weight:bold; margin-left:5px; font-size:12px;">(!) Quên Pass</span>' : '';
         
         if(u.pendingCccd) {
             hasReq = true;
@@ -1601,11 +1621,19 @@ function renderAdminPanel() {
         if (isRoot && activeUserPhone !== '0839578432') { editNameBtn = ''; editPassBtn = ''; reset123Btn = ''; }
         if (isRoot && activeUserPhone === '0839578432') { promoteBtn = ''; delBtn = ''; reset123Btn = ''; }
         
+        // Đẩy dữ liệu ra bảng hiển thị kép
         tbody.innerHTML += `
         <tr ${rowStyle}>
             <td align="center">${stt++}</td>
-            <td style="font-weight:bold">${displayName} <br><span style="font-size:12px; color:var(--info); font-weight:normal;">ID: ${displayId}</span> ${warningIcon}</td>
-            <td style="font-weight:bold">${phone}</td>
+            <td>
+                <div style="font-weight:bold; font-size:15px; margin-bottom: 4px;">${displayName} ${warningIcon}</div>
+                <div style="font-size:13px; color:var(--info);">ID: <b>${displayId}</b></div>
+                <div style="font-size:13px; color:#555; margin-top:2px;">Ngày sinh: ${displayDob}</div>
+            </td>
+            <td>
+                <div style="font-weight:bold; font-size:15px; color:var(--success); margin-bottom: 4px;">SĐT: ${phone}</div>
+                <div style="font-size:13px; color:#555;">CCCD: <b>${displayCccd}</b></div>
+            </td>
             <td align="center">${roleHtml}</td>
             <td align="center">
                 <div style="display:flex; gap:5px; justify-content:center; flex-wrap:wrap;">
