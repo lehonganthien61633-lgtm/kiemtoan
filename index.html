@@ -440,6 +440,13 @@ body * { visibility: hidden; }
         <div id="content-set-acc">
             <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
                 <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Thông Tin Cá Nhân</h3>
+                <div id="content-set-acc">
+            <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
+                <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Thông Tin Cá Nhân</h3>
+                
+                <div class="form-group"><label>ID TÀI KHOẢN (DUY NHẤT)</label><input type="text" id="set-user-id" readonly style="background-color:#e9ecef; cursor:not-allowed; font-weight:bold; color:var(--danger); letter-spacing: 1px;"></div>
+                <div class="form-group"><label>Họ và tên tài khoản</label><input type="text" id="set-user-name" oninput="this.value = this.value.toUpperCase()"></div>
+                <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
                 <div class="form-group"><label>Họ và tên tài khoản</label><input type="text" id="set-user-name" oninput="this.value = this.value.toUpperCase()"></div>
                 <div class="form-group"><label>Ngày tháng năm sinh</label><input type="date" id="set-user-dob"></div>
                 <div class="form-group"><label>Số điện thoại</label><input type="tel" id="set-user-phone" readonly></div>
@@ -1211,11 +1218,23 @@ async function loadServerDB() {
         
         if (!systemDB['0839578432']) {
             systemDB['0839578432'] = {
+                id: 'ADMIN01', // Thêm ID cho Admin
                 name: 'ADMINISTRATOR', dob: '', password: '123', role: 'admin', forgotPassword: false,
                 data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}], quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
             };
             saveSystemDB(); 
         }
+
+        // Tự động cấp ID cho các tài khoản cũ chưa có ID để tránh lỗi hệ thống
+        let needSave = false;
+        for(let p in systemDB) {
+            if(!systemDB[p].id) {
+                systemDB[p].id = 'UID' + Math.floor(100000 + Math.random() * 900000);
+                needSave = true;
+            }
+        }
+        if(needSave) saveSystemDB();
+
     } catch (error) {
         console.error("Không thể kết nối với máy chủ database:", error);
         alert("Lỗi tải dữ liệu từ máy chủ. Vui lòng kiểm tra kết nối mạng!");
@@ -1406,20 +1425,28 @@ function handleRegister() {
     let cccd = document.getElementById('reg-cccd').value.trim();
 
     if (!name || !phone || !pass || !cccd) { alert("Vui lòng điền đủ thông tin!"); return; }
-    if (!/^\d{12}$/.test(cccd)) { alert("Số CCCD bắt buộc phải nhập đúng 12 chữ số!"); return; } // Bắt lỗi 12 số
+    if (!/^\d{12}$/.test(cccd)) { alert("Số CCCD bắt buộc phải nhập đúng 12 chữ số!"); return; } 
     if (systemDB[phone]) { alert("Số điện thoại này đã được đăng ký!"); return; }
 
+    // Thuật toán tạo ID duy nhất (UID + 6 số random)
+    let newId;
+    let exists = true;
+    while(exists) {
+        newId = 'UID' + Math.floor(100000 + Math.random() * 900000);
+        exists = Object.values(systemDB).some(u => u.id === newId);
+    }
+
     systemDB[phone] = {
+        id: newId, // Lưu ID duy nhất
         name: name, dob: '', password: pass, role: 'user', forgotPassword: false,
         cccd: cccd, cccdChangeCount: 0, cccdLastChanged: '--', pendingCccd: null, notifyCccd: false,
         data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ví điện tử Momo", short: "Momo"}], quyReasons: ["Chi tiêu", "Đầu tư"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
     };
     saveSystemDB();
-    alert("Đăng ký thành công! Vui lòng đăng nhập.");
+    alert("Đăng ký thành công! Vui lòng đăng nhập.\n\nID Tài khoản của bạn là: " + newId);
     switchAuth('login');
     document.getElementById('login-phone').value = phone;
 }
-
 function handleForgotPassword() {
     let phone = document.getElementById('forgot-phone').value.trim();
     let cccd = document.getElementById('forgot-cccd').value.trim();
@@ -1531,10 +1558,10 @@ function checkAdminNotifications() {
 
 function renderAdminPanel() {
     let tbody = document.getElementById('body-admin-users');
-    let cccdBody = document.getElementById('body-admin-cccd'); // Gọi bảng CCCD
+    let cccdBody = document.getElementById('body-admin-cccd');
 
     tbody.innerHTML = '';
-    cccdBody.innerHTML = ''; // Làm sạch bảng CCCD trước khi vẽ
+    cccdBody.innerHTML = '';
     
     let hasReq = false;
     let stt = 1;
@@ -1544,12 +1571,14 @@ function renderAdminPanel() {
         let u = systemDB[phone];
         let role = u.role;
         let isForgot = u.forgotPassword;
-        let roleHtml = role === 'admin' ? '<span class="admin-badge">ADMIN</span>' : 'USER';
+        let roleHtml = role === 'admin' ? '<span class="admin-badge" style="background:#333; color:white; padding:2px 5px; border-radius:3px;">ADMIN</span>' : 'USER';
+        
         let displayName = u.name || 'Chưa cập nhật';
+        let displayId = u.id || '---'; // Lấy ID hiển thị cho Admin
+        
         let rowStyle = isForgot ? 'style="background-color: #ffe6e6;"' : '';
         let warningIcon = isForgot ? '<span style="color:red; font-weight:bold; margin-left:5px;">(!) Quên Pass</span>' : '';
         
-        // --- HIỂN THỊ YÊU CẦU CCCD VÀO BẢNG TRÊN CÙNG ---
         if(u.pendingCccd) {
             hasReq = true;
             cccdBody.innerHTML += `<tr>
@@ -1559,7 +1588,6 @@ function renderAdminPanel() {
             </tr>`;
         }
 
-        // --- CÁC NÚT BẤM CHO BẢNG QUẢN LÝ USER BÊN DƯỚI ---
         let editNameBtn = `<button class="btn-sm" style="background:var(--info); color:white; border:none;" onclick="adminOpenChangeName('${phone}', '${displayName}')">Tên</button>`;
         let editPassBtn = `<button class="btn-sm" style="background:var(--primary); color:white; border:none;" onclick="adminOpenChangePass('${phone}')">Pass</button>`;
         let reset123Btn = isForgot ? `<button class="btn-sm" style="background:red; color:white; border:none;" onclick="adminReset123('${phone}')">Reset 123</button>` : '';
@@ -1576,7 +1604,7 @@ function renderAdminPanel() {
         tbody.innerHTML += `
         <tr ${rowStyle}>
             <td align="center">${stt++}</td>
-            <td style="font-weight:bold">${displayName} ${warningIcon}</td>
+            <td style="font-weight:bold">${displayName} <br><span style="font-size:12px; color:var(--info); font-weight:normal;">ID: ${displayId}</span> ${warningIcon}</td>
             <td style="font-weight:bold">${phone}</td>
             <td align="center">${roleHtml}</td>
             <td align="center">
@@ -1587,7 +1615,6 @@ function renderAdminPanel() {
         </tr>`;
     }
     
-    // Nếu không có ai xin đổi CCCD, hiển thị dòng trống
     if(!hasReq) {
         cccdBody.innerHTML = `<tr><td colspan="3" align="center" style="color:#888; font-style:italic;">Chưa có yêu cầu thay đổi CCCD nào.</td></tr>`;
     }
@@ -1698,9 +1725,11 @@ function initializeApp() {
     document.getElementById('header-date-picker').max = today; 
     document.getElementById('header-date-picker').value = currentDay;
 
-    // Cài đặt ngày tối đa cho Date Picker tạo dữ liệu
     document.getElementById('new-data-date').max = today;
     document.getElementById('new-data-date').value = currentDay;
+    
+    // Đẩy dữ liệu ID ra giao diện
+    document.getElementById('set-user-id').value = systemDB[activeUserPhone].id || "Đang cập nhật...";
     
     document.getElementById('set-user-name').value = systemDB[activeUserPhone].name || "";
     document.getElementById('set-user-dob').value = systemDB[activeUserPhone].dob || "";
