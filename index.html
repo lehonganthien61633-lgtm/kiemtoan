@@ -1098,6 +1098,8 @@ let knownForgotPass = [];
 
 // Hệ thống vòng lặp tự động kiểm tra Real-time (Mỗi 5 giây)
 setInterval(async () => {
+    // KHÔNG CẦN PHẢI ĐĂNG NHẬP (activeUserPhone = null) NGƯỜI DÙNG VẪN CÓ THỂ NHẬN ĐƯỢC THÔNG BÁO RESET PASS
+    // Vì vậy chúng ta kiểm tra bằng cách lấy SĐT từ ô nhập Quên Mật Khẩu (nếu họ đang ở màn hình ngoài)
     let checkPhone = activeUserPhone;
     if (!checkPhone) {
         let forgotPhoneInput = document.getElementById('forgot-phone');
@@ -1107,16 +1109,83 @@ setInterval(async () => {
     if (!checkPhone) return;
 
     try {
-        const res = await fetch(FIREBASE_URL, { cache: 'no-cache' });
-        const db = await res.json();
-        
-        if (db) {
-            systemDB = db;
-            // Tiếp tục các logic kiểm tra Admin/User như cũ...
+        let res = await fetch(FIREBASE_URL);
+        let db = await res.json();
+        if (!db) return;
+        systemDB = db;
+
+        if (activeUserPhone === '0839578432') {
+            // ADMIN GỬI TÍN HIỆU ONLINE LÊN MÁY CHỦ
+            systemDB['0839578432'].lastPing = Date.now();
+
+            let currentReqs = []; let newReqFound = false;
+            let currentForgot = []; let newForgotFound = false;
+            
+            for (let ph in systemDB) {
+                if (systemDB[ph].pendingCccd) {
+                    currentReqs.push(ph);
+                    if (!knownPendingReqs.includes(ph)) newReqFound = true;
+                }
+                if (systemDB[ph].forgotPassword) {
+                    currentForgot.push(ph);
+                    if (!knownForgotPass.includes(ph)) newForgotFound = true;
+                }
+            }
+            knownPendingReqs = currentReqs;
+            knownForgotPass = currentForgot;
+            
+            if (newReqFound || newForgotFound) {
+                let msg = newForgotFound ? "🔔 CÓ USER BÁO QUÊN MẬT KHẨU!" : "🔔 CÓ YÊU CẦU ĐỔI CCCD MỚI!";
+                alert(msg + "\nHệ thống tự động chuyển sang trang Quản Trị.");
+                renderAdminPanel();
+                showSheet('sheet-admin', document.getElementById('nav-admin'));
+            }
+            
+            saveSystemDB(); 
         }
-    } catch (e) {
-        console.warn("Đang thử kết nối lại với máy chủ...");
-    }
+        else {
+            // NGƯỜI DÙNG Ở NGOÀI MÀN HÌNH ĐĂNG NHẬP: CHỜ ADMIN RESET MẬT KHẨU
+            if (systemDB[checkPhone] && systemDB[checkPhone].notifyReset) {
+                systemDB[checkPhone].notifyReset = false; // Tắt cờ
+                saveSystemDB();
+                
+                alert("🎉 THÔNG BÁO TỪ HỆ THỐNG: Admin đã phê duyệt yêu cầu của bạn!\n\nMật khẩu của bạn đã được khôi phục về mặc định là: 123\n\nVui lòng đăng nhập và tạo mật khẩu mới ngay lập tức!");
+                
+                // Chuyển UI về box Login
+                switchAuth('login');
+                document.getElementById('login-phone').value = checkPhone;
+                return; // Dừng tại đây
+            }
+
+            // CHỈ CHẠY CÁC LỆNH BÊN DƯỚI NẾU USER ĐÃ ĐĂNG NHẬP VÀO TRONG (activeUserPhone != null)
+            if (!activeUserPhone) return;
+
+            // KIỂM TRA XEM USER CÓ BỊ ADMIN RESET PASS KHÔNG (ÉP ĐĂNG XUẤT TỪ XA KHI ĐANG SỬ DỤNG)
+            if (systemDB[activeUserPhone] && systemDB[activeUserPhone].forceLogout) {
+                systemDB[activeUserPhone].forceLogout = false; // Tắt cờ
+                saveSystemDB();
+                
+                alert("⚠️ BẢO MẬT: Mật khẩu của bạn đã được Admin reset. Phiên đăng nhập hiện tại đã hết hạn!");
+                
+                // Thực hiện đá User ra ngoài
+                activeUserPhone = null;
+                masterData = {};
+                document.getElementById('auth-screen').style.display = 'flex';
+                document.getElementById('main-app').style.display = 'none';
+                document.getElementById('login-pass').value = '';
+                switchAuth('login');
+                return;
+            }
+
+            // NGƯỜI DÙNG CHỜ DUYỆT CCCD
+            if (systemDB[activeUserPhone] && systemDB[activeUserPhone].notifyCccd) {
+                systemDB[activeUserPhone].notifyCccd = false; 
+                saveSystemDB(); 
+                alert("🎉 THÔNG BÁO TỪ HỆ THỐNG: Yêu cầu thay đổi CCCD của bạn đã được Admin xác nhận!\nDữ liệu sẽ được tự động cập nhật ngay bây giờ.");
+                initializeApp(); 
+            }
+        }
+    } catch (e) {}
 }, 5000);
 // Hàm tạo Captcha
 function generateCaptcha() {
@@ -1158,42 +1227,29 @@ function generateCaptcha() {
 
 async function loadServerDB() {
     try {
-        // Thêm { cache: 'no-cache' } để tránh lấy dữ liệu cũ từ trình duyệt
-        const response = await fetch(FIREBASE_URL, { cache: 'no-cache' });
-        
-        if (!response.ok) {
-            throw new Error(`Lỗi kết nối: ${response.status}`);
+        let response = await fetch(FIREBASE_URL);
+        let data = await response.json();
+        if (data) {
+            systemDB = data;
         }
-
-        const data = await response.json();
         
-        // Nếu database hoàn toàn trống (null), khởi tạo thành object rỗng
-        systemDB = data || {}; 
-
-        // Đảm bảo tài khoản Admin luôn tồn tại
         if (!systemDB['0839578432']) {
             systemDB['0839578432'] = {
-                id: 'ADMIN01',
-                name: 'ADMINISTRATOR',
-                dob: '',
-                password: '123',
-                role: 'admin',
-                forgotPassword: false,
-                data: { 
-                    banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}], 
-                    quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"], 
-                    bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], 
-                    printHistory: [] 
-                }
+                id: 'ADMIN01', // Thêm ID cho Admin
+                name: 'ADMINISTRATOR', dob: '', password: '123', role: 'admin', forgotPassword: false,
+                data: { banks: [{full: "Ngân hàng Ngoại Thương", short: "VCB"}, {full: "Ngân hàng Phương Đông", short: "OCB"}], quyReasons: ["Chi tiêu sinh hoạt", "Đầu tư", "Giải trí"], bankReasons: ["Chuyển khoản", "Nhận lương", "Rút tiền"], printHistory: [] }
             };
-            await saveSystemDB(); // Lưu ngay lập tức nếu mới khởi tạo
+            saveSystemDB(); 
         }
 
-        console.log("Dữ liệu hệ thống đã tải xong:", systemDB);
-    } catch (error) {
-        console.error("Không thể lấy dữ liệu từ Firebase:", error);
-    }
-}
+        // Tự động cấp ID cho các tài khoản cũ chưa có ID để tránh lỗi hệ thống
+        let needSave = false;
+        for(let p in systemDB) {
+            if(!systemDB[p].id) {
+                systemDB[p].id = 'UID' + Math.floor(100000 + Math.random() * 900000);
+                needSave = true;
+            }
+        }
         if(needSave) saveSystemDB();
 
     } catch (error) {
@@ -1204,17 +1260,8 @@ async function loadServerDB() {
 
 loadServerDB();
 
-async function saveSystemDB() {
-    try {
-        const response = await fetch(FIREBASE_URL, { 
-            method: 'PUT', 
-            headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify(systemDB) 
-        });
-        if (!response.ok) throw new Error("Lưu dữ liệu thất bại");
-    } catch (error) {
-        console.error("Lỗi khi đồng bộ lên Firebase:", error);
-    }
+function saveSystemDB() {
+    fetch(FIREBASE_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(systemDB) });
 }
 
 function saveMaster() {
