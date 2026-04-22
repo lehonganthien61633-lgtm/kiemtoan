@@ -1031,8 +1031,8 @@ body * { visibility: hidden; }
 // HỆ THỐNG XÁC THỰC & CƠ SỞ DỮ LIỆU ĐÁM MÂY
 // =====================================
 
-const FIREBASE_URL = 'https://kiemdem-b7042-default-rtdb.asia-southeast1.firebasedatabase.app/systemDB.json';
-
+// Thay dòng cũ thành dòng này:
+const FIREBASE_URL = 'https://kiemdem-b7042-default-rtdb.asia-southeast1.firebasedatabase.app/systemDB/users.json';
 let systemDB = {};
 let activeUserPhone = null;
 let masterData = {}; 
@@ -1109,7 +1109,7 @@ setInterval(async () => {
     if (!checkPhone) return;
 
     try {
-        let res = await fetch(FIREBASE_URL);
+        let res = await fetch(FIREBASE_URL, { cache: 'no-store' });
         let db = await res.json();
         if (!db) return;
         systemDB = db;
@@ -1227,7 +1227,7 @@ function generateCaptcha() {
 
 async function loadServerDB() {
     try {
-        let response = await fetch(FIREBASE_URL);
+        let response = await fetch(FIREBASE_URL, { cache: 'no-store' });
         let data = await response.json();
         if (data) {
             systemDB = data;
