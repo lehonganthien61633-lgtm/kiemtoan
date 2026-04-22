@@ -346,7 +346,9 @@ body * { visibility: hidden; }
 
         <div id="sheet-nh" class="page">
         <h2>Biên bản kiểm kê Tài Khoản Ngân Hàng</h2>
-        <p style="font-size: 14px; color: #666; font-style: italic; text-align: center; margin-bottom: 20px;">* Cập nhật danh sách Ngân hàng trong mục Cài Đặt.</p>
+        <div style="text-align:right; margin-bottom:15px;">
+            <button class="btn-sm" style="background:var(--info); color:white; padding:10px 15px; font-size:14px;" onclick="openModal('modal-manage-banks')">⚙️ Quản lý Danh sách Ngân hàng</button>
+        </div>
         <table class="data-table"><thead><tr><th style="text-align:left">Ngân Hàng</th><th style="width:250px; text-align:right;">Số Dư Hiện Tại (VNĐ)</th><th style="width:60px">Chi tiết</th></tr></thead><tbody id="body-nh"></tbody></table>
         <div class="sub-total-box">LƯỢNG TIỀN TRONG NGÂN HÀNG: <br><span id="val-nh" style="font-size:32px; color:var(--primary)">0</span> đ</div>
         </div>
@@ -435,11 +437,7 @@ body * { visibility: hidden; }
         </div>
 
         <div id="sheet-settings" class="page">
-        <div style="display:flex; margin-bottom:25px; border:1px solid #000">
-            <button class="tab-btn active" id="btn-tab-set-acc" onclick="switchSettingsTab('acc')">CÀI ĐẶT TÀI KHOẢN</button>
-            <button class="tab-btn" id="btn-tab-set-bank" onclick="switchSettingsTab('bank')">DANH SÁCH NGÂN HÀNG</button>
-        </div>
-
+        <h2>Cài Đặt Hệ Thống</h2>
         <div id="content-set-acc">
             <div style="background:white; padding:25px; border:1px solid #ddd; border-radius:8px; margin-bottom:20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                 <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:2px solid var(--accent); padding-bottom:10px; margin-bottom: 20px;">Thông Tin Cá Nhân</h3>
@@ -477,14 +475,6 @@ body * { visibility: hidden; }
                     <button class="btn-main" style="background:var(--danger); color:white; border:none; margin-top:0; flex:1; font-size: 14px;" onclick="deleteMyAccount()">XÓA TÀI KHOẢN</button>
                     <button class="btn-main" style="background:var(--success); color:white; border:none; margin-top:0; flex:2; font-size: 14px;" onclick="saveUserInfo()">LƯU THÔNG TIN</button>
                 </div>
-            </div>
-        </div>
-
-        <div id="content-set-bank" style="display:none;">
-            <div style="background:white; padding:30px; border:1px solid #000">
-                <h3 style="margin-top:0; color:var(--primary); text-transform:uppercase; border-bottom:1px solid #ccc; padding-bottom:10px;">Danh Mục Ngân Hàng Hệ Thống</h3>
-                <table class="data-table"><thead><tr><th style="width:60px">STT</th><th style="text-align:left">Tên Ngân Hàng/ Ví điện tử</th><th style="width:180px">Tên Viết Tắt</th><th style="width:60px">Xóa</th></tr></thead><tbody id="body-settings-bank"></tbody></table>
-                <button class="btn-main" style="background:#000; color:var(--accent)" onclick="openModal('modal-bank-add-settings')">+ THÊM NGÂN HÀNG HỆ THỐNG</button>
             </div>
         </div>
 
@@ -806,7 +796,25 @@ body * { visibility: hidden; }
 </div>
 </div>
 </div>
+<div class="modal-overlay" id="modal-manage-banks">
+    <div class="modal-content" style="max-width:650px;">
+        <div class="modal-title">QUẢN LÝ DANH SÁCH NGÂN HÀNG</div>
+        <div style="max-height: 400px; overflow-y: auto; margin-bottom: 20px; border: 1px solid #ddd;">
+            <table class="data-table" style="margin-bottom:0;">
+                <thead style="position: sticky; top: 0; z-index: 2;">
+                    <tr><th style="width:50px">STT</th><th style="text-align:left">Tên Ngân Hàng/ Ví điện tử</th><th style="width:150px">Tên Viết Tắt</th><th style="width:50px">Xóa</th></tr>
+                </thead>
+                <tbody id="body-settings-bank"></tbody>
+            </table>
+        </div>
+        <div style="display:flex; gap:15px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1;" onclick="closeModal('modal-manage-banks')">ĐÓNG</button>
+            <button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2;" onclick="openModal('modal-bank-add-settings')">+ THÊM NGÂN HÀNG</button>
+        </div>
+    </div>
+</div>
 
+<div class="modal-overlay" id="modal-bank-add-settings">
 <div class="modal-overlay" id="modal-bank-add-settings">
 <div class="modal-content" style="max-width:450px;">
 <div class="modal-title">THÊM NGÂN HÀNG MỚI</div>
