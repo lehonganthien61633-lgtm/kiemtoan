@@ -716,18 +716,27 @@ body * { visibility: hidden; }
 <div class="modal-content" style="max-width:700px;">
 <div class="modal-title">CHI TIẾT & LỊCH SỬ QUỸ</div>
 <div id="quy-detail-summary" style="background:#f4f9f4; padding:15px; border:1px solid var(--accent); margin-bottom:20px; font-size:16px; line-height:1.6;"></div>
-<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-    <label style="font-weight:bold;">Lọc theo kho lưu trữ:</label>
-    <select id="quy-detail-filter" style="width:auto; padding:5px;" onchange="filterQuyHistory()"></select>
-</div>
-<table class="data-table" style="margin-bottom: 10px;"><thead><tr style="background:#e9ecef"><th>Nơi cất giữ</th><th style="width: 100px; text-align: center;">Lưu chung với tài khoản</th><th>Số dư (VNĐ)</th></tr></thead><tbody id="quy-detail-tbody"></tbody></table>
 
-<h3 style="margin-top: 25px; font-size: 16px; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">LỊCH SỬ GIAO DỊCH</h3>
-<div style="overflow-x:auto; max-height: 250px;">
-    <table class="data-table" style="font-size: 13px; margin-bottom: 0;">
-        <thead><tr style="background:#e9ecef"><th>Ngày</th><th>Loại</th><th>Số tiền</th><th>Kho lưu trữ</th><th>Ghi chú</th></tr></thead>
-        <tbody id="quy-history-tbody"></tbody>
-    </table>
+<div style="display:flex; margin-bottom:15px; border:1px solid #000">
+    <button class="tab-btn active" id="btn-tab-quy-info" onclick="switchQuyDetailTab('info')">THÔNG TIN LƯU TRỮ</button>
+    <button class="tab-btn" id="btn-tab-quy-history" onclick="switchQuyDetailTab('history')">LỊCH SỬ GIAO DỊCH</button>
+</div>
+
+<div id="quy-tab-info">
+    <table class="data-table" style="margin-bottom: 10px;"><thead><tr style="background:#e9ecef"><th>Nơi cất giữ</th><th style="width: 100px; text-align: center;">Lưu chung với tài khoản</th><th>Số dư (VNĐ)</th></tr></thead><tbody id="quy-detail-tbody"></tbody></table>
+</div>
+
+<div id="quy-tab-history" style="display:none;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+        <label style="font-weight:bold;">Lọc theo kho lưu trữ:</label>
+        <select id="quy-detail-filter" style="width:auto; padding:5px;" onchange="filterQuyHistory()"></select>
+    </div>
+    <div style="overflow-x:auto; max-height: 250px;">
+        <table class="data-table" style="font-size: 13px; margin-bottom: 0;">
+            <thead><tr style="background:#e9ecef"><th>Ngày</th><th>Loại</th><th>Số tiền</th><th>Kho lưu trữ</th><th>Ghi chú</th></tr></thead>
+            <tbody id="quy-history-tbody"></tbody>
+        </table>
+    </div>
 </div>
 
 <button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-quy-detail')">ĐÓNG</button>
