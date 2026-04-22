@@ -369,10 +369,12 @@ body * { visibility: hidden; }
         </div>
 
         <div id="content-quy" style="display:none;">
-        <div id="quy-container"></div>
-        <div style="display:flex; gap:10px;">
-            <button class="btn-main" style="background:var(--accent); color:white; border:none; flex:2;" onclick="openModal('modal-quy-add')">TẠO QUỸ MỚI</button>
-            <button class="btn-main" style="background:#333; color:white; border:none; flex:1;" onclick="openMergeQuy()">GỘP QUỸ</button>
+            <div id="quy-container"></div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-main" style="background:var(--accent); color:white; border:none; flex:2;" onclick="openModal('modal-quy-add')">TẠO QUỸ MỚI</button>
+                <button class="btn-main" style="background:#333; color:white; border:none; flex:1;" onclick="openMergeQuy()">GỘP QUỸ</button>
+            </div>
+            <div class="sub-total-box" style="border-color:var(--accent); background:#fffdf5;">TỔNG CÁC QUỸ: <span id="val-quy" style="font-size:26px; color:var(--accent)">0</span> đ</div>
         </div>
         </div>
 
@@ -419,7 +421,7 @@ body * { visibility: hidden; }
         <div class="form-group" style="margin-bottom:0;">
         <label>Chọn ngày muốn in</label>
         <div style="display:flex; gap:15px;">
-        <<select id="in-print-date" style="flex:2; padding: 10px; font-family: 'Times New Roman'; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;"></select>
+        <select id="in-print-date" style="flex:2; padding: 10px; font-family: 'Times New Roman'; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;"></select>
         <button class="btn-main" style="margin-top:0; flex:1; background:var(--info); color:white; border:none;" onclick="openPrintSetup()">TẠO BẢN IN</button>
         </div>
         </div>
@@ -2335,27 +2337,23 @@ let totalAmt = getQuyTotalAmt(q);
 let storageNames = (q.storages || []).map(s => s.name).join(', ');
 if(storageNames.length > 30) storageNames = storageNames.substring(0, 27) + '...';
 
+// BẮT ĐẦU THAY THẾ BƯỚC 2
 htmlContent += `
-<div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:15px;">
-    <button class="btn-sm" style="color:var(--info); border-color:var(--info); flex:1; min-width:90px;" onclick="openEditQuyStorage(${q.id})">Phân bổ kho</button>
-    <button class="btn-sm" style="color:var(--primary); border-color:var(--primary); flex:1; min-width:80px;" onclick="openNopQuy(${q.id})">Nộp thêm</button>
-    <button class="btn-sm" style="color:white; background:var(--danger); border-color:var(--danger); flex:1; min-width:80px;" onclick="openRutQuy(${q.id})">Rút tiền</button>
-    <button class="btn-sm" style="color:#fff; background:#555; border-color:#555; flex:1; min-width:80px;" onclick="openSplitQuy(${q.id})">Tách Quỹ</button>
-    <button class="btn-sm" style="color:red; border-color:red; flex:1; min-width:80px;" onclick="deleteQuy(${q.id})">Xóa Quỹ</button>
-</div>
 <div class="quy-card">
-<button class="btn-i-detail" onclick="openDetailQuy(${q.id})" style="background:var(--accent); color:#fff; border:none;">i</button>
-<div class="quy-storage">📌 Phân bổ tại: ${storageNames}</div>
-<div style="font-weight:bold; font-size:18px; margin-bottom:5px;">${q.name}</div>
-<div class="quy-date">Ngày lập: ${vnDate(q.date)}</div>
-<div class="quy-amount">${formatTien(totalAmt)} đ</div>
-<div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:15px;">
-<button class="btn-sm" style="color:var(--info); border-color:var(--info); flex:1; min-width:90px;" onclick="openEditQuyStorage(${q.id})">Phân bổ kho</button>
-<button class="btn-sm" style="color:var(--primary); border-color:var(--primary); flex:1; min-width:80px;" onclick="openNopQuy(${q.id})">Nộp thêm</button>
-<button class="btn-sm" style="color:white; background:var(--danger); border-color:var(--danger); flex:1; min-width:80px;" onclick="openRutQuy(${q.id})">Rút tiền</button>
-<button class="btn-sm" style="color:red; border-color:red; flex:1; min-width:80px;" onclick="deleteQuy(${q.id})">Xóa Quỹ</button>
-</div>
+    <button class="btn-i-detail" onclick="openDetailQuy(${q.id})" style="background:var(--accent); color:#fff; border:none;">i</button>
+    <div class="quy-storage">📌 Phân bổ tại: ${storageNames}</div>
+    <div style="font-weight:bold; font-size:18px; margin-bottom:5px;">${q.name}</div>
+    <div class="quy-date">Ngày lập: ${vnDate(q.date)}</div>
+    <div class="quy-amount">${formatTien(totalAmt)} đ</div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:15px;">
+        <button class="btn-sm" style="color:var(--info); border-color:var(--info); flex:1; min-width:90px;" onclick="openEditQuyStorage(${q.id})">Phân bổ kho</button>
+        <button class="btn-sm" style="color:var(--primary); border-color:var(--primary); flex:1; min-width:80px;" onclick="openNopQuy(${q.id})">Nộp thêm</button>
+        <button class="btn-sm" style="color:white; background:var(--danger); border-color:var(--danger); flex:1; min-width:80px;" onclick="openRutQuy(${q.id})">Rút tiền</button>
+        <button class="btn-sm" style="color:#fff; background:#555; border-color:#555; flex:1; min-width:80px;" onclick="openSplitQuy(${q.id})">Tách Quỹ</button>
+        <button class="btn-sm" style="color:red; border-color:red; flex:1; min-width:80px;" onclick="deleteQuy(${q.id})">Xóa Quỹ</button>
+    </div>
 </div>`;
+// KẾT THÚC THAY THẾ BƯỚC 2
 });
 cont.innerHTML = htmlContent;
 }
