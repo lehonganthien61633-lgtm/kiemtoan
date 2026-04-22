@@ -370,8 +370,9 @@ body * { visibility: hidden; }
 
         <div id="content-quy" style="display:none;">
         <div id="quy-container"></div>
-        <button class="btn-main" style="background:var(--accent); color:white; border:none" onclick="openModal('modal-quy-add')">TẠO QUỸ MỚI</button>
-        <div class="sub-total-box" style="border-color:var(--accent); background:#fffdf5;">TỔNG CÁC QUỸ: <span id="val-quy" style="font-size:26px; color:var(--accent)">0</span> đ</div>
+        <div style="display:flex; gap:10px;">
+            <button class="btn-main" style="background:var(--accent); color:white; border:none; flex:2;" onclick="openModal('modal-quy-add')">TẠO QUỸ MỚI</button>
+            <button class="btn-main" style="background:#333; color:white; border:none; flex:1;" onclick="openMergeQuy()">GỘP QUỸ</button>
         </div>
         </div>
 
@@ -975,7 +976,89 @@ body * { visibility: hidden; }
 </div>
 </div>
 </div>
+<div class="modal-overlay" id="modal-quy-merge">
+    <div class="modal-content" style="max-width:500px;">
+        <div class="modal-title">GỘP QUỸ</div>
+        <div class="form-group">
+            <label>Chọn các quỹ muốn gộp (ít nhất 2 quỹ)</label>
+            <div id="merge-quy-list" style="background:#f8f9fa; border:1px solid #ccc; padding:15px; max-height:200px; overflow-y:auto; border-radius:4px;">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Tên Quỹ mới sau khi gộp</label>
+            <input type="text" id="in-merge-quy-name" placeholder="VD: Quỹ Tổng Hợp">
+        </div>
+        <div class="form-group">
+            <label>Ngày thực hiện gộp</label>
+            <input type="date" id="in-merge-quy-date">
+        </div>
+        <div style="display:flex; gap:15px; margin-top:30px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-merge')">HỦY BỎ</button>
+            <button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2" onclick="confirmMergeQuy()">THỰC HIỆN GỘP</button>
+        </div>
+    </div>
+</div>
 
+<div class="modal-overlay" id="modal-quy-split">
+    <div class="modal-content" style="max-width:500px;">
+        <div class="modal-title">TÁCH QUỸ</div>
+        <div class="form-group">
+            <label>Quỹ gốc hiện tại</label>
+            <div class="readonly-text" style="text-align:left; color:var(--primary);" id="split-quy-origin-name"></div>
+        </div>
+        <div class="form-group">
+            <label>Tổng tiền khả dụng</label>
+            <div class="readonly-text" style="text-align:left; color:var(--danger); font-size:20px;" id="split-quy-origin-amt"></div>
+        </div>
+
+        <div class="form-group">
+            <label>Lựa chọn hình thức tách quỹ</label>
+            <select id="sel-split-type" onchange="changeSplitType()" style="font-weight:bold; color:var(--info); padding:10px;">
+                <option value="1">Loại 1: Trích một phần thành Quỹ phụ (Giữ nguyên Quỹ gốc)</option>
+                <option value="2">Loại 2: Giải thể Quỹ gốc & Tách rãnh thành 2 Quỹ hoàn toàn mới</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Kho lưu trữ muốn rút tiền ra để tách</label>
+            <select id="sel-split-storage" style="padding:10px;"></select>
+        </div>
+
+        <div class="form-group">
+            <label>Số tiền trích ra (VNĐ)</label>
+            <input type="text" id="in-split-amt" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)">
+        </div>
+
+        <div class="form-group">
+            <label>Ngày tách quỹ</label>
+            <input type="date" id="in-split-date">
+        </div>
+
+        <div id="box-split-type-1" style="background:#f4f9f4; padding:15px; border:1px solid var(--success); border-radius:4px;">
+            <div class="form-group" style="margin-bottom:0;">
+                <label>Tên Quỹ phụ mới được lập</label>
+                <input type="text" id="in-split-new-name1" placeholder="VD: Quỹ sinh hoạt con">
+            </div>
+        </div>
+
+        <div id="box-split-type-2" style="display:none; background:#fffdf5; padding:15px; border:1px solid var(--accent); border-radius:4px;">
+            <div class="form-group">
+                <label>Tên Quỹ mới số 1 (Nhận phần tiền trích ra)</label>
+                <input type="text" id="in-split-new-name2-1" placeholder="VD: Quỹ Đầu Tư A">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+                <label>Tên Quỹ mới số 2 (Nhận toàn bộ phần tiền còn lại)</label>
+                <input type="text" id="in-split-new-name2-2" placeholder="VD: Quỹ Tiết Kiệm B">
+            </div>
+        </div>
+
+        <input type="hidden" id="hid-split-quy-id">
+        <div style="display:flex; gap:15px; margin-top:30px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-split')">HỦY BỎ</button>
+            <button class="btn-main" style="background:var(--info); color:#fff; border-color:var(--info); flex:2" onclick="confirmSplitQuy()">THỰC HIỆN TÁCH</button>
+        </div>
+    </div>
+</div>
 <div class="modal-overlay" id="modal-print-setup">
 <div class="modal-content">
 <h2 class="modal-title">CẤU HÌNH BẢN IN</h2>
@@ -2253,6 +2336,13 @@ let storageNames = (q.storages || []).map(s => s.name).join(', ');
 if(storageNames.length > 30) storageNames = storageNames.substring(0, 27) + '...';
 
 htmlContent += `
+<div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:15px;">
+    <button class="btn-sm" style="color:var(--info); border-color:var(--info); flex:1; min-width:90px;" onclick="openEditQuyStorage(${q.id})">Phân bổ kho</button>
+    <button class="btn-sm" style="color:var(--primary); border-color:var(--primary); flex:1; min-width:80px;" onclick="openNopQuy(${q.id})">Nộp thêm</button>
+    <button class="btn-sm" style="color:white; background:var(--danger); border-color:var(--danger); flex:1; min-width:80px;" onclick="openRutQuy(${q.id})">Rút tiền</button>
+    <button class="btn-sm" style="color:#fff; background:#555; border-color:#555; flex:1; min-width:80px;" onclick="openSplitQuy(${q.id})">Tách Quỹ</button>
+    <button class="btn-sm" style="color:red; border-color:red; flex:1; min-width:80px;" onclick="deleteQuy(${q.id})">Xóa Quỹ</button>
+</div>
 <div class="quy-card">
 <button class="btn-i-detail" onclick="openDetailQuy(${q.id})" style="background:var(--accent); color:#fff; border:none;">i</button>
 <div class="quy-storage">📌 Phân bổ tại: ${storageNames}</div>
@@ -2469,7 +2559,168 @@ document.getElementById('del-quy-duration').innerText = durationText;
 document.getElementById('in-del-quy-pass').value = "";
 openModal('modal-quy-delete');
 }
+function openMergeQuy() {
+    let list = masterData[currentDay]?.quy || [];
+    if(list.length < 2) { alert("Cần có ít nhất 2 quỹ đang hoạt động để thực hiện tính năng gộp!"); return; }
+    
+    let html = '';
+    list.forEach(q => {
+        html += `<div style="margin-bottom:10px; font-size:16px;">
+            <input type="checkbox" class="chk-merge-quy" value="${q.id}" id="chk-m-${q.id}" style="width:18px; height:18px; vertical-align:middle; cursor:pointer;"> 
+            <label for="chk-m-${q.id}" style="display:inline; text-transform:none; cursor:pointer; font-weight:bold;">${q.name} <span style="color:var(--danger)">(${formatTien(getQuyTotalAmt(q))} đ)</span></label>
+        </div>`;
+    });
+    
+    document.getElementById('merge-quy-list').innerHTML = html;
+    document.getElementById('in-merge-quy-name').value = "";
+    document.getElementById('in-merge-quy-date').value = currentDay;
+    document.getElementById('in-merge-quy-date').max = getGMT7Date();
+    
+    openModal('modal-quy-merge');
+}
 
+function confirmMergeQuy() {
+    let checkboxes = document.querySelectorAll('.chk-merge-quy:checked');
+    if(checkboxes.length < 2) { alert("Vui lòng tích chọn ít nhất 2 quỹ để gộp lại!"); return; }
+    
+    let newName = document.getElementById('in-merge-quy-name').value.trim();
+    let mergeDate = document.getElementById('in-merge-quy-date').value;
+    if(!newName || !mergeDate) { alert("Vui lòng nhập đủ tên quỹ mới và ngày gộp!"); return; }
+
+    let idsToMerge = Array.from(checkboxes).map(cb => parseInt(cb.value));
+    let newStorages = [];
+    let totalAmt = 0;
+    let mergedNames = [];
+    let list = masterData[currentDay].quy;
+
+    // Gộp kho lưu trữ và lịch sử
+    idsToMerge.forEach(id => {
+        let q = list.find(x => x.id === id);
+        if(q) {
+            mergedNames.push(q.name);
+            q.storages.forEach(s => {
+                let exist = newStorages.find(ns => ns.name === s.name);
+                if(exist) exist.v += s.v;
+                else newStorages.push({name: s.name, v: s.v, isLinked: s.isLinked});
+                totalAmt += s.v;
+            });
+        }
+    });
+
+    // Lọc bỏ các quỹ đã gộp
+    masterData[currentDay].quy = list.filter(q => !idsToMerge.includes(q.id));
+
+    // Khởi tạo quỹ mới
+    let newQuy = {
+        id: Date.now(),
+        name: newName,
+        date: mergeDate,
+        storages: newStorages,
+        history: [{ d: mergeDate, type: 'init', amount: totalAmt, storage: 'Nhiều kho', reason: 'Hợp nhất từ các quỹ: ' + mergedNames.join(', ') }]
+    };
+    masterData[currentDay].quy.push(newQuy);
+
+    saveMaster(); loadDay(); closeModal('modal-quy-merge');
+    alert(`Đã gộp thành công ${idsToMerge.length} quỹ thành: ${newName}!`);
+}
+
+// --- MODULE TÁCH QUỸ ---
+function openSplitQuy(id) {
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); if(!q) return;
+    
+    document.getElementById('hid-split-quy-id').value = id;
+    document.getElementById('split-quy-origin-name').innerText = q.name;
+    document.getElementById('split-quy-origin-amt').innerText = formatTien(getQuyTotalAmt(q)) + " đ";
+
+    let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
+    document.getElementById('sel-split-storage').innerHTML = storageHtml;
+
+    document.getElementById('in-split-amt').value = "";
+    document.getElementById('in-split-date').value = currentDay;
+    document.getElementById('in-split-date').max = getGMT7Date();
+    document.getElementById('in-split-new-name1').value = "";
+    document.getElementById('in-split-new-name2-1').value = "";
+    document.getElementById('in-split-new-name2-2').value = "";
+
+    changeSplitType(); 
+    openModal('modal-quy-split');
+}
+
+function changeSplitType() {
+    let type = document.getElementById('sel-split-type').value;
+    document.getElementById('box-split-type-1').style.display = type === '1' ? 'block' : 'none';
+    document.getElementById('box-split-type-2').style.display = type === '2' ? 'block' : 'none';
+}
+
+function confirmSplitQuy() {
+    let id = parseInt(document.getElementById('hid-split-quy-id').value);
+    let type = document.getElementById('sel-split-type').value;
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === id);
+    if(!q) return;
+
+    let splitDate = document.getElementById('in-split-date').value;
+    let storageName = document.getElementById('sel-split-storage').value;
+    let amt = cleanTien(document.getElementById('in-split-amt').value);
+
+    if(!splitDate || amt <= 0) { alert("Vui lòng nhập số tiền và chọn ngày hợp lệ!"); return; }
+
+    let storageIndex = q.storages.findIndex(s => s.name === storageName);
+    if(storageIndex === -1 || q.storages[storageIndex].v < amt) {
+        alert("Lỗi: Số dư trong kho lưu trữ đang chọn không đủ để trích tiền!"); return;
+    }
+
+    if(type === '1') {
+        // Tách nhánh nhỏ - Vẫn giữ lại Quỹ Gốc
+        let newName = document.getElementById('in-split-new-name1').value.trim();
+        if(!newName) { alert("Vui lòng nhập tên cho quỹ phụ mới!"); return; }
+
+        q.storages[storageIndex].v -= amt;
+        if(!q.history) q.history = [];
+        q.history.push({ d: splitDate, type: 'rut', amount: amt, storage: storageName, reason: 'Trích xuất để mở nhánh quỹ: ' + newName });
+
+        masterData[currentDay].quy.push({
+            id: Date.now(), name: newName, date: splitDate,
+            storages: [{name: storageName, v: amt, isLinked: q.storages[storageIndex].isLinked}],
+            history: [{ d: splitDate, type: 'init', amount: amt, storage: storageName, reason: 'Nhánh phụ tách từ quỹ: ' + q.name }]
+        });
+
+    } else {
+        // Giải thể Quỹ gốc -> Tách rãnh thành 2 quỹ mới hoàn toàn
+        let newName1 = document.getElementById('in-split-new-name2-1').value.trim();
+        let newName2 = document.getElementById('in-split-new-name2-2').value.trim();
+        if(!newName1 || !newName2) { alert("Vui lòng nhập đầy đủ tên cho cả 2 quỹ mới!"); return; }
+
+        let remainTotal = getQuyTotalAmt(q) - amt;
+        if(remainTotal <= 0) { alert("Lỗi: Tiền trích ra phải NHỎ HƠN tổng tiền quỹ, để quỹ thứ 2 có số dư hoạt động!"); return; }
+
+        let quy1Storages = [{name: storageName, v: amt, isLinked: q.storages[storageIndex].isLinked}];
+        let quy2Storages = [];
+        
+        q.storages.forEach(s => {
+            let v = (s.name === storageName) ? (s.v - amt) : s.v;
+            if(v > 0) quy2Storages.push({name: s.name, v: v, isLinked: s.isLinked});
+        });
+
+        // Hủy quỹ cũ
+        masterData[currentDay].quy = masterData[currentDay].quy.filter(x => x.id !== id);
+
+        // Tạo 2 quỹ mới (ID cách nhau 1 đơn vị để tránh trùng)
+        masterData[currentDay].quy.push({
+            id: Date.now(), name: newName1, date: splitDate,
+            storages: quy1Storages,
+            history: [{ d: splitDate, type: 'init', amount: amt, storage: storageName, reason: 'Tách rãnh trực tiếp từ: ' + q.name }]
+        });
+        
+        masterData[currentDay].quy.push({
+            id: Date.now() + 1, name: newName2, date: splitDate,
+            storages: quy2Storages,
+            history: [{ d: splitDate, type: 'init', amount: remainTotal, storage: 'Nhiều kho', reason: 'Tách rãnh trực tiếp từ: ' + q.name }]
+        });
+    }
+
+    saveMaster(); loadDay(); closeModal('modal-quy-split');
+    alert("Thực hiện tách quỹ thành công!");
+}
 function confirmDeleteQuy() {
 let id = parseInt(document.getElementById('hid-del-quy-id').value);
 let passInput = document.getElementById('in-del-quy-pass').value;
