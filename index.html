@@ -717,17 +717,17 @@ body * { visibility: hidden; }
 <div class="modal-title">CHI TIẾT & LỊCH SỬ QUỸ</div>
 <div id="quy-detail-summary" style="background:#f4f9f4; padding:15px; border:1px solid var(--accent); margin-bottom:20px; font-size:16px; line-height:1.6;"></div>
 <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-    <label style="font-weight:bold;">Lọc theo kho lưu trữ:</label>
-    <select id="quy-detail-filter" style="width:auto; padding:5px;" onchange="filterQuyHistory()"></select>
+    <label style="font-weight:bold;">Lọc theo kho lưu trữ:</label>
+    <select id="quy-detail-filter" style="width:auto; padding:5px;" onchange="filterQuyHistory()"></select>
 </div>
 <table class="data-table" style="margin-bottom: 10px;"><thead><tr style="background:#e9ecef"><th>Nơi cất giữ</th><th style="width: 100px; text-align: center;">Lưu chung với tài khoản</th><th>Số dư (VNĐ)</th></tr></thead><tbody id="quy-detail-tbody"></tbody></table>
 
 <h3 style="margin-top: 25px; font-size: 16px; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">LỊCH SỬ GIAO DỊCH</h3>
 <div style="overflow-x:auto; max-height: 250px;">
-    <table class="data-table" style="font-size: 13px; margin-bottom: 0;">
-        <thead><tr style="background:#e9ecef"><th>Ngày</th><th>Loại</th><th>Số tiền</th><th>Kho lưu trữ</th><th>Ghi chú</th></tr></thead>
-        <tbody id="quy-history-tbody"></tbody>
-    </table>
+    <table class="data-table" style="font-size: 13px; margin-bottom: 0;">
+        <thead><tr style="background:#e9ecef"><th>Ngày</th><th>Loại</th><th>Số tiền</th><th>Kho lưu trữ</th><th>Ghi chú</th></tr></thead>
+        <tbody id="quy-history-tbody"></tbody>
+    </table>
 </div>
 
 <button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-quy-detail')">ĐÓNG</button>
@@ -2378,7 +2378,16 @@ masterData[currentDay].quy.push(quyObj);
 saveMaster(); closeModal('modal-quy-add'); loadDay();
 document.getElementById('in-quy-name').value = ""; document.getElementById('in-quy-amt').value = "0";
 }
-
+// BẮT ĐẦU SỬA BƯỚC 2
+function switchQuyDetailTab(tab) {
+    document.getElementById('quy-tab-info').style.display = (tab === 'info') ? 'block' : 'none';
+    document.getElementById('quy-tab-history').style.display = (tab === 'history') ? 'block' : 'none';
+    document.getElementById('btn-tab-quy-info').classList.remove('active');
+    document.getElementById('btn-tab-quy-history').classList.remove('active');
+    document.getElementById('btn-tab-quy-' + tab).classList.add('active');
+}
+// KẾT THÚC SỬA BƯỚC 2
+// BẮT ĐẦU SỬA BƯỚC 3
 function openDetailQuy(id) {
 let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); if(!q) return;
 currentQuyDetailId = id;
@@ -2389,16 +2398,18 @@ let filterSel = document.getElementById('quy-detail-filter');
 filterSel.innerHTML = `<option value="all">Tất cả tài khoản</option>`;
 
 q.storages.forEach((s) => {
-    let isLinkedChecked = s.isLinked ? "checked" : "";
-    let linkToggle = s.name !== 'Tiền mặt' ? `<label class="switch" style="margin-top:4px;"><input type="checkbox" onchange="toggleQuyLink(${q.id}, '${s.name}', this.checked)" ${isLinkedChecked}><span class="slider"></span></label>` : '<span style="color:#aaa">-</span>';
-    
-    b.innerHTML += `<tr><td style="font-weight:bold">${s.name}</td><td align="center">${linkToggle}</td><td align="right" style="color:var(--success); font-weight:bold; font-size:16px;">${formatTien(s.v)} đ</td></tr>`;
-    filterSel.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+    let isLinkedChecked = s.isLinked ? "checked" : "";
+    let linkToggle = s.name !== 'Tiền mặt' ? `<label class="switch" style="margin-top:4px;"><input type="checkbox" onchange="toggleQuyLink(${q.id}, '${s.name}', this.checked)" ${isLinkedChecked}><span class="slider"></span></label>` : '<span style="color:#aaa">-</span>';
+    
+    b.innerHTML += `<tr><td style="font-weight:bold">${s.name}</td><td align="center">${linkToggle}</td><td align="right" style="color:var(--success); font-weight:bold; font-size:16px;">${formatTien(s.v)} đ</td></tr>`;
+    filterSel.innerHTML += `<option value="${s.name}">${s.name}</option>`;
 });
 
 filterQuyHistory();
+switchQuyDetailTab('info'); // Đưa về Tab Info khi mở
 openModal('modal-quy-detail');
 }
+// KẾT THÚC SỬA BƯỚC 3
 
 window.toggleQuyLink = function(quyId, storageName, isChecked) {
     let q = (masterData[currentDay]?.quy || []).find(x => x.id === quyId);
