@@ -2333,15 +2333,18 @@ if (type === 'month') { box.style.display = 'block'; inEnd.readOnly = true; inEn
 else { box.style.display = 'none'; inEnd.readOnly = false; inEnd.style.pointerEvents = 'auto'; inEnd.style.background = '#fff'; }
 }
 
+// BẮT ĐẦU THAY THẾ (SỬA LỖI NGÀY THỨ 7)
 function autoCalcEnd() {
 if (document.getElementById('sel-calc-type').value !== 'month') return;
 let start = document.getElementById('in-stk-start').value, mo = parseInt(document.getElementById('in-stk-mo').value);
 if (start && mo > 0) {
 let d = new Date(start); d.setMonth(d.getMonth() + mo);
-while(d.getDay()===0 || d.getDay()===6) d.setDate(d.getDate()+1);
+// Chỉ dời ngày nếu rơi vào Chủ Nhật (0). Thứ 7 (6) vẫn tính bình thường.
+while(d.getDay()===0) d.setDate(d.getDate()+1);
 document.getElementById('in-stk-end').value = d.toISOString().split('T')[0];
 }
 }
+// KẾT THÚC THAY THẾ
 
 function getQuyTotalAmt(quy) { return (quy.storages || []).reduce((sum, item) => sum + (item.v || 0), 0); }
 
@@ -2942,6 +2945,7 @@ document.getElementById('in-dh-ls').value = s.ls; document.getElementById('in-dh
 openModal('modal-stk-dh');
 }
 
+// BẮT ĐẦU THAY THẾ (SỬA LỖI NGÀY THỨ 7)
 function confirmDH(isRenew) {
 let id = parseInt(document.getElementById('hid-dh-id').value);
 if (!isRenew) {
@@ -2950,12 +2954,14 @@ if(confirm("Tất toán sổ sẽ xóa toàn bộ số dư khỏi hệ thống?"
 let s = (masterData[currentDay]?.stk || []).find(x => x.id === id), lai = cleanTien(document.getElementById('in-dh-lai').value), ls = parseFloat(document.getElementById('in-dh-ls').value)||0, mo = parseInt(document.getElementById('in-dh-mo').value)||s.mo||1;
 s.amt += lai; s.ls = ls; s.mo = mo; s.start = s.end;
 let d = new Date(s.start); d.setMonth(d.getMonth() + mo);
-while(d.getDay()===0 || d.getDay()===6) d.setDate(d.getDate()+1);
+// Chỉ dời ngày nếu rơi vào Chủ Nhật (0). Thứ 7 (6) vẫn tính bình thường.
+while(d.getDay()===0) d.setDate(d.getDate()+1);
 s.end = d.toISOString().split('T')[0];
 s.history = [{id: Date.now(), d: s.start, n: `Tái tục (Cộng ${formatTien(lai)}đ)`, v: s.amt, ls: ls}];
 }
 saveMaster(); closeModal('modal-stk-dh'); loadDay();
 }
+// KẾT THÚC THAY THẾ
 
 function deleteSTK(id) {
     let s = (masterData[currentDay]?.stk || []).find(x => x.id === id);
