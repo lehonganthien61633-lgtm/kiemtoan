@@ -470,7 +470,8 @@ body * { visibility: hidden; }
                     <div style="font-size:12px; color:#888; margin-top:6px; font-style:italic;" id="set-cccd-info">Số lần đổi: 0 | Lần cuối: --</div>
                 </div>
                 
-                <div style="display:flex; gap:10px; margin-top:25px; border-top: 1px solid #eee; padding-top: 20px;">
+                <button class="btn-main" style="background:var(--accent); color:white; border:none; margin-top:15px; width: 100%; font-size: 14px;" onclick="openHolidayManager()">🗓️ QUẢN LÝ NGÀY LỄ TẾT</button>
+                <div style="display:flex; gap:10px; margin-top:15px; border-top: 1px solid #eee; padding-top: 20px;">
                     <button class="btn-main" style="background:var(--info); color:white; border:none; margin-top:0; flex:1; font-size: 14px;" onclick="openUserChangePass()">ĐỔI MẬT KHẨU</button>
                     <button class="btn-main" style="background:var(--danger); color:white; border:none; margin-top:0; flex:1; font-size: 14px;" onclick="deleteMyAccount()">XÓA TÀI KHOẢN</button>
                     <button class="btn-main" style="background:var(--success); color:white; border:none; margin-top:0; flex:2; font-size: 14px;" onclick="saveUserInfo()">LƯU THÔNG TIN</button>
@@ -1128,6 +1129,58 @@ body * { visibility: hidden; }
     </div>
 </div>
 <script>
+    <div class="modal-overlay" id="modal-manage-holidays">
+    <div class="modal-content" style="max-width:650px;">
+        <div class="modal-title">QUẢN LÝ NGÀY LỄ TẾT</div>
+        <div style="max-height: 400px; overflow-y: auto; margin-bottom: 20px; border: 1px solid #ddd;">
+            <table class="data-table" style="margin-bottom:0;">
+                <thead style="position: sticky; top: 0; z-index: 2;">
+                    <tr><th style="width:50px">STT</th><th style="text-align:left">Tên Ngày Lễ</th><th>Lịch</th><th>Thời gian</th><th style="width:50px">Xóa</th></tr>
+                </thead>
+                <tbody id="body-settings-holidays"></tbody>
+            </table>
+        </div>
+        <div style="display:flex; gap:15px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1;" onclick="closeModal('modal-manage-holidays')">ĐÓNG</button>
+            <button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2;" onclick="openModal('modal-add-holiday')">+ THÊM NGÀY LỄ</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-holiday">
+    <div class="modal-content" style="max-width:450px;">
+        <div class="modal-title">THÊM NGÀY LỄ</div>
+        <div class="form-group">
+            <label>Tên ngày lễ</label>
+            <input type="text" id="in-hol-name" placeholder="VD: Tết Nguyên Đán, Lễ Quốc Khánh...">
+        </div>
+        <div class="form-group">
+            <label>Loại Lịch</label>
+            <select id="sel-hol-type">
+                <option value="DL">Dương Lịch</option>
+                <option value="AL">Âm Lịch</option>
+            </select>
+        </div>
+        <div style="display:flex; gap:15px;">
+            <div class="form-group" style="flex:1">
+                <label>Ngày Bắt Đầu (DD/MM)</label>
+                <input type="text" id="in-hol-start" placeholder="VD: 30/12">
+            </div>
+            <div class="form-group" style="flex:1">
+                <label>Ngày Kết Thúc (DD/MM)</label>
+                <input type="text" id="in-hol-end" placeholder="VD: 04/01">
+            </div>
+        </div>
+        <div class="form-group" style="display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" id="chk-hol-repeat" checked style="width:18px; height:18px; margin:0; cursor:pointer;">
+            <label for="chk-hol-repeat" style="margin-bottom:0; text-transform:none; font-weight:normal; font-size:14px; cursor:pointer;">Tự động lặp lại vào năm sau</label>
+        </div>
+        <div style="display:flex; gap:15px; margin-top:30px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-add-holiday')">HỦY</button>
+            <button class="btn-main" style="flex:1; background:var(--accent); border-color:var(--accent); color:white;" onclick="saveHolidayToSystem()">LƯU LẠI</button>
+        </div>
+    </div>
+</div>
 // =====================================
 // HỆ THỐNG XÁC THỰC & CƠ SỞ DỮ LIỆU ĐÁM MÂY
 // =====================================
@@ -1867,10 +1920,20 @@ function initializeApp() {
     document.getElementById('set-user-cccd').value = systemDB[activeUserPhone].cccd || "Chưa cập nhật";
     document.getElementById('set-cccd-info').innerText = `Số lần đổi: ${systemDB[activeUserPhone].cccdChangeCount || 0} | Lần cuối: ${systemDB[activeUserPhone].cccdLastChanged || '--'}`;
 
+    // BẮT ĐẦU SỬA: KHỞI TẠO DỮ LIỆU NGÀY LỄ
     if(!masterData.banks) masterData.banks = [];
     if(!masterData.quyReasons) masterData.quyReasons = [];
     if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
     if(!masterData.printHistory) masterData.printHistory = [];
+    if(!masterData.holidays) masterData.holidays = [
+        { id: 1, name: "Tết Dương Lịch", type: "DL", start: "01/01", end: "01/01", repeat: true },
+        { id: 2, name: "Giải Phóng Miền Nam", type: "DL", start: "30/04", end: "30/04", repeat: true },
+        { id: 3, name: "Quốc Tế Lao Động", type: "DL", start: "01/05", end: "01/05", repeat: true },
+        { id: 4, name: "Quốc Khánh", type: "DL", start: "02/09", end: "03/09", repeat: true },
+        { id: 5, name: "Giỗ Tổ Hùng Vương", type: "AL", start: "10/03", end: "10/03", repeat: true },
+        { id: 6, name: "Tết Nguyên Đán", type: "AL", start: "29/12", end: "05/01", repeat: true }
+    ];
+// KẾT THÚC SỬA
 
     refreshBankSettings();
     toggleCalcType();
@@ -1881,7 +1944,138 @@ function initializeApp() {
     
     if (systemDB[activeUserPhone].role === 'admin') { renderAdminPanel(); checkAdminNotifications(); }
 }
+// =====================================
+// BẮT ĐẦU THÊM MỚI: MODULE ÂM LỊCH & NGÀY LỄ
+// =====================================
+function openHolidayManager() {
+    renderHolidays();
+    openModal('modal-manage-holidays');
+}
 
+function renderHolidays() {
+    const tbody = document.getElementById('body-settings-holidays');
+    tbody.innerHTML = "";
+    (masterData.holidays || []).forEach((h, i) => {
+        let repeatTxt = h.repeat ? '<br><span style="font-size:11px; color:#888;">(Lặp lại)</span>' : '';
+        let dateTxt = h.start === h.end ? h.start : `${h.start} - ${h.end}`;
+        let typeTxt = h.type === 'AL' ? '<b style="color:var(--accent)">Âm Lịch</b>' : '<b style="color:var(--info)">Dương Lịch</b>';
+        tbody.innerHTML += `<tr>
+            <td align="center">${i + 1}</td>
+            <td style="font-weight:bold;">${h.name} ${repeatTxt}</td>
+            <td align="center">${typeTxt}</td>
+            <td align="center" style="font-family:monospace; font-size:14px;">${dateTxt}</td>
+            <td align="center"><span onclick="deleteHoliday(${h.id})" style="color:red; cursor:pointer; font-weight:bold; font-size:18px;">✖</span></td>
+        </tr>`;
+    });
+}
+
+function saveHolidayToSystem() {
+    let name = document.getElementById('in-hol-name').value.trim();
+    let type = document.getElementById('sel-hol-type').value;
+    let start = document.getElementById('in-hol-start').value.trim();
+    let end = document.getElementById('in-hol-end').value.trim() || start;
+    let repeat = document.getElementById('chk-hol-repeat').checked;
+
+    if (!name || !start || !start.includes('/')) { alert("Vui lòng nhập đúng định dạng Tên và Ngày (DD/MM)!"); return; }
+    
+    if(!masterData.holidays) masterData.holidays = [];
+    masterData.holidays.push({ id: Date.now(), name, type, start, end, repeat });
+    saveMaster();
+    renderHolidays();
+    closeModal('modal-add-holiday');
+    
+    document.getElementById('in-hol-name').value = '';
+    document.getElementById('in-hol-start').value = '';
+    document.getElementById('in-hol-end').value = '';
+}
+
+function deleteHoliday(id) {
+    if(confirm("Xóa ngày lễ này khỏi hệ thống?")) {
+        masterData.holidays = masterData.holidays.filter(h => h.id !== id);
+        saveMaster();
+        renderHolidays();
+    }
+}
+
+// Thuật toán chuyển đổi DL -> AL cơ bản (Simplified JS JDN)
+function getLunarDate(dd, mm, yyyy) {
+    // Dùng API nội bộ nhỏ gọn xấp xỉ chuyển đổi hoặc thuật toán thu gọn. 
+    // Thuật toán tính JDN và xác định tháng Âm lịch Việt Nam (Múi giờ +7).
+    function jdFromDate(dd, mm, yyyy) {
+        let a = Math.floor((14 - mm) / 12);
+        let y = yyyy + 4800 - a;
+        let m = mm + 12 * a - 3;
+        let jd = dd + Math.floor((153 + 3 * m) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+        if (jd < 2299161) jd = dd + Math.floor((153 + 3 * m) / 5) + 365 * y + Math.floor(y / 4) - 32083;
+        return jd;
+    }
+    function jdToDate(jd) {
+        let a, b, c, d, e, m, day, month, year;
+        if (jd > 2299160) {
+            a = jd + 32044; b = Math.floor((4 * a + 3) / 146097); c = a - Math.floor((146097 * b) / 4);
+        } else {
+            b = 0; c = jd + 32082;
+        }
+        d = Math.floor((4 * c + 3) / 1461); e = c - Math.floor((1461 * d) / 4); m = Math.floor((5 * e + 2) / 153);
+        day = e - Math.floor((153 * m + 2) / 5) + 1;
+        month = m + 3 - 12 * Math.floor(m / 10);
+        year = b * 100 + d - 4800 + Math.floor(m / 10);
+        return [day, month, year];
+    }
+    function getNewMoonDay(k) {
+        let T = k / 1236.85;
+        let T2 = T * T, T3 = T2 * T;
+        let dr = 29.530588853 + 0.00000021629 * T - 0.000000000113 * T2;
+        let M = 2.5534 + 29.10535669 * k - 0.0000218 * T2 - 0.00000011 * T3;
+        let jd = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3 + 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * Math.PI / 180);
+        M = M * Math.PI / 180;
+        return Math.floor(jd + 0.1734 - 0.0065 * Math.sin(M) + 0.5 + 7 / 24); // Múi giờ +7
+    }
+    let jd = jdFromDate(dd, mm, yyyy);
+    let k = Math.floor((jd - 2415021.076998695) / 29.530588853);
+    let nm = getNewMoonDay(k);
+    if (nm > jd) nm = getNewMoonDay(--k);
+    let a = jdToDate(nm);
+    let lunarDay = jd - nm + 1;
+    let lunarMonth = a[1];
+    let lunarYear = a[2];
+    return { d: lunarDay, m: lunarMonth, y: lunarYear };
+}
+
+function checkIsHoliday(dateObj) {
+    let sD = dateObj.getDate(), sM = dateObj.getMonth() + 1, sY = dateObj.getFullYear();
+    let lunar = getLunarDate(sD, sM, sY);
+    
+    function inRange(testD, testM, strStart, strEnd) {
+        let [stD, stM] = strStart.split('/').map(Number);
+        let [enD, enM] = strEnd.split('/').map(Number);
+        let val = testM * 100 + testD;
+        let stVal = stM * 100 + stD;
+        let enVal = enM * 100 + enD;
+        
+        if (stVal <= enVal) return (val >= stVal && val <= enVal);
+        return (val >= stVal || val <= enVal); // Vắt qua năm mới (vd: 29/12 AL -> 04/01 AL)
+    }
+
+    let hols = masterData.holidays || [];
+    for(let h of hols) {
+        if(h.type === 'DL') {
+            if(inRange(sD, sM, h.start, h.end)) return true;
+        } else if (h.type === 'AL') {
+            if(inRange(lunar.d, lunar.m, h.start, h.end)) return true;
+        }
+    }
+    return false; // Không phải ngày lễ
+}
+
+function isDayOff(dateObj) {
+    if(dateObj.getDay() === 0) return true; // Chủ nhật
+    if(checkIsHoliday(dateObj)) return true; // Trùng Lễ
+    return false;
+}
+// =====================================
+// KẾT THÚC THÊM MỚI: MODULE ÂM LỊCH & NGÀY LỄ
+// =====================================
 function loadDay() {
     if(isPrinting) return;
 
@@ -2334,16 +2528,22 @@ else { box.style.display = 'none'; inEnd.readOnly = false; inEnd.style.pointerEv
 }
 
 // BẮT ĐẦU THAY THẾ (SỬA LỖI NGÀY THỨ 7)
+// BẮT ĐẦU SỬA: NÂNG CẤP AUTO CALC END SO SÁNH NGÀY LỄ
 function autoCalcEnd() {
-if (document.getElementById('sel-calc-type').value !== 'month') return;
-let start = document.getElementById('in-stk-start').value, mo = parseInt(document.getElementById('in-stk-mo').value);
-if (start && mo > 0) {
-let d = new Date(start); d.setMonth(d.getMonth() + mo);
-// Chỉ dời ngày nếu rơi vào Chủ Nhật (0). Thứ 7 (6) vẫn tính bình thường.
-while(d.getDay()===0) d.setDate(d.getDate()+1);
-document.getElementById('in-stk-end').value = d.toISOString().split('T')[0];
+    if (document.getElementById('sel-calc-type').value !== 'month') return;
+    let start = document.getElementById('in-stk-start').value, mo = parseInt(document.getElementById('in-stk-mo').value);
+    if (start && mo > 0) {
+        let d = new Date(start); d.setMonth(d.getMonth() + mo);
+        
+        // Tự động nhảy sang ngày hôm sau nếu rơi vào Chủ Nhật hoặc Lễ (Âm/Dương)
+        while(isDayOff(d)) {
+            d.setDate(d.getDate() + 1);
+        }
+        
+        document.getElementById('in-stk-end').value = d.toISOString().split('T')[0];
+    }
 }
-}
+// KẾT THÚC SỬA
 // KẾT THÚC THAY THẾ
 
 function getQuyTotalAmt(quy) { return (quy.storages || []).reduce((sum, item) => sum + (item.v || 0), 0); }
@@ -2946,21 +3146,27 @@ openModal('modal-stk-dh');
 }
 
 // BẮT ĐẦU THAY THẾ (SỬA LỖI NGÀY THỨ 7)
+// BẮT ĐẦU SỬA: NÂNG CẤP CONFIRM DH SO SÁNH NGÀY LỄ
 function confirmDH(isRenew) {
-let id = parseInt(document.getElementById('hid-dh-id').value);
-if (!isRenew) {
-if(confirm("Tất toán sổ sẽ xóa toàn bộ số dư khỏi hệ thống?")) { masterData[currentDay].stk = (masterData[currentDay]?.stk || []).filter(x => x.id !== id); } else return;
-} else {
-let s = (masterData[currentDay]?.stk || []).find(x => x.id === id), lai = cleanTien(document.getElementById('in-dh-lai').value), ls = parseFloat(document.getElementById('in-dh-ls').value)||0, mo = parseInt(document.getElementById('in-dh-mo').value)||s.mo||1;
-s.amt += lai; s.ls = ls; s.mo = mo; s.start = s.end;
-let d = new Date(s.start); d.setMonth(d.getMonth() + mo);
-// Chỉ dời ngày nếu rơi vào Chủ Nhật (0). Thứ 7 (6) vẫn tính bình thường.
-while(d.getDay()===0) d.setDate(d.getDate()+1);
-s.end = d.toISOString().split('T')[0];
-s.history = [{id: Date.now(), d: s.start, n: `Tái tục (Cộng ${formatTien(lai)}đ)`, v: s.amt, ls: ls}];
+    let id = parseInt(document.getElementById('hid-dh-id').value);
+    if (!isRenew) {
+        if(confirm("Tất toán sổ sẽ xóa toàn bộ số dư khỏi hệ thống?")) { masterData[currentDay].stk = (masterData[currentDay]?.stk || []).filter(x => x.id !== id); } else return;
+    } else {
+        let s = (masterData[currentDay]?.stk || []).find(x => x.id === id), lai = cleanTien(document.getElementById('in-dh-lai').value), ls = parseFloat(document.getElementById('in-dh-ls').value)||0, mo = parseInt(document.getElementById('in-dh-mo').value)||s.mo||1;
+        s.amt += lai; s.ls = ls; s.mo = mo; s.start = s.end;
+        let d = new Date(s.start); d.setMonth(d.getMonth() + mo);
+        
+        // Tự động nhảy sang ngày hôm sau nếu rơi vào Chủ Nhật hoặc Lễ (Âm/Dương)
+        while(isDayOff(d)) {
+            d.setDate(d.getDate() + 1);
+        }
+        
+        s.end = d.toISOString().split('T')[0];
+        s.history = [{id: Date.now(), d: s.start, n: `Tái tục (Cộng ${formatTien(lai)}đ)`, v: s.amt, ls: ls}];
+    }
+    saveMaster(); closeModal('modal-stk-dh'); loadDay();
 }
-saveMaster(); closeModal('modal-stk-dh'); loadDay();
-}
+// KẾT THÚC SỬA
 // KẾT THÚC THAY THẾ
 
 function deleteSTK(id) {
