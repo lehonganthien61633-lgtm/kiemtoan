@@ -1128,9 +1128,64 @@ body * { visibility: hidden; }
         </div>
     </div>
 </div>
-<script>
-    <div class="modal-overlay" id="modal-manage-holidays">
+
+<div class="modal-overlay" id="modal-manage-holidays">
     <div class="modal-content" style="max-width:650px;">
+        <div class="modal-title">QUẢN LÝ NGÀY LỄ TẾT</div>
+        <div style="max-height: 400px; overflow-y: auto; margin-bottom: 20px; border: 1px solid #ddd;">
+            <table class="data-table" style="margin-bottom:0;">
+                <thead style="position: sticky; top: 0; z-index: 2;">
+                    <tr><th style="width:50px">STT</th><th style="text-align:left">Tên Ngày Lễ</th><th>Lịch</th><th>Thời gian</th><th style="width:50px">Xóa</th></tr>
+                </thead>
+                <tbody id="body-settings-holidays"></tbody>
+            </table>
+        </div>
+        <div style="display:flex; gap:15px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1;" onclick="closeModal('modal-manage-holidays')">ĐÓNG</button>
+            <button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2;" onclick="openModal('modal-add-holiday')">+ THÊM NGÀY LỄ</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-holiday">
+    <div class="modal-content" style="max-width:450px;">
+        <div class="modal-title">THÊM NGÀY LỄ</div>
+        <div class="form-group">
+            <label>Tên ngày lễ</label>
+            <input type="text" id="in-hol-name" placeholder="VD: Tết Nguyên Đán, Lễ Quốc Khánh...">
+        </div>
+        <div class="form-group">
+            <label>Loại Lịch</label>
+            <select id="sel-hol-type">
+                <option value="DL">Dương Lịch</option>
+                <option value="AL">Âm Lịch</option>
+            </select>
+        </div>
+        <div style="display:flex; gap:15px;">
+            <div class="form-group" style="flex:1">
+                <label>Ngày Bắt Đầu (DD/MM)</label>
+                <input type="text" id="in-hol-start" placeholder="VD: 30/12">
+            </div>
+            <div class="form-group" style="flex:1">
+                <label>Ngày Kết Thúc (DD/MM)</label>
+                <input type="text" id="in-hol-end" placeholder="VD: 04/01">
+            </div>
+        </div>
+        <div class="form-group" style="display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" id="chk-hol-repeat" checked style="width:18px; height:18px; margin:0; cursor:pointer;">
+            <label for="chk-hol-repeat" style="margin-bottom:0; text-transform:none; font-weight:normal; font-size:14px; cursor:pointer;">Tự động lặp lại vào năm sau</label>
+        </div>
+        <div style="display:flex; gap:15px; margin-top:30px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-add-holiday')">HỦY</button>
+            <button class="btn-main" style="flex:1; background:var(--accent); border-color:var(--accent); color:white;" onclick="saveHolidayToSystem()">LƯU LẠI</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// =====================================
+// HỆ THỐNG XÁC THỰC & CƠ SỞ DỮ LIỆU ĐÁM MÂY
+// =====================================
         <div class="modal-title">QUẢN LÝ NGÀY LỄ TẾT</div>
         <div style="max-height: 400px; overflow-y: auto; margin-bottom: 20px; border: 1px solid #ddd;">
             <table class="data-table" style="margin-bottom:0;">
