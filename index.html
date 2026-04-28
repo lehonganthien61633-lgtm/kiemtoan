@@ -1106,6 +1106,35 @@ body * { visibility: hidden; }
         </div>
     </div>
 </div>
+    <div class="modal-overlay" id="modal-subfund-delete-resolve" style="z-index: 100001;">
+    <div class="modal-content" style="max-width:450px;">
+        <div class="modal-title" style="color:var(--danger); border-bottom-color:var(--danger)">XÓA QUỸ CON</div>
+        <p style="font-size:13px; color:#555; text-align:center; margin-bottom:15px;">Quỹ con này vẫn còn số dư. Vui lòng chọn hướng xử lý tiền trước khi xóa.</p>
+        
+        <div class="form-group"><label>Quỹ con đang xóa</label><div class="readonly-text" style="text-align:left; color:var(--primary);" id="del-sf-name"></div></div>
+        <div class="form-group"><label>Số dư hiện tại</label><div class="readonly-text" style="text-align:left; color:var(--danger); font-size:24px;" id="del-sf-amt"></div></div>
+        
+        <div class="form-group">
+            <label>Phương hướng xử lý số dư</label>
+            <select id="sel-del-sf-action" onchange="toggleDelSfAction()" style="padding:10px; font-weight:bold; color:var(--info);">
+                <option value="parent">Hoàn trả về Quỹ mẹ (Trở thành tiền chưa phân bổ)</option>
+                <option value="transfer">Phân bổ sang một Quỹ con khác</option>
+            </select>
+        </div>
+        
+        <div class="form-group" id="div-del-sf-target" style="display:none; background:#f4f9f4; padding:15px; border:1px solid var(--success); border-radius:4px;">
+            <label>Chọn Quỹ con đích nhận tiền</label>
+            <select id="sel-del-sf-target" style="padding:10px; width:100%;"></select>
+            <p style="font-size:11px; font-style:italic; color:#666; margin-top:8px;">* Nếu chọn quỹ con ở quỹ mẹ khác, hệ thống sẽ tự động luân chuyển kho thực tế tương ứng.</p>
+        </div>
+        
+        <input type="hidden" id="hid-del-sf-id">
+        <div style="display:flex; gap:15px; margin-top:30px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-subfund-delete-resolve')">HỦY BỎ</button>
+            <button class="btn-main" style="background:var(--danger); color:#fff; border-color:var(--danger); flex:2" onclick="confirmDeleteSubFundResolve()">XÓA & ĐIỀU CHUYỂN</button>
+        </div>
+    </div>
+</div>
 <div class="modal-overlay" id="modal-quy-split">
     <div class="modal-content" style="max-width:500px;">
         <div class="modal-title">TÁCH QUỸ</div>
@@ -2799,18 +2828,111 @@ function deleteSubFund(sfId) {
     let q = (masterData[currentDay]?.quy || []).find(x => x.id === currentQuyDetailId);
     if(!q) return;
     let sf = q.subFunds.find(x => x.id === sfId);
-    if(sf && sf.v > 0) {
-        alert(`Lỗi: Quỹ con [${sf.name}] vẫn còn ${formatTien(sf.v)} đ. Hãy rút hết tiền hoặc điều chỉnh trước khi xóa!`);
-        return;
-    }
-    if(confirm(`Bạn có chắc muốn xóa quỹ con [${sf.name}] không? Hành động này không làm mất tiền của Quỹ chính.`)) {
-        q.subFunds = q.subFunds.filter(x => x.id !== sfId);
-        saveMaster();
-        openDetailQuy(currentQuyDetailId);
-        switchQuyDetailTab('sub');
+    if(!sf) return;
+
+    if(sf.v > 0) {
+        // Có số dư -> Mở Modal xử lý
+        document.getElementById('hid-del-sf-id').value = sfId;
+        document.getElementById('del-sf-name').innerText = sf.name;
+        document.getElementById('del-sf-amt').innerText = formatTien(sf.v) + " đ";
+        document.getElementById('sel-del-sf-action').value = 'parent';
+        toggleDelSfAction();
+        
+        // Load danh sách toàn bộ quỹ con trên hệ thống (trừ chính nó)
+        let opts = '';
+        (masterData[currentDay]?.quy || []).forEach(parent => {
+            (parent.subFunds || []).forEach(otherSf => {
+                if(parent.id === q.id && otherSf.id === sfId) return; // Bỏ qua chính nó
+                opts += `<option value="${parent.id}_${otherSf.id}">[${parent.name}] -> Quỹ con: ${otherSf.name}</option>`;
+            });
+        });
+        
+        let targetSel = document.getElementById('sel-del-sf-target');
+        targetSel.innerHTML = opts;
+        if(opts === '') {
+            targetSel.innerHTML = '<option value="">-- Không có quỹ con nào khác trên hệ thống --</option>';
+        }
+        
+        closeModal('modal-quy-detail'); // Tạm ẩn chi tiết quỹ
+        openModal('modal-subfund-delete-resolve');
+    } else {
+        // Không có số dư -> Xóa trực tiếp
+        if(confirm(`Bạn có chắc muốn xóa quỹ con [${sf.name}] không?`)) {
+            q.subFunds = q.subFunds.filter(x => x.id !== sfId);
+            saveMaster();
+            openDetailQuy(currentQuyDetailId);
+            switchQuyDetailTab('sub');
+        }
     }
 }
 
+function toggleDelSfAction() {
+    let act = document.getElementById('sel-del-sf-action').value;
+    document.getElementById('div-del-sf-target').style.display = act === 'transfer' ? 'block' : 'none';
+}
+
+function confirmDeleteSubFundResolve() {
+    let sfId = parseInt(document.getElementById('hid-del-sf-id').value);
+    let act = document.getElementById('sel-del-sf-action').value;
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === currentQuyDetailId);
+    if(!q) return;
+    
+    let sf = q.subFunds.find(x => x.id === sfId);
+    if(!sf) return;
+    let amt = sf.v;
+
+    if(act === 'transfer') {
+        let targetVal = document.getElementById('sel-del-sf-target').value;
+        if(!targetVal) { alert("Lỗi: Bạn chưa chọn quỹ con đích hợp lệ!"); return; }
+        let [pId, tsfId] = targetVal.split('_').map(Number);
+        
+        let targetParent = (masterData[currentDay]?.quy || []).find(x => x.id === pId);
+        let targetSf = targetParent?.subFunds.find(x => x.id === tsfId);
+        if(!targetParent || !targetSf) return;
+        
+        if(targetParent.id !== q.id) {
+            // Chuyển khác Quỹ Mẹ: Trừ luân phiên các kho thực tế của quỹ cũ, đắp sang quỹ mới
+            let remainingToMove = amt;
+            q.storages.forEach(s => {
+                if(remainingToMove <= 0) return;
+                let moveAmt = Math.min(s.v, remainingToMove);
+                s.v -= moveAmt;
+                remainingToMove -= moveAmt;
+                
+                // Thêm vào quỹ đích
+                let tStore = targetParent.storages.find(ts => ts.name === s.name);
+                if(tStore) tStore.v += moveAmt;
+                else targetParent.storages.push({name: s.name, v: moveAmt, isLinked: false});
+                
+                // Ghi Lịch sử kho mới
+                if(!targetParent.history) targetParent.history = [];
+                targetParent.history.push({ d: currentDay, type: 'nop', amount: moveAmt, storage: s.name, subFund: targetSf.name, reason: `Điều chuyển do xóa Quỹ con từ [${q.name}]` });
+            });
+            
+            if(!q.history) q.history = [];
+            q.history.push({ d: currentDay, type: 'rut', amount: amt, storage: 'Nhiều kho', subFund: sf.name, reason: `Xóa quỹ con, chuyển tiền sang [${targetParent.name}]` });
+        } else {
+            // Chuyển cùng Quỹ Mẹ
+            if(!q.history) q.history = [];
+            q.history.push({ d: currentDay, type: 'init', amount: amt, storage: 'Tiền nội bộ', subFund: targetSf.name, reason: `Điều chuyển do xóa quỹ con: ${sf.name}` });
+        }
+        
+        // Cộng tiền cho Quỹ con đích
+        targetSf.v += amt;
+    } else {
+        // Trả về Quỹ Mẹ
+        if(!q.history) q.history = [];
+        q.history.push({ d: currentDay, type: 'init', amount: amt, storage: 'Tiền nội bộ', subFund: null, reason: `Hoàn trả tiền chưa phân bổ do xóa Quỹ con: ${sf.name}` });
+    }
+
+    // Xóa quỹ con hoàn tất
+    q.subFunds = q.subFunds.filter(x => x.id !== sfId);
+    saveMaster(); loadDay();
+    closeModal('modal-subfund-delete-resolve');
+    openDetailQuy(currentQuyDetailId);
+    switchQuyDetailTab('sub');
+    alert("Đã xử lý số dư và xóa quỹ con thành công!");
+}
 function filterQuyHistory() {
     let q = (masterData[currentDay]?.quy || []).find(x => x.id === currentQuyDetailId); if(!q) return;
     let filterVal = document.getElementById('quy-detail-filter').value;
@@ -3045,39 +3167,60 @@ function confirmMergeQuy() {
     let newStorages = [];
     let totalAmt = 0;
     let mergedNames = [];
+    let newSubFunds = []; // Chứa danh sách quỹ con cho Quỹ mới
     let list = masterData[currentDay].quy;
 
-    // Gộp kho lưu trữ và lịch sử
+    // Gộp kho lưu trữ, biến quỹ mẹ cũ thành quỹ con, và đem quỹ con cũ ngang hàng
     idsToMerge.forEach(id => {
         let q = list.find(x => x.id === id);
         if(q) {
             mergedNames.push(q.name);
+            
+            // 1. Gộp các kho thực tế (Tiền mặt, Ngân hàng)
             q.storages.forEach(s => {
                 let exist = newStorages.find(ns => ns.name === s.name);
                 if(exist) exist.v += s.v;
                 else newStorages.push({name: s.name, v: s.v, isLinked: s.isLinked});
                 totalAmt += s.v;
             });
+
+            // 2. Chuyển các quỹ con bên trong quỹ bị gộp ra ngang hàng
+            let totalSub = 0;
+            (q.subFunds || []).forEach(sf => {
+                totalSub += sf.v;
+                let sfName = sf.name;
+                // Xử lý trùng tên quỹ con nếu có
+                while(newSubFunds.some(x => x.name === sfName)) sfName += " (1)";
+                newSubFunds.push({ id: Date.now() + Math.random(), name: sfName, v: sf.v });
+            });
+
+            // 3. Biến bản thân Quỹ mẹ cũ (phần tiền chưa phân bổ) thành 1 Quỹ con mới
+            let unassigned = getQuyTotalAmt(q) - totalSub;
+            if(unassigned > 0) {
+                let pName = q.name;
+                while(newSubFunds.some(x => x.name === pName)) pName += " (1)";
+                newSubFunds.push({ id: Date.now() + Math.random(), name: pName, v: unassigned });
+            }
         }
     });
 
-    // Lọc bỏ các quỹ đã gộp
+    // Lọc bỏ các quỹ gốc đã bị gộp
     masterData[currentDay].quy = list.filter(q => !idsToMerge.includes(q.id));
 
-    // Khởi tạo quỹ mới
+    // Khởi tạo quỹ mới tổng
     let newQuy = {
         id: Date.now(),
         name: newName,
         date: mergeDate,
         storages: newStorages,
+        subFunds: newSubFunds,
         history: [{ d: mergeDate, type: 'init', amount: totalAmt, storage: 'Nhiều kho', reason: 'Hợp nhất từ các quỹ: ' + mergedNames.join(', ') }]
     };
     masterData[currentDay].quy.push(newQuy);
 
     saveMaster(); loadDay(); closeModal('modal-quy-merge');
-    alert(`Đã gộp thành công ${idsToMerge.length} quỹ thành: ${newName}!`);
+    alert(`Đã gộp thành công! Các quỹ cũ và quỹ con của chúng đã trở thành Quỹ con của [${newName}].`);
 }
-
 // --- MODULE TÁCH QUỸ ---
 // BẮT ĐẦU SỬA: LOGIC TÁCH QUỸ VÀ ĐẨY TIỀN
 function openAllocateSub() {
