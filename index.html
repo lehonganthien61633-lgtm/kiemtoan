@@ -2838,9 +2838,12 @@ function deleteSubFund(sfId) {
         document.getElementById('sel-del-sf-action').value = 'parent';
         toggleDelSfAction();
         
-        // Load danh sách toàn bộ quỹ con trên hệ thống (trừ chính nó)
+        // Load danh sách toàn bộ quỹ con/quỹ mẹ trên hệ thống (trừ chính nó)
         let opts = '';
         (masterData[currentDay]?.quy || []).forEach(parent => {
+            if (parent.id !== q.id) {
+                opts += `<option value="${parent.id}_MAIN">[${parent.name}] (Tiền chung của Quỹ mẹ)</option>`;
+            }
             (parent.subFunds || []).forEach(otherSf => {
                 if(parent.id === q.id && otherSf.id === sfId) return; // Bỏ qua chính nó
                 opts += `<option value="${parent.id}_${otherSf.id}">[${parent.name}] -> Quỹ con: ${otherSf.name}</option>`;
@@ -2850,7 +2853,7 @@ function deleteSubFund(sfId) {
         let targetSel = document.getElementById('sel-del-sf-target');
         targetSel.innerHTML = opts;
         if(opts === '') {
-            targetSel.innerHTML = '<option value="">-- Không có quỹ con nào khác trên hệ thống --</option>';
+            targetSel.innerHTML = '<option value="">-- Không có quỹ nào khác trên hệ thống --</option>';
         }
         
         closeModal('modal-quy-detail'); // Tạm ẩn chi tiết quỹ
@@ -2883,15 +2886,17 @@ function confirmDeleteSubFundResolve() {
 
     if(act === 'transfer') {
         let targetVal = document.getElementById('sel-del-sf-target').value;
-        if(!targetVal) { alert("Lỗi: Bạn chưa chọn quỹ con đích hợp lệ!"); return; }
-        let [pId, tsfId] = targetVal.split('_').map(Number);
+        if(!targetVal) { alert("Lỗi: Bạn chưa chọn đích đến!"); return; }
+        let parts = targetVal.split('_');
+        let pId = parseInt(parts[0]);
+        let tsfId = parts[1] === 'MAIN' ? null : parseInt(parts[1]);
         
         let targetParent = (masterData[currentDay]?.quy || []).find(x => x.id === pId);
-        let targetSf = targetParent?.subFunds.find(x => x.id === tsfId);
-        if(!targetParent || !targetSf) return;
+        let targetSf = tsfId ? targetParent?.subFunds.find(x => x.id === tsfId) : null;
+        if(!targetParent) return;
         
         if(targetParent.id !== q.id) {
-            // Chuyển khác Quỹ Mẹ: Trừ luân phiên các kho thực tế của quỹ cũ, đắp sang quỹ mới
+            // Chuyển khác Quỹ Mẹ
             let remainingToMove = amt;
             q.storages.forEach(s => {
                 if(remainingToMove <= 0) return;
@@ -2906,7 +2911,7 @@ function confirmDeleteSubFundResolve() {
                 
                 // Ghi Lịch sử kho mới
                 if(!targetParent.history) targetParent.history = [];
-                targetParent.history.push({ d: currentDay, type: 'nop', amount: moveAmt, storage: s.name, subFund: targetSf.name, reason: `Điều chuyển do xóa Quỹ con từ [${q.name}]` });
+                targetParent.history.push({ d: currentDay, type: 'nop', amount: moveAmt, storage: s.name, subFund: targetSf ? targetSf.name : null, reason: `Điều chuyển do xóa Quỹ con từ [${q.name}]` });
             });
             
             if(!q.history) q.history = [];
@@ -2914,11 +2919,11 @@ function confirmDeleteSubFundResolve() {
         } else {
             // Chuyển cùng Quỹ Mẹ
             if(!q.history) q.history = [];
-            q.history.push({ d: currentDay, type: 'init', amount: amt, storage: 'Tiền nội bộ', subFund: targetSf.name, reason: `Điều chuyển do xóa quỹ con: ${sf.name}` });
+            q.history.push({ d: currentDay, type: 'init', amount: amt, storage: 'Tiền nội bộ', subFund: targetSf ? targetSf.name : null, reason: `Điều chuyển do xóa quỹ con: ${sf.name}` });
         }
         
-        // Cộng tiền cho Quỹ con đích
-        targetSf.v += amt;
+        // Cộng tiền cho đích (nếu là quỹ con)
+        if(targetSf) targetSf.v += amt;
     } else {
         // Trả về Quỹ Mẹ
         if(!q.history) q.history = [];
@@ -3971,11 +3976,13 @@ function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạ
 // ===============================================
 // LOGIC CHUYỂN TIỀN CÓ HỖ TRỢ QUỸ CON
 // ===============================================
+// ===============================================
+// LOGIC CHUYỂN TIỀN CÓ HỖ TRỢ QUỸ CON VÀ NỘI BỘ
+// ===============================================
 function openTransferQuy(id) {
     let list = masterData[currentDay]?.quy || [];
     let q = list.find(x => x.id === id);
     if(!q) return;
-    if(list.length < 2) { alert("Cần ít nhất 2 quỹ để thực hiện chuyển tiền!"); return; }
 
     document.getElementById('hid-transfer-source-id').value = id;
     document.getElementById('transfer-source-name').innerText = q.name + ` (Khả dụng: ${formatTien(getQuyTotalAmt(q))} đ)`;
@@ -3990,9 +3997,12 @@ function openTransferQuy(id) {
     }
     document.getElementById('sel-transfer-source-sub').innerHTML = srcSubHtml;
 
-    // Nạp danh sách Quỹ Đích
+    // Nạp danh sách Quỹ Đích (Bao gồm cả Quỹ mẹ hiện tại)
     let targetHtml = '';
-    list.forEach(tq => { if(tq.id !== id) targetHtml += `<option value="${tq.id}">${tq.name}</option>`; });
+    list.forEach(tq => { 
+        let suffix = tq.id === id ? ' (Chuyển nội bộ quỹ này)' : '';
+        targetHtml += `<option value="${tq.id}">${tq.name}${suffix}</option>`; 
+    });
     document.getElementById('sel-transfer-target-id').innerHTML = targetHtml;
     
     changeTransferTarget(); 
@@ -4035,6 +4045,11 @@ function confirmTransferQuy() {
     let transDate = document.getElementById('in-transfer-date').value;
 
     if(!transDate || amt <= 0) { alert("Vui lòng nhập số tiền và ngày hợp lệ!"); return; }
+    
+    // Ngăn chặn chuyển tiền nếu các thông số đích y hệt nguồn (không làm gì cả)
+    if (srcId === tgtId && srcStorage === tgtStorage && srcSub === tgtSub) {
+        alert("Lỗi: Nguồn và đích hoàn toàn giống nhau, không có sự luân chuyển!"); return;
+    }
 
     let qSrc = (masterData[currentDay]?.quy || []).find(x => x.id === srcId);
     let qTgt = (masterData[currentDay]?.quy || []).find(x => x.id === tgtId);
@@ -4059,17 +4074,16 @@ function confirmTransferQuy() {
     // Trừ tiền Quỹ Nguồn tổng
     qSrc.storages[srcSIdx].v -= amt;
     if(!qSrc.history) qSrc.history = [];
-    qSrc.history.push({ d: transDate, type: 'rut', amount: amt, storage: srcStorage, subFund: srcSub || null, reason: `Luân chuyển sang quỹ: ${qTgt.name}` + (tgtSub ? ` (Vào quỹ con: ${tgtSub})` : '') });
+    qSrc.history.push({ d: transDate, type: 'rut', amount: amt, storage: srcStorage, subFund: srcSub || null, reason: `Luân chuyển sang: ${qTgt.name}` + (tgtSub ? ` (Vào: ${tgtSub})` : '') });
 
     // Cộng tiền Quỹ Đích tổng
     let tgtSIdx = qTgt.storages.findIndex(s => s.name === tgtStorage);
     if(tgtSIdx > -1) { qTgt.storages[tgtSIdx].v += amt; } else { qTgt.storages.push({name: tgtStorage, v: amt, isLinked: false}); }
     if(!qTgt.history) qTgt.history = [];
-    qTgt.history.push({ d: transDate, type: 'nop', amount: amt, storage: tgtStorage, subFund: tgtSub || null, reason: `Nhận luân chuyển từ quỹ: ${qSrc.name}` + (srcSub ? ` (Từ quỹ con: ${srcSub})` : '') });
+    qTgt.history.push({ d: transDate, type: 'nop', amount: amt, storage: tgtStorage, subFund: tgtSub || null, reason: `Nhận luân chuyển từ: ${qSrc.name}` + (srcSub ? ` (Từ: ${srcSub})` : '') });
 
     saveMaster(); loadDay(); closeModal('modal-quy-transfer'); alert("Luân chuyển tiền thành công!");
 }
-
 // ===============================================
 // LOGIC TÁCH QUỸ (ĐÃ SỬA LỖI HOẠT ĐỘNG)
 // ===============================================
