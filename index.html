@@ -729,7 +729,10 @@ body * { visibility: hidden; }
 </div>
 
 <div id="quy-tab-sub" style="display:none;">
-    <div style="text-align:right; margin-bottom:10px;"><button class="btn-sm" style="background:var(--accent); color:white;" onclick="addSubFund()">+ Tạo Quỹ Con</button></div>
+    <div style="text-align:right; margin-bottom:10px; display:flex; justify-content:flex-end; gap:10px;">
+        <button class="btn-sm" style="background:var(--info); color:white; border:none;" onclick="openAllocateSub()">Phân bổ tiền vào Quỹ Con</button>
+        <button class="btn-sm" style="background:var(--accent); color:white; border:none;" onclick="addSubFund()">+ Tạo Quỹ Con</button>
+    </div>
     <table class="data-table" style="margin-bottom: 10px;">
         <thead><tr style="background:#e9ecef"><th>Tên Quỹ Con</th><th style="text-align:right;">Số Dư (VNĐ)</th><th style="width:120px;">Hành Động</th></tr></thead>
         <tbody id="quy-sub-tbody"></tbody>
@@ -1031,57 +1034,56 @@ body * { visibility: hidden; }
     </div>
 </div>
 
+<div class="modal-overlay" id="modal-quy-allocate-sub">
+    <div class="modal-content" style="max-width:450px;">
+        <div class="modal-title">PHÂN BỔ VÀO QUỸ CON</div>
+        <div class="form-group">
+            <label>Chọn Quỹ con để đẩy tiền vào</label>
+            <select id="sel-allocate-sub" style="width: 100%; padding: 10px;"></select>
+        </div>
+        <div class="form-group">
+            <label>Số tiền phân bổ (VNĐ)</label>
+            <input type="text" id="in-allocate-sub-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)">
+        </div>
+        <div style="font-size:13px; color:var(--danger); font-style:italic; font-weight:bold;" id="lbl-allocate-unassigned">Số dư chưa phân bổ: 0 đ</div>
+        <div style="display:flex; gap:15px; margin-top:30px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-allocate-sub')">HỦY BỎ</button>
+            <button class="btn-main" style="background:var(--info); color:#fff; border-color:var(--info); flex:2" onclick="confirmAllocateSub()">XÁC NHẬN ĐẨY TIỀN</button>
+        </div>
+    </div>
+</div>
+
 <div class="modal-overlay" id="modal-quy-split">
     <div class="modal-content" style="max-width:500px;">
         <div class="modal-title">TÁCH QUỸ</div>
-        <div class="form-group">
-            <label>Quỹ gốc hiện tại</label>
-            <div class="readonly-text" style="text-align:left; color:var(--primary);" id="split-quy-origin-name"></div>
-        </div>
-        <div class="form-group">
-            <label>Tổng tiền khả dụng</label>
-            <div class="readonly-text" style="text-align:left; color:var(--danger); font-size:20px;" id="split-quy-origin-amt"></div>
-        </div>
-
+        <div class="form-group"><label>Quỹ gốc hiện tại</label><div class="readonly-text" style="text-align:left; color:var(--primary);" id="split-quy-origin-name"></div></div>
+        <div class="form-group"><label>Tổng tiền khả dụng</label><div class="readonly-text" style="text-align:left; color:var(--danger); font-size:20px;" id="split-quy-origin-amt"></div></div>
         <div class="form-group">
             <label>Lựa chọn hình thức tách quỹ</label>
             <select id="sel-split-type" onchange="changeSplitType()" style="font-weight:bold; color:var(--info); padding:10px;">
-                <option value="1">Loại 1: Trích một phần thành Quỹ phụ (Giữ nguyên Quỹ gốc)</option>
+                <option value="1">Loại 1: Trích một phần thành Quỹ độc lập (Giữ nguyên Quỹ gốc)</option>
                 <option value="2">Loại 2: Giải thể Quỹ gốc & Tách rãnh thành 2 Quỹ hoàn toàn mới</option>
             </select>
         </div>
-
-        <div class="form-group">
-            <label>Kho lưu trữ muốn rút tiền ra để tách</label>
-            <select id="sel-split-storage" style="padding:10px;"></select>
-        </div>
-
-        <div class="form-group">
-            <label>Số tiền trích ra (VNĐ)</label>
-            <input type="text" id="in-split-amt" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)">
-        </div>
-
-        <div class="form-group">
-            <label>Ngày tách quỹ</label>
-            <input type="date" id="in-split-date">
-        </div>
+        <div class="form-group"><label>Kho lưu trữ muốn rút tiền ra để tách</label><select id="sel-split-storage" style="padding:10px;"></select></div>
+        <div class="form-group"><label>Ngày tách quỹ</label><input type="date" id="in-split-date"></div>
 
         <div id="box-split-type-1" style="background:#f4f9f4; padding:15px; border:1px solid var(--success); border-radius:4px;">
-            <div class="form-group" style="margin-bottom:0;">
-                <label>Tên Quỹ phụ mới được lập</label>
+            <div class="form-group">
+                <label>Chọn nguồn tách</label>
+                <select id="sel-split-target-1" onchange="changeSplitTarget()" style="padding:10px;"></select>
+            </div>
+            <div class="form-group"><label>Số tiền trích ra (VNĐ)</label><input type="text" id="in-split-amt" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)"></div>
+            <div class="form-group" style="margin-bottom:0;" id="div-split-new-name">
+                <label>Tên Quỹ mới được lập</label>
                 <input type="text" id="in-split-new-name1" placeholder="VD: Quỹ sinh hoạt con">
             </div>
         </div>
 
         <div id="box-split-type-2" style="display:none; background:#fffdf5; padding:15px; border:1px solid var(--accent); border-radius:4px;">
-            <div class="form-group">
-                <label>Tên Quỹ mới số 1 (Nhận phần tiền trích ra)</label>
-                <input type="text" id="in-split-new-name2-1" placeholder="VD: Quỹ Đầu Tư A">
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-                <label>Tên Quỹ mới số 2 (Nhận toàn bộ phần tiền còn lại)</label>
-                <input type="text" id="in-split-new-name2-2" placeholder="VD: Quỹ Tiết Kiệm B">
-            </div>
+            <div class="form-group"><label>Số tiền trích cho nhánh 1 (VNĐ)</label><input type="text" id="in-split-amt-2" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)"></div>
+            <div class="form-group"><label>Tên Quỹ mới số 1 (Nhận phần tiền trích ra)</label><input type="text" id="in-split-new-name2-1" placeholder="VD: Quỹ Đầu Tư A"></div>
+            <div class="form-group" style="margin-bottom:0;"><label>Tên Quỹ mới số 2 (Nhận toàn bộ phần tiền còn lại)</label><input type="text" id="in-split-new-name2-2" placeholder="VD: Quỹ Tiết Kiệm B"></div>
         </div>
 
         <input type="hidden" id="hid-split-quy-id">
@@ -2976,6 +2978,48 @@ function confirmMergeQuy() {
 }
 
 // --- MODULE TÁCH QUỸ ---
+// BẮT ĐẦU SỬA: LOGIC TÁCH QUỸ VÀ ĐẨY TIỀN
+function openAllocateSub() {
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === currentQuyDetailId);
+    if(!q || !q.subFunds || q.subFunds.length === 0) {
+        alert("Vui lòng tạo Quỹ con trước khi phân bổ tiền!"); return;
+    }
+    let totalStorage = getQuyTotalAmt(q);
+    let totalSub = q.subFunds.reduce((a, b) => a + b.v, 0);
+    let unassigned = totalStorage - totalSub;
+    
+    let sel = document.getElementById('sel-allocate-sub');
+    sel.innerHTML = q.subFunds.map(sf => `<option value="${sf.id}">${sf.name} (Đang có: ${formatTien(sf.v)}đ)</option>`).join('');
+    
+    document.getElementById('in-allocate-sub-val').value = "";
+    document.getElementById('lbl-allocate-unassigned').innerText = `Số tiền chung chưa phân bổ: ${formatTien(unassigned)} đ`;
+    document.getElementById('lbl-allocate-unassigned').dataset.max = unassigned;
+    
+    openModal('modal-quy-allocate-sub');
+}
+
+function confirmAllocateSub() {
+    let amt = cleanTien(document.getElementById('in-allocate-sub-val').value);
+    let unassigned = parseInt(document.getElementById('lbl-allocate-unassigned').dataset.max);
+    let sfId = parseInt(document.getElementById('sel-allocate-sub').value);
+    
+    if(amt <= 0) { alert("Vui lòng nhập số tiền hợp lệ!"); return; }
+    if(amt > unassigned) { alert("Lỗi: Số dư chung không đủ. Vui lòng nộp thêm tiền vào quỹ hoặc rút bớt từ quỹ con khác!"); return; }
+    
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === currentQuyDetailId);
+    if(q) {
+        let sf = q.subFunds.find(x => x.id === sfId);
+        if(sf) {
+            sf.v += amt;
+            if(!q.history) q.history = [];
+            q.history.push({ d: currentDay, type: 'init', amount: amt, storage: 'Tiền nội bộ', subFund: sf.name, reason: 'Đẩy tiền từ quỹ chung vào quỹ con' });
+            saveMaster(); closeModal('modal-quy-allocate-sub'); openDetailQuy(currentQuyDetailId); switchQuyDetailTab('sub');
+            alert("Đã đẩy tiền vào quỹ con thành công!");
+        }
+    }
+}
+
+// --- MODULE TÁCH QUỸ ---
 function openSplitQuy(id) {
     let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); if(!q) return;
     
@@ -2986,7 +3030,17 @@ function openSplitQuy(id) {
     let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
     document.getElementById('sel-split-storage').innerHTML = storageHtml;
 
+    // Load các Quỹ con hiện tại làm Mục tiêu trích xuất
+    let targetHtml = `<option value="NEW">-- Tạo Quỹ mới hoàn toàn --</option>`;
+    if(q.subFunds) {
+        q.subFunds.forEach(sf => {
+            if(sf.v > 0) targetHtml += `<option value="${sf.id}">Tách từ Quỹ con: ${sf.name} (${formatTien(sf.v)}đ)</option>`;
+        });
+    }
+    document.getElementById('sel-split-target-1').innerHTML = targetHtml;
+
     document.getElementById('in-split-amt').value = "";
+    document.getElementById('in-split-amt-2').value = "";
     document.getElementById('in-split-date').value = currentDay;
     document.getElementById('in-split-date').max = getGMT7Date();
     document.getElementById('in-split-new-name1').value = "";
@@ -2994,7 +3048,26 @@ function openSplitQuy(id) {
     document.getElementById('in-split-new-name2-2').value = "";
 
     changeSplitType(); 
+    changeSplitTarget();
     openModal('modal-quy-split');
+}
+
+function changeSplitTarget() {
+    let val = document.getElementById('sel-split-target-1').value;
+    if(val === 'NEW') {
+        document.getElementById('div-split-new-name').style.display = 'block';
+        document.getElementById('in-split-amt').disabled = false;
+    } else {
+        document.getElementById('div-split-new-name').style.display = 'none';
+        // Tự điền số tiền của Quỹ con
+        let q = (masterData[currentDay]?.quy || []).find(x => x.id === parseInt(document.getElementById('hid-split-quy-id').value));
+        if(q) {
+            let sf = q.subFunds.find(x => x.id === parseInt(val));
+            if(sf) {
+                document.getElementById('in-split-amt').value = formatTien(sf.v);
+            }
+        }
+    }
 }
 
 function changeSplitType() {
@@ -3011,28 +3084,46 @@ function confirmSplitQuy() {
 
     let splitDate = document.getElementById('in-split-date').value;
     let storageName = document.getElementById('sel-split-storage').value;
-    let amt = cleanTien(document.getElementById('in-split-amt').value);
+    
+    // Lấy số tiền từ ô Input tương ứng với loại tách
+    let amtStr = type === '1' ? document.getElementById('in-split-amt').value : document.getElementById('in-split-amt-2').value;
+    let amt = cleanTien(amtStr);
 
     if(!splitDate || amt <= 0) { alert("Vui lòng nhập số tiền và chọn ngày hợp lệ!"); return; }
 
     let storageIndex = q.storages.findIndex(s => s.name === storageName);
     if(storageIndex === -1 || q.storages[storageIndex].v < amt) {
-        alert("Lỗi: Số dư trong kho lưu trữ đang chọn không đủ để trích tiền!"); return;
+        alert("Lỗi: Số dư trong Kho lưu trữ đang chọn không đủ để rút tiền ra tách!"); return;
     }
 
     if(type === '1') {
-        // Tách nhánh nhỏ - Vẫn giữ lại Quỹ Gốc
-        let newName = document.getElementById('in-split-new-name1').value.trim();
-        if(!newName) { alert("Vui lòng nhập tên cho quỹ phụ mới!"); return; }
+        let targetVal = document.getElementById('sel-split-target-1').value;
+        let newName = "";
+        let sfReason = "";
+
+        if(targetVal === 'NEW') {
+            newName = document.getElementById('in-split-new-name1').value.trim();
+            if(!newName) { alert("Vui lòng nhập tên cho quỹ phụ mới!"); return; }
+        } else {
+            let sfId = parseInt(targetVal);
+            let sf = q.subFunds.find(x => x.id === sfId);
+            if(!sf) return;
+            if(amt > sf.v) { alert("Lỗi: Số tiền trích vượt quá số dư của Quỹ con này!"); return; }
+            newName = sf.name; 
+            sf.v -= amt; 
+            sfReason = ` (Tách độc lập từ quỹ con: ${newName})`;
+            if(sf.v === 0) q.subFunds = q.subFunds.filter(x => x.id !== sfId); // Xóa nếu rút cạn
+        }
 
         q.storages[storageIndex].v -= amt;
         if(!q.history) q.history = [];
-        q.history.push({ d: splitDate, type: 'rut', amount: amt, storage: storageName, reason: 'Trích xuất để mở nhánh quỹ: ' + newName });
+        q.history.push({ d: splitDate, type: 'rut', amount: amt, storage: storageName, reason: 'Trích xuất để tách quỹ: ' + newName + sfReason });
 
         masterData[currentDay].quy.push({
             id: Date.now(), name: newName, date: splitDate,
             storages: [{name: storageName, v: amt, isLinked: q.storages[storageIndex].isLinked}],
-            history: [{ d: splitDate, type: 'init', amount: amt, storage: storageName, reason: 'Nhánh phụ tách từ quỹ: ' + q.name }]
+            subFunds: [],
+            history: [{ d: splitDate, type: 'init', amount: amt, storage: storageName, reason: 'Tách độc lập từ quỹ: ' + q.name }]
         });
 
     } else {
@@ -3042,7 +3133,7 @@ function confirmSplitQuy() {
         if(!newName1 || !newName2) { alert("Vui lòng nhập đầy đủ tên cho cả 2 quỹ mới!"); return; }
 
         let remainTotal = getQuyTotalAmt(q) - amt;
-        if(remainTotal <= 0) { alert("Lỗi: Tiền trích ra phải NHỎ HƠN tổng tiền quỹ, để quỹ thứ 2 có số dư hoạt động!"); return; }
+        if(remainTotal <= 0) { alert("Lỗi: Tiền trích ra phải NHỎ HƠN tổng tiền quỹ gốc, để nhánh số 2 có số dư hoạt động!"); return; }
 
         let quy1Storages = [{name: storageName, v: amt, isLinked: q.storages[storageIndex].isLinked}];
         let quy2Storages = [];
@@ -3052,22 +3143,26 @@ function confirmSplitQuy() {
             if(v > 0) quy2Storages.push({name: s.name, v: v, isLinked: s.isLinked});
         });
 
-        // Hủy quỹ cũ
+        // Kế thừa các quỹ con nếu tách giải thể
         masterData[currentDay].quy = masterData[currentDay].quy.filter(x => x.id !== id);
 
-        // Tạo 2 quỹ mới (ID cách nhau 1 đơn vị để tránh trùng)
         masterData[currentDay].quy.push({
             id: Date.now(), name: newName1, date: splitDate,
-            storages: quy1Storages,
-            history: [{ d: splitDate, type: 'init', amount: amt, storage: storageName, reason: 'Tách rãnh trực tiếp từ: ' + q.name }]
+            storages: quy1Storages, subFunds: [],
+            history: [{ d: splitDate, type: 'init', amount: amt, storage: storageName, reason: 'Tách giải thể từ: ' + q.name }]
         });
         
         masterData[currentDay].quy.push({
             id: Date.now() + 1, name: newName2, date: splitDate,
-            storages: quy2Storages,
-            history: [{ d: splitDate, type: 'init', amount: remainTotal, storage: 'Nhiều kho', reason: 'Tách rãnh trực tiếp từ: ' + q.name }]
+            storages: quy2Storages, subFunds: q.subFunds || [],
+            history: [{ d: splitDate, type: 'init', amount: remainTotal, storage: 'Nhiều kho', reason: 'Nhận phần còn lại từ giải thể: ' + q.name }]
         });
     }
+
+    saveMaster(); loadDay(); closeModal('modal-quy-split');
+    alert("Thực hiện tách quỹ thành công!");
+}
+// KẾT THÚC SỬA
 
     saveMaster(); loadDay(); closeModal('modal-quy-split');
     alert("Thực hiện tách quỹ thành công!");
