@@ -1052,7 +1052,40 @@ body * { visibility: hidden; }
         </div>
     </div>
 </div>
-
+<div class="modal-overlay" id="modal-quy-transfer">
+    <div class="modal-content" style="max-width:500px;">
+        <div class="modal-title">LUÂN CHUYỂN TIỀN GIỮA CÁC QUỸ</div>
+        <div class="form-group">
+            <label>Quỹ nguồn (Rút tiền)</label>
+            <div class="readonly-text" style="text-align:left; color:var(--primary);" id="transfer-source-name"></div>
+            <input type="hidden" id="hid-transfer-source-id">
+        </div>
+        <div class="form-group">
+            <label>Từ nơi lưu trữ</label>
+            <select id="sel-transfer-source-storage" style="padding:10px;"></select>
+        </div>
+        <div class="form-group">
+            <label>Quỹ đích (Nhận tiền)</label>
+            <select id="sel-transfer-target-id" onchange="changeTransferTarget()" style="padding:10px; border-color:var(--success);"></select>
+        </div>
+        <div class="form-group">
+            <label>Vào nơi lưu trữ (Của quỹ đích)</label>
+            <select id="sel-transfer-target-storage" style="padding:10px;"></select>
+        </div>
+        <div class="form-group">
+            <label>Số tiền chuyển (VNĐ)</label>
+            <input type="text" id="in-transfer-amt" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--info)">
+        </div>
+        <div class="form-group">
+            <label>Ngày luân chuyển</label>
+            <input type="date" id="in-transfer-date">
+        </div>
+        <div style="display:flex; gap:15px; margin-top:30px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-transfer')">HỦY BỎ</button>
+            <button class="btn-main" style="background:var(--info); color:#fff; border-color:var(--info); flex:2" onclick="confirmTransferQuy()">XÁC NHẬN CHUYỂN</button>
+        </div>
+    </div>
+</div>
 <div class="modal-overlay" id="modal-quy-split">
     <div class="modal-content" style="max-width:500px;">
         <div class="modal-title">TÁCH QUỸ</div>
@@ -1081,10 +1114,14 @@ body * { visibility: hidden; }
         </div>
 
         <div id="box-split-type-2" style="display:none; background:#fffdf5; padding:15px; border:1px solid var(--accent); border-radius:4px;">
-            <div class="form-group"><label>Số tiền trích cho nhánh 1 (VNĐ)</label><input type="text" id="in-split-amt-2" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)"></div>
-            <div class="form-group"><label>Tên Quỹ mới số 1 (Nhận phần tiền trích ra)</label><input type="text" id="in-split-new-name2-1" placeholder="VD: Quỹ Đầu Tư A"></div>
-            <div class="form-group" style="margin-bottom:0;"><label>Tên Quỹ mới số 2 (Nhận toàn bộ phần tiền còn lại)</label><input type="text" id="in-split-new-name2-2" placeholder="VD: Quỹ Tiết Kiệm B"></div>
-        </div>
+    <div style="font-weight:bold; margin-bottom:10px;">Phân bổ tiền giải thể (Khả dụng: <span id="split2-total-available" style="color:var(--danger)">0</span> đ)</div>
+    <div id="split2-rows"></div>
+    <button class="btn-sm" style="background:var(--success); color:#fff; margin-top:10px; border:none;" onclick="addSplit2Row()">+ Thêm dòng phân bổ</button>
+    <div style="margin-top:15px; text-align:right; font-weight:bold;">
+        Còn lại chưa phân bổ: <span id="split2-remain" style="color:var(--primary); font-size:18px;">0</span> đ
+        <br><span style="font-size:12px; color:#888; font-style:italic;">(Tiền dư sẽ tự gom thành 1 quỹ riêng)</span>
+    </div>
+</div>
 
         <input type="hidden" id="hid-split-quy-id">
         <div style="display:flex; gap:15px; margin-top:30px;">
@@ -2583,6 +2620,7 @@ htmlContent += `
     <div class="quy-date">Ngày lập: ${vnDate(q.date)}</div>
     <div class="quy-amount">${formatTien(totalAmt)} đ</div>
     <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:15px;">
+        <button class="btn-sm" style="color:#fff; background:#0056b3; border-color:#0056b3; flex:1; min-width:80px;" onclick="openTransferQuy(${q.id})">Chuyển tiền</button>
         <button class="btn-sm" style="color:var(--info); border-color:var(--info); flex:1; min-width:90px;" onclick="openEditQuyStorage(${q.id})">Phân bổ kho</button>
         <button class="btn-sm" style="color:var(--primary); border-color:var(--primary); flex:1; min-width:80px;" onclick="openNopQuy(${q.id})">Nộp thêm</button>
         <button class="btn-sm" style="color:white; background:var(--danger); border-color:var(--danger); flex:1; min-width:80px;" onclick="openRutQuy(${q.id})">Rút tiền</button>
@@ -3084,22 +3122,17 @@ function confirmSplitQuy() {
 
     let splitDate = document.getElementById('in-split-date').value;
     let storageName = document.getElementById('sel-split-storage').value;
-    
-    // Lấy số tiền từ ô Input tương ứng với loại tách
-    let amtStr = type === '1' ? document.getElementById('in-split-amt').value : document.getElementById('in-split-amt-2').value;
-    let amt = cleanTien(amtStr);
-
-    if(!splitDate || amt <= 0) { alert("Vui lòng nhập số tiền và chọn ngày hợp lệ!"); return; }
-
     let storageIndex = q.storages.findIndex(s => s.name === storageName);
-    if(storageIndex === -1 || q.storages[storageIndex].v < amt) {
-        alert("Lỗi: Số dư trong Kho lưu trữ đang chọn không đủ để rút tiền ra tách!"); return;
-    }
+    
+    if(!splitDate) { alert("Vui lòng chọn ngày tách!"); return; }
 
     if(type === '1') {
+        let amt = cleanTien(document.getElementById('in-split-amt').value);
+        if(amt <= 0) { alert("Nhập số tiền trích hợp lệ!"); return; }
+        if(storageIndex === -1 || q.storages[storageIndex].v < amt) { alert("Kho không đủ tiền để rút ra tách!"); return; }
+
         let targetVal = document.getElementById('sel-split-target-1').value;
-        let newName = "";
-        let sfReason = "";
+        let newName = "", sfReason = "";
 
         if(targetVal === 'NEW') {
             newName = document.getElementById('in-split-new-name1').value.trim();
@@ -3108,60 +3141,94 @@ function confirmSplitQuy() {
             let sfId = parseInt(targetVal);
             let sf = q.subFunds.find(x => x.id === sfId);
             if(!sf) return;
-            if(amt > sf.v) { alert("Lỗi: Số tiền trích vượt quá số dư của Quỹ con này!"); return; }
+            if(amt > sf.v) { alert("Số tiền trích vượt quá số dư của Quỹ con này!"); return; }
             newName = sf.name; 
             sf.v -= amt; 
             sfReason = ` (Tách độc lập từ quỹ con: ${newName})`;
-            if(sf.v === 0) q.subFunds = q.subFunds.filter(x => x.id !== sfId); // Xóa nếu rút cạn
+            if(sf.v === 0) q.subFunds = q.subFunds.filter(x => x.id !== sfId); 
         }
 
         q.storages[storageIndex].v -= amt;
         if(!q.history) q.history = [];
-        q.history.push({ d: splitDate, type: 'rut', amount: amt, storage: storageName, reason: 'Trích xuất để tách quỹ: ' + newName + sfReason });
+        q.history.push({ d: splitDate, type: 'rut', amount: amt, storage: storageName, reason: 'Trích tách quỹ: ' + newName + sfReason });
 
         masterData[currentDay].quy.push({
             id: Date.now(), name: newName, date: splitDate,
-            storages: [{name: storageName, v: amt, isLinked: q.storages[storageIndex].isLinked}],
-            subFunds: [],
-            history: [{ d: splitDate, type: 'init', amount: amt, storage: storageName, reason: 'Tách độc lập từ quỹ: ' + q.name }]
+            storages: [{name: storageName, v: amt, isLinked: q.storages[storageIndex].isLinked}], subFunds: [],
+            history: [{ d: splitDate, type: 'init', amount: amt, storage: storageName, reason: 'Tách độc lập từ: ' + q.name }]
         });
 
     } else {
-        // Giải thể Quỹ gốc -> Tách rãnh thành 2 quỹ mới hoàn toàn
-        let newName1 = document.getElementById('in-split-new-name2-1').value.trim();
-        let newName2 = document.getElementById('in-split-new-name2-2').value.trim();
-        if(!newName1 || !newName2) { alert("Vui lòng nhập đầy đủ tên cho cả 2 quỹ mới!"); return; }
+        // TÁCH LOẠI 2: GIẢI THỂ NHIỀU DÒNG
+        let totalAvail = getQuyTotalAmt(q);
+        let used = 0, newFundsConfig = [], hasError = false;
 
-        let remainTotal = getQuyTotalAmt(q) - amt;
-        if(remainTotal <= 0) { alert("Lỗi: Tiền trích ra phải NHỎ HƠN tổng tiền quỹ gốc, để nhánh số 2 có số dư hoạt động!"); return; }
+        document.querySelectorAll('.split2-row').forEach(row => {
+            let targetType = row.querySelector('.sel-split2-target').value;
+            let amt = cleanTien(row.querySelector('.in-split2-amt').value);
+            if(amt <= 0) return;
 
-        let quy1Storages = [{name: storageName, v: amt, isLinked: q.storages[storageIndex].isLinked}];
-        let quy2Storages = [];
-        
-        q.storages.forEach(s => {
-            let v = (s.name === storageName) ? (s.v - amt) : s.v;
-            if(v > 0) quy2Storages.push({name: s.name, v: v, isLinked: s.isLinked});
+            let name = "", inheritSub = null;
+            if(targetType === 'NEW') {
+                name = row.querySelector('.in-split2-name').value.trim();
+                if(!name) { alert("Có quỹ mới chưa được đặt tên!"); hasError = true; return; }
+            } else {
+                let sfId = parseInt(targetType.replace('SUB_', ''));
+                let sf = q.subFunds.find(x => x.id === sfId);
+                if(sf) { name = sf.name; inheritSub = sf; } else { hasError = true; return; }
+            }
+            used += amt;
+            newFundsConfig.push({ name: name, amt: amt, subRef: inheritSub });
         });
 
-        // Kế thừa các quỹ con nếu tách giải thể
+        if(hasError) return;
+        if(newFundsConfig.length === 0) { alert("Chưa phân bổ số tiền nào!"); return; }
+        if(used > totalAvail) { alert("Tổng tiền phân bổ đã vượt quá khả dụng của quỹ!"); return; }
+
+        // Tiến hành giải thể
         masterData[currentDay].quy = masterData[currentDay].quy.filter(x => x.id !== id);
 
-        masterData[currentDay].quy.push({
-            id: Date.now(), name: newName1, date: splitDate,
-            storages: quy1Storages, subFunds: [],
-            history: [{ d: splitDate, type: 'init', amount: amt, storage: storageName, reason: 'Tách giải thể từ: ' + q.name }]
+        // Tạo quỹ nhánh
+        newFundsConfig.forEach((cfg, idx) => {
+            let initialAmt = cfg.amt;
+            let reasonStr = 'Tách giải thể từ: ' + q.name;
+            if(cfg.subRef) {
+                initialAmt += cfg.subRef.v;
+                reasonStr += ` (Kế thừa quỹ con +${formatTien(cfg.subRef.v)}đ)`;
+            }
+            masterData[currentDay].quy.push({
+                id: Date.now() + idx, name: cfg.name, date: splitDate,
+                storages: [{name: storageName, v: initialAmt, isLinked: q.storages[storageIndex].isLinked}], subFunds: [],
+                history: [{ d: splitDate, type: 'init', amount: initialAmt, storage: storageName, reason: reasonStr }]
+            });
         });
-        
-        masterData[currentDay].quy.push({
-            id: Date.now() + 1, name: newName2, date: splitDate,
-            storages: quy2Storages, subFunds: q.subFunds || [],
-            history: [{ d: splitDate, type: 'init', amount: remainTotal, storage: 'Nhiều kho', reason: 'Nhận phần còn lại từ giải thể: ' + q.name }]
-        });
+
+        // Gom phần dư thành quỹ riêng
+        let remain = totalAvail - used;
+        if(remain > 0) {
+            masterData[currentDay].quy.push({
+                id: Date.now() + 999, name: q.name + ' (Phần dư)', date: splitDate,
+                storages: [{name: storageName, v: remain, isLinked: q.storages[storageIndex].isLinked}], subFunds: [],
+                history: [{ d: splitDate, type: 'init', amount: remain, storage: storageName, reason: 'Tiền dư sau giải thể: ' + q.name }]
+            });
+        }
     }
 
     saveMaster(); loadDay(); closeModal('modal-quy-split');
     alert("Thực hiện tách quỹ thành công!");
 }
+
+// Bổ sung code để hiển thị logic mới khi bấm "Tách Quỹ"
+const originalOpenSplitQuy = openSplitQuy;
+openSplitQuy = function(id) {
+    originalOpenSplitQuy(id);
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === id);
+    if(q) {
+        document.getElementById('split2-total-available').innerText = formatTien(getQuyTotalAmt(q));
+        document.getElementById('split2-rows').innerHTML = '';
+        addSplit2Row(); addSplit2Row(); // Sinh sẵn 2 dòng
+    }
+};
 // KẾT THÚC SỬA
 
 function confirmDeleteQuy() {
@@ -3695,7 +3762,113 @@ function formatSoLuong(i) { i.value = i.value.replace(/\D/g, ''); }
 function vnDate(s) { if(!s) return "--"; let p = s.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
 function changeDate() { currentDay = document.getElementById('header-date-picker').value; loadDay(); }
 function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạch dữ liệu Tiền mặt, Ngân hàng, Quỹ và Sổ tiết kiệm của ngày hiển thị. Bạn chắc chắn?")) { delete masterData[currentDay]; saveMaster(); loadDay(); renderDataList(); } }
+// ===============================================
+// BẮT ĐẦU THÊM MỚI: LOGIC CHUYỂN TIỀN & TÁCH QUỸ
+// ===============================================
 
+// 1. LOGIC CHUYỂN TIỀN
+function openTransferQuy(id) {
+    let list = masterData[currentDay]?.quy || [];
+    let q = list.find(x => x.id === id);
+    if(!q) return;
+    if(list.length < 2) { alert("Cần ít nhất 2 quỹ để thực hiện chuyển tiền!"); return; }
+
+    document.getElementById('hid-transfer-source-id').value = id;
+    document.getElementById('transfer-source-name').innerText = q.name + ` (Khả dụng: ${formatTien(getQuyTotalAmt(q))} đ)`;
+    document.getElementById('sel-transfer-source-storage').innerHTML = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
+
+    let targetHtml = '';
+    list.forEach(tq => { if(tq.id !== id) targetHtml += `<option value="${tq.id}">${tq.name}</option>`; });
+    document.getElementById('sel-transfer-target-id').innerHTML = targetHtml;
+    
+    changeTransferTarget(); 
+    document.getElementById('in-transfer-amt').value = "";
+    document.getElementById('in-transfer-date').value = currentDay;
+    document.getElementById('in-transfer-date').max = getGMT7Date();
+
+    openModal('modal-quy-transfer');
+}
+
+function changeTransferTarget() {
+    let targetId = parseInt(document.getElementById('sel-transfer-target-id').value);
+    let tq = (masterData[currentDay]?.quy || []).find(x => x.id === targetId);
+    if(tq) {
+        let existing = tq.storages.map(s => s.name);
+        let opts = tq.storages.map(s => `<option value="${s.name}">${s.name} (Có sẵn)</option>`);
+        let common = ["Tiền mặt"].concat(masterData.banks.map(b => b.short));
+        common.forEach(c => { if(!existing.includes(c)) opts.push(`<option value="${c}">${c} (Tạo kho mới)</option>`); });
+        document.getElementById('sel-transfer-target-storage').innerHTML = opts.join('');
+    }
+}
+
+function confirmTransferQuy() {
+    let srcId = parseInt(document.getElementById('hid-transfer-source-id').value);
+    let tgtId = parseInt(document.getElementById('sel-transfer-target-id').value);
+    let amt = cleanTien(document.getElementById('in-transfer-amt').value);
+    let srcStorage = document.getElementById('sel-transfer-source-storage').value;
+    let tgtStorage = document.getElementById('sel-transfer-target-storage').value;
+    let transDate = document.getElementById('in-transfer-date').value;
+
+    if(!transDate || amt <= 0) { alert("Vui lòng nhập số tiền và ngày hợp lệ!"); return; }
+
+    let qSrc = (masterData[currentDay]?.quy || []).find(x => x.id === srcId);
+    let qTgt = (masterData[currentDay]?.quy || []).find(x => x.id === tgtId);
+    if(!qSrc || !qTgt) return;
+
+    let srcSIdx = qSrc.storages.findIndex(s => s.name === srcStorage);
+    if(srcSIdx === -1 || qSrc.storages[srcSIdx].v < amt) { alert("Kho lưu trữ của quỹ nguồn không đủ tiền!"); return; }
+
+    // Trừ tiền Quỹ Nguồn
+    qSrc.storages[srcSIdx].v -= amt;
+    if(!qSrc.history) qSrc.history = [];
+    qSrc.history.push({ d: transDate, type: 'rut', amount: amt, storage: srcStorage, reason: `Luân chuyển sang quỹ: ${qTgt.name}` });
+
+    // Cộng tiền Quỹ Đích
+    let tgtSIdx = qTgt.storages.findIndex(s => s.name === tgtStorage);
+    if(tgtSIdx > -1) { qTgt.storages[tgtSIdx].v += amt; } else { qTgt.storages.push({name: tgtStorage, v: amt, isLinked: false}); }
+    if(!qTgt.history) qTgt.history = [];
+    qTgt.history.push({ d: transDate, type: 'nop', amount: amt, storage: tgtStorage, reason: `Nhận luân chuyển từ quỹ: ${qSrc.name}` });
+
+    saveMaster(); loadDay(); closeModal('modal-quy-transfer'); alert("Luân chuyển tiền thành công!");
+}
+
+// 2. MỞ RỘNG TÁCH QUỸ LOẠI 2 ĐỘNG
+function addSplit2Row() {
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === parseInt(document.getElementById('hid-split-quy-id').value));
+    let subOpts = `<option value="NEW">-- Tạo Quỹ Mới --</option>`;
+    if(q && q.subFunds) {
+        q.subFunds.forEach(sf => { subOpts += `<option value="SUB_${sf.id}">Nâng cấp Quỹ con: ${sf.name}</option>`; });
+    }
+
+    let div = document.createElement('div');
+    div.className = 'split2-row';
+    div.style.display = 'flex'; div.style.gap = '10px'; div.style.marginBottom = '10px'; div.style.alignItems = 'center';
+    div.innerHTML = `
+        <select class="sel-split2-target" onchange="toggleSplit2Input(this)" style="flex:2; padding:8px; font-size:14px;">${subOpts}</select>
+        <input type="text" class="in-split2-name" placeholder="Tên quỹ mới..." style="flex:2; padding:8px; font-size:14px;">
+        <input type="text" class="in-split2-amt" placeholder="Số tiền..." oninput="formatInput(this); calcSplit2Remain()" style="flex:1.5; padding:8px; font-size:14px; text-align:right; font-weight:bold; color:var(--danger);">
+        <button class="btn-sm" style="background:red; color:#fff; border:none; margin:0;" onclick="this.parentElement.remove(); calcSplit2Remain()">X</button>
+    `;
+    document.getElementById('split2-rows').appendChild(div);
+    toggleSplit2Input(div.querySelector('.sel-split2-target'));
+}
+
+function toggleSplit2Input(sel) {
+    let row = sel.closest('.split2-row');
+    row.querySelector('.in-split2-name').style.display = (sel.value === 'NEW') ? 'block' : 'none';
+}
+
+function calcSplit2Remain() {
+    let total = cleanTien(document.getElementById('split2-total-available').innerText);
+    let used = 0;
+    document.querySelectorAll('.in-split2-amt').forEach(inp => { used += cleanTien(inp.value); });
+    let remain = total - used;
+    let remEl = document.getElementById('split2-remain');
+    remEl.innerText = formatTien(remain);
+    remEl.style.color = remain >= 0 ? 'var(--primary)' : 'red';
+}
+// KẾT THÚC THÊM MỚI: LOGIC CHUYỂN TIỀN & TÁCH QUỸ
+// ===============================================
 generateCaptcha(); // Initialize Captcha on first load
 </script>
 </body>
