@@ -714,29 +714,40 @@ body * { visibility: hidden; }
 </div>
 
 <div class="modal-overlay" id="modal-quy-detail">
-<div class="modal-content" style="max-width:700px;">
+<div class="modal-content" style="max-width:750px;">
 <div class="modal-title">CHI TIẾT & LỊCH SỬ QUỸ</div>
 <div id="quy-detail-summary" style="background:#f4f9f4; padding:15px; border:1px solid var(--accent); margin-bottom:20px; font-size:16px; line-height:1.6;"></div>
 
 <div style="display:flex; margin-bottom:15px; border:1px solid #000">
-    <button class="tab-btn active" id="btn-tab-quy-info" onclick="switchQuyDetailTab('info')">THÔNG TIN LƯU TRỮ</button>
-    <button class="tab-btn" id="btn-tab-quy-history" onclick="switchQuyDetailTab('history')">LỊCH SỬ GIAO DỊCH</button>
+    <button class="tab-btn active" id="btn-tab-quy-info" onclick="switchQuyDetailTab('info')" style="padding:10px;">LƯU TRỮ</button>
+    <button class="tab-btn" id="btn-tab-quy-sub" onclick="switchQuyDetailTab('sub')" style="padding:10px;">QUỸ CON</button>
+    <button class="tab-btn" id="btn-tab-quy-history" onclick="switchQuyDetailTab('history')" style="padding:10px;">LỊCH SỬ</button>
 </div>
 
 <div id="quy-tab-info">
     <table class="data-table" style="margin-bottom: 10px;"><thead><tr style="background:#e9ecef"><th>Nơi cất giữ</th><th style="width: 100px; text-align: center;">Lưu chung với tài khoản</th><th>Số dư (VNĐ)</th></tr></thead><tbody id="quy-detail-tbody"></tbody></table>
 </div>
 
+<div id="quy-tab-sub" style="display:none;">
+    <div style="text-align:right; margin-bottom:10px;"><button class="btn-sm" style="background:var(--accent); color:white;" onclick="addSubFund()">+ Tạo Quỹ Con</button></div>
+    <table class="data-table" style="margin-bottom: 10px;">
+        <thead><tr style="background:#e9ecef"><th>Tên Quỹ Con</th><th style="text-align:right;">Số Dư (VNĐ)</th><th style="width:120px;">Hành Động</th></tr></thead>
+        <tbody id="quy-sub-tbody"></tbody>
+        <tfoot><tr><td style="text-align:right; font-weight:bold;">Tổng tiền trong các quỹ con:</td><td align="right" id="quy-sub-total" style="font-weight:bold; color:var(--danger)">0 đ</td><td></td></tr></tfoot>
+    </table>
+    <div style="font-size:12px; color:#666; font-style:italic;">* Quỹ con giúp bạn phân bổ mục đích sử dụng cho số tiền có trong Quỹ lớn.</div>
+</div>
+
 <div id="quy-tab-history" style="display:none;">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-        <label style="font-weight:bold;">Lọc theo kho lưu trữ:</label>
-        <select id="quy-detail-filter" style="width:auto; padding:5px;" onchange="filterQuyHistory()"></select>
+        <label style="font-weight:bold;">Lọc giao dịch:</label>
+        <select id="quy-detail-filter" style="width:auto; padding:5px;" onchange="filterQuyHistory()"></select>
     </div>
     <div style="overflow-x:auto; max-height: 250px;">
-        <table class="data-table" style="font-size: 13px; margin-bottom: 0;">
-            <thead><tr style="background:#e9ecef"><th>Ngày</th><th>Loại</th><th>Số tiền</th><th>Kho lưu trữ</th><th>Ghi chú</th></tr></thead>
-            <tbody id="quy-history-tbody"></tbody>
-        </table>
+        <table class="data-table" style="font-size: 13px; margin-bottom: 0;">
+            <thead><tr style="background:#e9ecef"><th>Ngày</th><th>Loại</th><th>Số tiền</th><th>Nguồn / Phân bổ</th><th>Ghi chú</th></tr></thead>
+            <tbody id="quy-history-tbody"></tbody>
+        </table>
     </div>
 </div>
 
@@ -750,6 +761,7 @@ body * { visibility: hidden; }
 <div class="form-group"><label>SỐ TIỀN NỘP (VNĐ)</label><input type="text" id="in-quy-nop-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)"></div>
 <div class="form-group"><label>Ngày nộp</label><input type="date" id="in-quy-nop-date"></div>
 <div class="form-group"><label>Nạp vào nơi lưu trữ nào?</label><select id="sel-quy-nop-storage" style="width: 100%; padding: 10px;"></select></div>
+<div class="form-group"><label>Cộng vào Quỹ con (Tùy chọn)</label><select id="sel-quy-nop-sub" style="width: 100%; padding: 10px; border-color:var(--accent);"></select></div>
 <input type="hidden" id="hid-quy-nop-id">
 <div style="display:flex; gap:15px; margin-top:30px;">
 <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-nop')">HỦY BỎ</button>
@@ -764,6 +776,7 @@ body * { visibility: hidden; }
 <div class="form-group"><label>Số tiền rút (VNĐ)</label><input type="text" id="in-quy-rut-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)"></div>
 <div class="form-group"><label>Ngày rút</label><input type="date" id="in-quy-rut-date"></div>
 <div class="form-group"><label>Rút từ nơi lưu trữ nào?</label><select id="sel-quy-rut-storage" style="width: 100%; padding: 10px;"></select></div>
+<div class="form-group"><label>Trừ vào Quỹ con (Tùy chọn)</label><select id="sel-quy-rut-sub" style="width: 100%; padding: 10px; border-color:var(--accent);"></select></div>
 <div class="form-group"><label>Nguyên do rút tiền</label><div style="display:flex; gap:10px;"><select id="sel-quy-rut-reason" style="flex:1; padding: 10px;"></select><button class="btn-sm" style="background:#000; color:#fff;" onclick="openReasonManager()">[+] Quản lý</button></div></div>
 <input type="hidden" id="hid-quy-rut-id">
 <div style="display:flex; gap:15px; margin-top:30px;">
@@ -2594,78 +2607,146 @@ saveMaster(); closeModal('modal-quy-add'); loadDay();
 document.getElementById('in-quy-name').value = ""; document.getElementById('in-quy-amt').value = "0";
 }
 // BẮT ĐẦU SỬA BƯỚC 2
+// BẮT ĐẦU SỬA: QUỸ CON VÀ FILTER LỊCH SỬ
 function switchQuyDetailTab(tab) {
-    document.getElementById('quy-tab-info').style.display = (tab === 'info') ? 'block' : 'none';
-    document.getElementById('quy-tab-history').style.display = (tab === 'history') ? 'block' : 'none';
-    document.getElementById('btn-tab-quy-info').classList.remove('active');
-    document.getElementById('btn-tab-quy-history').classList.remove('active');
-    document.getElementById('btn-tab-quy-' + tab).classList.add('active');
+    document.getElementById('quy-tab-info').style.display = (tab === 'info') ? 'block' : 'none';
+    document.getElementById('quy-tab-sub').style.display = (tab === 'sub') ? 'block' : 'none';
+    document.getElementById('quy-tab-history').style.display = (tab === 'history') ? 'block' : 'none';
+    document.getElementById('btn-tab-quy-info').classList.remove('active');
+    document.getElementById('btn-tab-quy-sub').classList.remove('active');
+    document.getElementById('btn-tab-quy-history').classList.remove('active');
+    document.getElementById('btn-tab-quy-' + tab).classList.add('active');
 }
-// KẾT THÚC SỬA BƯỚC 2
-// BẮT ĐẦU SỬA BƯỚC 3
+
 function openDetailQuy(id) {
 let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); if(!q) return;
 currentQuyDetailId = id;
+if(!q.subFunds) q.subFunds = []; // Khởi tạo mảng Quỹ con nếu chưa có
 document.getElementById('quy-detail-summary').innerHTML = `Tên Quỹ: <b>${q.name}</b><br>Ngày lập: <b>${vnDate(q.date)}</b><br>Tổng tài sản quỹ: <b style="color:var(--danger)">${formatTien(getQuyTotalAmt(q))} đ</b>`;
 
 let b = document.getElementById('quy-detail-tbody'); b.innerHTML = "";
 let filterSel = document.getElementById('quy-detail-filter');
-filterSel.innerHTML = `<option value="all">Tất cả tài khoản</option>`;
+filterSel.innerHTML = `<option value="all">-- Tất cả giao dịch --</option>`;
 
+let optGroupStorage = `<optgroup label="Lọc theo Nơi cất giữ">`;
 q.storages.forEach((s) => {
     let isLinkedChecked = s.isLinked ? "checked" : "";
     let linkToggle = s.name !== 'Tiền mặt' ? `<label class="switch" style="margin-top:4px;"><input type="checkbox" onchange="toggleQuyLink(${q.id}, '${s.name}', this.checked)" ${isLinkedChecked}><span class="slider"></span></label>` : '<span style="color:#aaa">-</span>';
-    
     b.innerHTML += `<tr><td style="font-weight:bold">${s.name}</td><td align="center">${linkToggle}</td><td align="right" style="color:var(--success); font-weight:bold; font-size:16px;">${formatTien(s.v)} đ</td></tr>`;
-    filterSel.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+    optGroupStorage += `<option value="STO_${s.name}">${s.name}</option>`;
 });
+optGroupStorage += `</optgroup>`;
 
+let optGroupSub = `<optgroup label="Lọc theo Quỹ con">`;
+q.subFunds.forEach(sf => {
+    optGroupSub += `<option value="SUB_${sf.name}">${sf.name}</option>`;
+});
+optGroupSub += `</optgroup>`;
+filterSel.innerHTML += optGroupStorage + optGroupSub;
+
+renderSubFunds(q);
 filterQuyHistory();
-switchQuyDetailTab('info'); // Đưa về Tab Info khi mở
+switchQuyDetailTab('info');
 openModal('modal-quy-detail');
 }
-// KẾT THÚC SỬA BƯỚC 3
 
 window.toggleQuyLink = function(quyId, storageName, isChecked) {
-    let q = (masterData[currentDay]?.quy || []).find(x => x.id === quyId);
-    if(q) {
-        let s = q.storages.find(x => x.name === storageName);
-        if(s) {
-            s.isLinked = isChecked;
-            saveMaster();
-        }
-    }
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === quyId);
+    if(q) {
+        let s = q.storages.find(x => x.name === storageName);
+        if(s) { s.isLinked = isChecked; saveMaster(); }
+    }
 };
 
-function filterQuyHistory() {
-    let q = (masterData[currentDay]?.quy || []).find(x => x.id === currentQuyDetailId); if(!q) return;
-    let filterVal = document.getElementById('quy-detail-filter').value;
-    let hBody = document.getElementById('quy-history-tbody');
-    hBody.innerHTML = "";
-    
-    let historyToRender = q.history || [];
-    if (filterVal !== 'all') {
-        historyToRender = historyToRender.filter(h => h.storage === filterVal);
-    }
-    
-    if (historyToRender.length > 0) {
-        let sortedHistory = [...historyToRender].reverse();
-        sortedHistory.forEach(h => {
-            let typeText = h.type === 'init' ? 'Khởi tạo' : (h.type === 'nop' ? 'Nộp thêm' : 'Rút ra');
-            let color = h.type === 'rut' ? 'var(--danger)' : 'var(--success)';
-            let sign = h.type === 'rut' ? '-' : '+';
-            hBody.innerHTML += `<tr>
-                <td align="center">${vnDate(h.d)}</td>
-                <td align="center" style="font-weight:bold; color:${color}">${typeText}</td>
-                <td align="right" style="font-weight:bold; color:${color}">${sign}${formatTien(h.amount)} đ</td>
-                <td>${h.storage}</td>
-                <td>${h.reason || ''}</td>
-            </tr>`;
-        });
-    } else {
-        hBody.innerHTML = `<tr><td colspan="5" align="center" style="color:#888; font-style:italic; padding:15px;">Chưa có lịch sử giao dịch nào ở tài khoản này.</td></tr>`;
+function renderSubFunds(q) {
+    if(!q) q = (masterData[currentDay]?.quy || []).find(x => x.id === currentQuyDetailId);
+    let tbody = document.getElementById('quy-sub-tbody');
+    tbody.innerHTML = '';
+    let totalSub = 0;
+    (q.subFunds || []).forEach(sf => {
+        totalSub += sf.v;
+        tbody.innerHTML += `<tr>
+            <td style="font-weight:bold; color:var(--info)">${sf.name}</td>
+            <td align="right" style="color:var(--accent); font-weight:bold; font-size:15px;">${formatTien(sf.v)} đ</td>
+            <td align="center">
+                <button class="btn-sm" style="background:#eee;" onclick="document.getElementById('quy-detail-filter').value='SUB_${sf.name}'; switchQuyDetailTab('history'); filterQuyHistory();">Xem GD</button>
+                <button class="btn-sm" style="color:red; border-color:red; margin-left:4px;" onclick="deleteSubFund(${sf.id})">✖</button>
+            </td>
+        </tr>`;
+    });
+    if(q.subFunds.length === 0) tbody.innerHTML = `<tr><td colspan="3" align="center" style="color:#888; font-style:italic;">Chưa có quỹ con nào được tạo.</td></tr>`;
+    document.getElementById('quy-sub-total').innerText = formatTien(totalSub) + ' đ';
+}
+
+function addSubFund() {
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === currentQuyDetailId);
+    if(!q) return;
+    let name = prompt("Nhập tên Quỹ con mới để phân bổ:");
+    if(name && name.trim() !== "") {
+        let exists = q.subFunds.find(x => x.name.toLowerCase() === name.trim().toLowerCase());
+        if(exists) { alert("Tên quỹ con này đã tồn tại!"); return; }
+        q.subFunds.push({id: Date.now(), name: name.trim(), v: 0});
+        saveMaster();
+        openDetailQuy(currentQuyDetailId); // Refresh dropdowns & lists
+        switchQuyDetailTab('sub');
     }
 }
+
+function deleteSubFund(sfId) {
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === currentQuyDetailId);
+    if(!q) return;
+    let sf = q.subFunds.find(x => x.id === sfId);
+    if(sf && sf.v > 0) {
+        alert(`Lỗi: Quỹ con [${sf.name}] vẫn còn ${formatTien(sf.v)} đ. Hãy rút hết tiền hoặc điều chỉnh trước khi xóa!`);
+        return;
+    }
+    if(confirm(`Bạn có chắc muốn xóa quỹ con [${sf.name}] không? Hành động này không làm mất tiền của Quỹ chính.`)) {
+        q.subFunds = q.subFunds.filter(x => x.id !== sfId);
+        saveMaster();
+        openDetailQuy(currentQuyDetailId);
+        switchQuyDetailTab('sub');
+    }
+}
+
+function filterQuyHistory() {
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === currentQuyDetailId); if(!q) return;
+    let filterVal = document.getElementById('quy-detail-filter').value;
+    let hBody = document.getElementById('quy-history-tbody');
+    hBody.innerHTML = "";
+    
+    let historyToRender = q.history || [];
+    if (filterVal !== 'all') {
+        if(filterVal.startsWith('SUB_')) {
+            let sName = filterVal.replace('SUB_', '');
+            historyToRender = historyToRender.filter(h => h.subFund === sName);
+        } else if(filterVal.startsWith('STO_')) {
+            let sName = filterVal.replace('STO_', '');
+            historyToRender = historyToRender.filter(h => h.storage === sName);
+        }
+    }
+    
+    if (historyToRender.length > 0) {
+        let sortedHistory = [...historyToRender].reverse();
+        sortedHistory.forEach(h => {
+            let typeText = h.type === 'init' ? 'Khởi tạo' : (h.type === 'nop' ? 'Nộp thêm' : 'Rút ra');
+            let color = h.type === 'rut' ? 'var(--danger)' : 'var(--success)';
+            let sign = h.type === 'rut' ? '-' : '+';
+            let storageDisplay = h.storage;
+            if(h.subFund) storageDisplay += `<br><span style="font-size:11px; color:var(--accent); font-weight:bold;">→ Vào: ${h.subFund}</span>`;
+
+            hBody.innerHTML += `<tr>
+                <td align="center">${vnDate(h.d)}</td>
+                <td align="center" style="font-weight:bold; color:${color}">${typeText}</td>
+                <td align="right" style="font-weight:bold; color:${color}">${sign}${formatTien(h.amount)} đ</td>
+                <td>${storageDisplay}</td>
+                <td>${h.reason || ''}</td>
+            </tr>`;
+        });
+    } else {
+        hBody.innerHTML = `<tr><td colspan="5" align="center" style="color:#888; font-style:italic; padding:15px;">Chưa có lịch sử giao dịch.</td></tr>`;
+    }
+}
+// KẾT THÚC SỬA: QUỸ CON VÀ FILTER LỊCH SỬ
 
 function openEditQuyStorage(id) {
 let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); if(!q) return;
@@ -2686,34 +2767,53 @@ saveMaster(); closeModal('modal-quy-edit-storage'); loadDay();
 }
 }
 
+// BẮT ĐẦU SỬA: LOGIC NỘP QUỸ CÓ TÙY CHỌN QUỸ CON
 function openNopQuy(id) {
 let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); if(!q) return;
 document.getElementById('hid-quy-nop-id').value = id;
 document.getElementById('in-quy-nop-val').value = "";
-document.getElementById('in-quy-nop-date').value = currentDay; 
+document.getElementById('in-quy-nop-date').value = currentDay; 
 document.getElementById('in-quy-nop-date').max = getGMT7Date();
-let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
+let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Kho: ${formatTien(s.v)}đ)</option>`).join('');
 document.getElementById('sel-quy-nop-storage').innerHTML = storageHtml;
+
+let subHtml = `<option value="">-- Không phân bổ vào quỹ con --</option>`;
+if(q.subFunds) {
+    q.subFunds.forEach(sf => {
+        subHtml += `<option value="${sf.name}">${sf.name} (Đang có: ${formatTien(sf.v)}đ)</option>`;
+    });
+}
+document.getElementById('sel-quy-nop-sub').innerHTML = subHtml;
+
 openModal('modal-quy-nop');
 }
 
 function confirmNopQuy() {
-let id = parseInt(document.getElementById('hid-quy-nop-id').value), 
-    val = cleanTien(document.getElementById('in-quy-nop-val').value), 
-    storageName = document.getElementById('sel-quy-nop-storage').value,
-    nopDate = document.getElementById('in-quy-nop-date').value;
+let id = parseInt(document.getElementById('hid-quy-nop-id').value), 
+    val = cleanTien(document.getElementById('in-quy-nop-val').value), 
+    storageName = document.getElementById('sel-quy-nop-storage').value,
+    subName = document.getElementById('sel-quy-nop-sub').value,
+    nopDate = document.getElementById('in-quy-nop-date').value;
 if (val <= 0 || !nopDate) { alert("Vui lòng nhập số tiền và ngày nộp hợp lệ!"); return; }
 let q = (masterData[currentDay]?.quy || []).find(x => x.id === id);
 if (q) {
-    let storageIndex = q.storages.findIndex(s => s.name === storageName);
-    if (storageIndex > -1) {
-        q.storages[storageIndex].v += val;
-        if(!q.history) q.history = [];
-        q.history.push({ d: nopDate, type: 'nop', amount: val, storage: storageName, reason: 'Nộp thêm tiền' });
-        saveMaster(); closeModal('modal-quy-nop'); loadDay();
-    }
+    let storageIndex = q.storages.findIndex(s => s.name === storageName);
+    if (storageIndex > -1) {
+        q.storages[storageIndex].v += val;
+        
+        // Cộng vào quỹ con nếu có chọn
+        if(subName && q.subFunds) {
+            let sf = q.subFunds.find(x => x.name === subName);
+            if(sf) sf.v += val;
+        }
+
+        if(!q.history) q.history = [];
+        q.history.push({ d: nopDate, type: 'nop', amount: val, storage: storageName, subFund: subName || null, reason: 'Nộp thêm tiền' });
+        saveMaster(); closeModal('modal-quy-nop'); loadDay();
+    }
 }
 }
+// KẾT THÚC SỬA
 
 function refreshQuyReasons() {
 if (!masterData.quyReasons) masterData.quyReasons = ["Chi tiêu sinh hoạt", "Đầu tư", "Sự kiện / Quà cáp"];
@@ -2739,38 +2839,58 @@ if (!masterData.quyReasons.includes(reason)) { masterData.quyReasons.push(reason
 
 function deleteReason(index) { if(confirm("Xóa nguyên do này?")) { masterData.quyReasons.splice(index, 1); saveMaster(); refreshQuyReasons(); } }
 
+// BẮT ĐẦU SỬA: LOGIC RÚT QUỸ TỪ QUỸ CON
 function openRutQuy(id) {
 let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); if(!q) return;
 document.getElementById('hid-quy-rut-id').value = id;
 document.getElementById('in-quy-rut-val').value = "";
 document.getElementById('in-quy-rut-date').value = currentDay;
 document.getElementById('in-quy-rut-date').max = getGMT7Date();
-let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
+let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Kho: ${formatTien(s.v)}đ)</option>`).join('');
 document.getElementById('sel-quy-rut-storage').innerHTML = storageHtml;
+
+let subHtml = `<option value="">-- Trừ vào tiền chung của Quỹ --</option>`;
+if(q.subFunds) {
+    q.subFunds.forEach(sf => {
+        subHtml += `<option value="${sf.name}">${sf.name} (Khả dụng: ${formatTien(sf.v)}đ)</option>`;
+    });
+}
+document.getElementById('sel-quy-rut-sub').innerHTML = subHtml;
+
 refreshQuyReasons();
 openModal('modal-quy-rut');
 }
 
 function confirmRutQuy() {
-let id = parseInt(document.getElementById('hid-quy-rut-id').value), 
-    val = cleanTien(document.getElementById('in-quy-rut-val').value), 
-    storageName = document.getElementById('sel-quy-rut-storage').value,
-    reason = document.getElementById('sel-quy-rut-reason').value,
-    rutDate = document.getElementById('in-quy-rut-date').value;
+let id = parseInt(document.getElementById('hid-quy-rut-id').value), 
+    val = cleanTien(document.getElementById('in-quy-rut-val').value), 
+    storageName = document.getElementById('sel-quy-rut-storage').value,
+    subName = document.getElementById('sel-quy-rut-sub').value,
+    reason = document.getElementById('sel-quy-rut-reason').value,
+    rutDate = document.getElementById('in-quy-rut-date').value;
+
 if (val <= 0 || !rutDate) { alert("Vui lòng nhập số tiền và ngày rút hợp lệ!"); return; }
 let q = (masterData[currentDay]?.quy || []).find(x => x.id === id);
 if (q) {
-    let storageIndex = q.storages.findIndex(s => s.name === storageName);
-    if (storageIndex > -1) {
-        if (q.storages[storageIndex].v < val) { alert("Lỗi: Số dư không đủ!"); return; }
-        q.storages[storageIndex].v -= val;
-        if(!q.history) q.history = [];
-        q.history.push({ d: rutDate, type: 'rut', amount: val, storage: storageName, reason: reason });
-        saveMaster(); closeModal('modal-quy-rut'); loadDay();
-    }
-}
-}
+    let storageIndex = q.storages.findIndex(s => s.name === storageName);
+    if (storageIndex > -1) {
+        if (q.storages[storageIndex].v < val) { alert("Lỗi: Nơi cất giữ này không đủ tiền!"); return; }
 
+        // Kiểm tra tiền của Quỹ con nếu có chọn
+        if(subName && q.subFunds) {
+            let sf = q.subFunds.find(x => x.name === subName);
+            if(!sf || sf.v < val) { alert(`Lỗi: Quỹ con [${subName}] không đủ tiền để rút!`); return; }
+            sf.v -= val; // Trừ tiền quỹ con
+        }
+
+        q.storages[storageIndex].v -= val; // Trừ tiền kho lưu trữ thực tế
+        if(!q.history) q.history = [];
+        q.history.push({ d: rutDate, type: 'rut', amount: val, storage: storageName, subFund: subName || null, reason: reason });
+        saveMaster(); closeModal('modal-quy-rut'); loadDay();
+    }
+}
+}
+// KẾT THÚC SỬA
 // ==== THÊM HÀM GỌI MODAL XÓA QUỸ MỚI ====
 function deleteQuy(id) {
 let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); if(!q) return;
