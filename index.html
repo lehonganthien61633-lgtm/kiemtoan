@@ -1219,16 +1219,17 @@ body * { visibility: hidden; }
     </div>
 </div>
 
-<div class="modal-overlay" id="modal-add-holiday">
+<div class="modal-overlay" id="modal-edit-holiday">
     <div class="modal-content" style="max-width:450px;">
-        <div class="modal-title">THÊM NGÀY LỄ</div>
+        <div class="modal-title">CHI TIẾT & CHỈNH SỬA NGÀY LỄ</div>
+        <input type="hidden" id="edit-hol-id">
         <div class="form-group">
             <label>Tên ngày lễ</label>
-            <input type="text" id="in-hol-name" placeholder="VD: Tết Nguyên Đán, Lễ Quốc Khánh...">
+            <input type="text" id="edit-hol-name" placeholder="VD: Tết Nguyên Đán...">
         </div>
         <div class="form-group">
             <label>Loại Lịch</label>
-            <select id="sel-hol-type">
+            <select id="edit-hol-type">
                 <option value="DL">Dương Lịch</option>
                 <option value="AL">Âm Lịch</option>
             </select>
@@ -1236,24 +1237,23 @@ body * { visibility: hidden; }
         <div style="display:flex; gap:15px;">
             <div class="form-group" style="flex:1">
                 <label>Ngày Bắt Đầu (DD/MM)</label>
-                <input type="text" id="in-hol-start" placeholder="VD: 30/12">
+                <input type="text" id="edit-hol-start" placeholder="VD: 30/12">
             </div>
             <div class="form-group" style="flex:1">
                 <label>Ngày Kết Thúc (DD/MM)</label>
-                <input type="text" id="in-hol-end" placeholder="VD: 04/01">
+                <input type="text" id="edit-hol-end" placeholder="VD: 04/01">
             </div>
         </div>
         <div class="form-group" style="display:flex; align-items:center; gap:8px;">
-            <input type="checkbox" id="chk-hol-repeat" checked style="width:18px; height:18px; margin:0; cursor:pointer;">
-            <label for="chk-hol-repeat" style="margin-bottom:0; text-transform:none; font-weight:normal; font-size:14px; cursor:pointer;">Tự động lặp lại vào năm sau</label>
+            <input type="checkbox" id="edit-hol-repeat" style="width:18px; height:18px; margin:0; cursor:pointer;">
+            <label for="edit-hol-repeat" style="margin-bottom:0; text-transform:none; font-weight:normal; font-size:14px; cursor:pointer;">Tự động lặp lại vào năm sau</label>
         </div>
         <div style="display:flex; gap:15px; margin-top:30px;">
-            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-add-holiday')">HỦY</button>
-            <button class="btn-main" style="flex:1; background:var(--accent); border-color:var(--accent); color:white;" onclick="saveHolidayToSystem()">LƯU LẠI</button>
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-edit-holiday')">HỦY</button>
+            <button class="btn-main" style="flex:1; background:var(--info); border-color:var(--info); color:white;" onclick="confirmEditHoliday()">CẬP NHẬT</button>
         </div>
     </div>
 </div>
-
 <script>
 
 // =====================================
@@ -2026,7 +2026,6 @@ function openHolidayManager() {
     renderHolidays();
     openModal('modal-manage-holidays');
 }
-
 function renderHolidays() {
     const tbody = document.getElementById('body-settings-holidays');
     tbody.innerHTML = "";
@@ -2036,7 +2035,7 @@ function renderHolidays() {
         let typeTxt = h.type === 'AL' ? '<b style="color:var(--accent)">Âm Lịch</b>' : '<b style="color:var(--info)">Dương Lịch</b>';
         tbody.innerHTML += `<tr>
             <td align="center">${i + 1}</td>
-            <td style="font-weight:bold;">${h.name} ${repeatTxt}</td>
+            <td style="font-weight:bold; cursor:pointer; color:var(--info); text-decoration:underline;" onclick="openEditHoliday(${h.id})" title="Nhấn để xem chi tiết và chỉnh sửa">${h.name} ${repeatTxt}</td>
             <td align="center">${typeTxt}</td>
             <td align="center" style="font-family:monospace; font-size:14px;">${dateTxt}</td>
             <td align="center"><span onclick="deleteHoliday(${h.id})" style="color:red; cursor:pointer; font-weight:bold; font-size:18px;">✖</span></td>
@@ -2071,7 +2070,39 @@ function deleteHoliday(id) {
         renderHolidays();
     }
 }
+function openEditHoliday(id) {
+    let h = (masterData.holidays || []).find(x => x.id === id);
+    if(!h) return;
+    
+    document.getElementById('edit-hol-id').value = id;
+    document.getElementById('edit-hol-name').value = h.name;
+    document.getElementById('edit-hol-type').value = h.type;
+    document.getElementById('edit-hol-start').value = h.start;
+    document.getElementById('edit-hol-end').value = h.end;
+    document.getElementById('edit-hol-repeat').checked = h.repeat;
+    
+    openModal('modal-edit-holiday');
+}
 
+function confirmEditHoliday() {
+    let id = parseInt(document.getElementById('edit-hol-id').value);
+    let name = document.getElementById('edit-hol-name').value.trim();
+    let type = document.getElementById('edit-hol-type').value;
+    let start = document.getElementById('edit-hol-start').value.trim();
+    let end = document.getElementById('edit-hol-end').value.trim() || start;
+    let repeat = document.getElementById('edit-hol-repeat').checked;
+
+    if (!name || !start || !start.includes('/')) { alert("Vui lòng nhập đúng định dạng Tên và Ngày (DD/MM)!"); return; }
+    
+    let hIndex = masterData.holidays.findIndex(x => x.id === id);
+    if (hIndex > -1) {
+        masterData.holidays[hIndex] = { id: id, name: name, type: type, start: start, end: end, repeat: repeat };
+        saveMaster();
+        renderHolidays();
+        closeModal('modal-edit-holiday');
+        alert("Cập nhật ngày lễ thành công!");
+    }
+}
 // Thuật toán chuyển đổi DL -> AL cơ bản (Simplified JS JDN)
 function getLunarDate(dd, mm, yyyy) {
     // Dùng API nội bộ nhỏ gọn xấp xỉ chuyển đổi hoặc thuật toán thu gọn. 
