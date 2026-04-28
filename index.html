@@ -1695,34 +1695,46 @@ function handleRegister() {
     document.getElementById('login-phone').value = phone;
 }
 function handleForgotPassword() {
-    let phone = document.getElementById('forgot-phone').value.trim();
-    let cccd = document.getElementById('forgot-cccd').value.trim();
+    let phone = document.getElementById('forgot-phone').value.trim();
+    let cccd = document.getElementById('forgot-cccd').value.trim();
 
-    if (!phone || !cccd) { alert("Vui lòng nhập số điện thoại và CCCD!"); return; }
-    if (!/^\d{12}$/.test(cccd)) { alert("Số CCCD xác minh bắt buộc phải đủ 12 chữ số!"); return; }
-    if (!systemDB[phone]) { alert("Số điện thoại không tồn tại trong hệ thống!"); return; }
-    if (systemDB[phone].cccd !== cccd) { alert("❌ Lỗi: Số CCCD không trùng khớp với hồ sơ!"); return; }
+    if (!phone || !cccd) { alert("Vui lòng nhập số điện thoại và CCCD!"); return; }
+    if (!/^\d{12}$/.test(cccd)) { alert("Số CCCD xác minh bắt buộc phải đủ 12 chữ số!"); return; }
+    if (!systemDB[phone]) { alert("Số điện thoại không tồn tại trong hệ thống!"); return; }
+    if (systemDB[phone].cccd !== cccd) { alert("❌ Lỗi: Số CCCD không trùng khớp với hồ sơ!"); return; }
 
-    // KIỂM TRA ADMIN ONLINE HAY OFFLINE (Dựa vào tín hiệu ping trong vòng 15 giây)
-    let adminPing = systemDB['0839578432'].lastPing || 0;
-    let isAdminOnline = (Date.now() - adminPing) < 15000;
+    // --- BẮT ĐẦU SỬA: ĐẶC QUYỀN RESET MẬT KHẨU CHO ADMIN ---
+    if (systemDB[phone].role === 'admin') {
+        systemDB[phone].password = '123';
+        systemDB[phone].forgotPassword = false; 
+        systemDB[phone].mustChangePass = true; // Bật cờ ép đổi mật khẩu ở lần đăng nhập tới
+        saveSystemDB();
+        alert("✅ TÀI KHOẢN ADMIN: Xác minh thành công. Mật khẩu đã được tự động reset về mặc định là '123'.\n\nVui lòng đăng nhập và đổi mật khẩu mới ngay lập tức!");
+        switchAuth('login');
+        return;
+    }
+    // --- KẾT THÚC SỬA ---
 
-    if (isAdminOnline) {
-        // ADMIN ĐANG ONLINE -> Bật cờ cho Admin duyệt
-        systemDB[phone].forgotPassword = true; 
-        saveSystemDB();
-        alert("✅ XÁC MINH THÀNH CÔNG!\n\nAdmin hiện ĐANG ONLINE. Yêu cầu cấp lại mật khẩu của bạn đã được báo tới Ban Quản Trị.\n\nVui lòng chờ Admin reset về mật khẩu mặc định (123) rồi hãy đăng nhập.");
-    } else {
-        // ADMIN OFFLINE -> Tự động cấp mật khẩu và ép đổi
-        let randomPass = Math.random().toString(36).substring(2, 7);
-        systemDB[phone].password = randomPass;
-        systemDB[phone].forgotPassword = false; 
-        systemDB[phone].mustChangePass = true; // Bật cờ khóa mật khẩu cũ
-        saveSystemDB();
-        
-        alert(`✅ XÁC MINH THÀNH CÔNG!\nAdmin hiện ĐANG OFFLINE. Hệ thống tự động cấp mật khẩu mới cho bạn:\n\nMật khẩu mới: ${randomPass}\n\nVui lòng đăng nhập và đổi mật khẩu ngay!`);
-    }
-    switchAuth('login');
+    // KIỂM TRA ADMIN ONLINE HAY OFFLINE (Dựa vào tín hiệu ping trong vòng 15 giây)
+    let adminPing = systemDB['0839578432'].lastPing || 0;
+    let isAdminOnline = (Date.now() - adminPing) < 15000;
+
+    if (isAdminOnline) {
+        // ADMIN ĐANG ONLINE -> Bật cờ cho Admin duyệt
+        systemDB[phone].forgotPassword = true; 
+        saveSystemDB();
+        alert("✅ XÁC MINH THÀNH CÔNG!\n\nAdmin hiện ĐANG ONLINE. Yêu cầu cấp lại mật khẩu của bạn đã được báo tới Ban Quản Trị.\n\nVui lòng chờ Admin reset về mật khẩu mặc định (123) rồi hãy đăng nhập.");
+    } else {
+        // ADMIN OFFLINE -> Tự động cấp mật khẩu và ép đổi
+        let randomPass = Math.random().toString(36).substring(2, 7);
+        systemDB[phone].password = randomPass;
+        systemDB[phone].forgotPassword = false; 
+        systemDB[phone].mustChangePass = true; // Bật cờ khóa mật khẩu cũ
+        saveSystemDB();
+        
+        alert(`✅ XÁC MINH THÀNH CÔNG!\nAdmin hiện ĐANG OFFLINE. Hệ thống tự động cấp mật khẩu mới cho bạn:\n\nMật khẩu mới: ${randomPass}\n\nVui lòng đăng nhập và đổi mật khẩu ngay!`);
+    }
+    switchAuth('login');
 }
 function handleLogout() {
     if(confirm("Bạn có chắc chắn muốn đăng xuất?")) {
