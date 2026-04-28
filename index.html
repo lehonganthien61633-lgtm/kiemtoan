@@ -1055,31 +1055,51 @@ body * { visibility: hidden; }
 <div class="modal-overlay" id="modal-quy-transfer">
     <div class="modal-content" style="max-width:500px;">
         <div class="modal-title">LUÂN CHUYỂN TIỀN GIỮA CÁC QUỸ</div>
-        <div class="form-group">
-            <label>Quỹ nguồn (Rút tiền)</label>
-            <div class="readonly-text" style="text-align:left; color:var(--primary);" id="transfer-source-name"></div>
+        
+        <div class="form-group" style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px dashed #ccc;">
+            <label style="color: var(--danger);">1. TỪ QUỸ NGUỒN (RÚT TIỀN)</label>
+            <div class="readonly-text" style="text-align:left; color:var(--primary); margin-bottom: 10px;" id="transfer-source-name"></div>
             <input type="hidden" id="hid-transfer-source-id">
+            
+            <div style="display:flex; gap:10px; margin-bottom: 10px;">
+                <div style="flex:1;">
+                    <label style="font-size:11px; color:#666;">Từ kho lưu trữ</label>
+                    <select id="sel-transfer-source-storage" style="padding:8px; font-size:14px; width:100%;"></select>
+                </div>
+            </div>
+            <div>
+                <label style="font-size:11px; color:#666;">Trừ vào (Quỹ mẹ / Quỹ con)</label>
+                <select id="sel-transfer-source-sub" style="padding:8px; font-size:14px; width:100%; border-color:var(--danger);"></select>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Từ nơi lưu trữ</label>
-            <select id="sel-transfer-source-storage" style="padding:10px;"></select>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label style="color: var(--success);">2. TỚI QUỸ ĐÍCH (NHẬN TIỀN)</label>
+            <select id="sel-transfer-target-id" onchange="changeTransferTarget()" style="padding:10px; border-color:var(--success); margin-bottom:10px;"></select>
+            
+            <div style="display:flex; gap:10px; margin-bottom: 10px;">
+                <div style="flex:1;">
+                    <label style="font-size:11px; color:#666;">Vào kho lưu trữ</label>
+                    <select id="sel-transfer-target-storage" style="padding:8px; font-size:14px; width:100%;"></select>
+                </div>
+            </div>
+            <div>
+                <label style="font-size:11px; color:#666;">Cộng vào (Quỹ mẹ / Quỹ con)</label>
+                <select id="sel-transfer-target-sub" style="padding:8px; font-size:14px; width:100%; border-color:var(--success);"></select>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Quỹ đích (Nhận tiền)</label>
-            <select id="sel-transfer-target-id" onchange="changeTransferTarget()" style="padding:10px; border-color:var(--success);"></select>
+
+        <div style="background:#f4f9f4; padding:15px; border:1px solid var(--success); border-radius:4px;">
+            <div class="form-group" style="margin-bottom:10px;">
+                <label>SỐ TIỀN CHUYỂN (VNĐ)</label>
+                <input type="text" id="in-transfer-amt" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--info)">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+                <label>NGÀY LUÂN CHUYỂN</label>
+                <input type="date" id="in-transfer-date">
+            </div>
         </div>
-        <div class="form-group">
-            <label>Vào nơi lưu trữ (Của quỹ đích)</label>
-            <select id="sel-transfer-target-storage" style="padding:10px;"></select>
-        </div>
-        <div class="form-group">
-            <label>Số tiền chuyển (VNĐ)</label>
-            <input type="text" id="in-transfer-amt" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--info)">
-        </div>
-        <div class="form-group">
-            <label>Ngày luân chuyển</label>
-            <input type="date" id="in-transfer-date">
-        </div>
+
         <div style="display:flex; gap:15px; margin-top:30px;">
             <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-quy-transfer')">HỦY BỎ</button>
             <button class="btn-main" style="background:var(--info); color:#fff; border-color:var(--info); flex:2" onclick="confirmTransferQuy()">XÁC NHẬN CHUYỂN</button>
@@ -3763,10 +3783,8 @@ function vnDate(s) { if(!s) return "--"; let p = s.split('-'); return `${p[2]}/$
 function changeDate() { currentDay = document.getElementById('header-date-picker').value; loadDay(); }
 function clearDayData() { if(confirm("Cảnh báo: Thao tác này sẽ xóa sạch dữ liệu Tiền mặt, Ngân hàng, Quỹ và Sổ tiết kiệm của ngày hiển thị. Bạn chắc chắn?")) { delete masterData[currentDay]; saveMaster(); loadDay(); renderDataList(); } }
 // ===============================================
-// BẮT ĐẦU THÊM MỚI: LOGIC CHUYỂN TIỀN & TÁCH QUỸ
+// LOGIC CHUYỂN TIỀN CÓ HỖ TRỢ QUỸ CON
 // ===============================================
-
-// 1. LOGIC CHUYỂN TIỀN
 function openTransferQuy(id) {
     let list = masterData[currentDay]?.quy || [];
     let q = list.find(x => x.id === id);
@@ -3777,6 +3795,16 @@ function openTransferQuy(id) {
     document.getElementById('transfer-source-name').innerText = q.name + ` (Khả dụng: ${formatTien(getQuyTotalAmt(q))} đ)`;
     document.getElementById('sel-transfer-source-storage').innerHTML = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
 
+    // Nạp danh sách Quỹ con cho Quỹ Nguồn
+    let srcSubHtml = `<option value="">-- Trừ vào tiền chung của Quỹ mẹ --</option>`;
+    if(q.subFunds) {
+        q.subFunds.forEach(sf => {
+            srcSubHtml += `<option value="${sf.name}">Quỹ con: ${sf.name} (Khả dụng: ${formatTien(sf.v)}đ)</option>`;
+        });
+    }
+    document.getElementById('sel-transfer-source-sub').innerHTML = srcSubHtml;
+
+    // Nạp danh sách Quỹ Đích
     let targetHtml = '';
     list.forEach(tq => { if(tq.id !== id) targetHtml += `<option value="${tq.id}">${tq.name}</option>`; });
     document.getElementById('sel-transfer-target-id').innerHTML = targetHtml;
@@ -3798,6 +3826,15 @@ function changeTransferTarget() {
         let common = ["Tiền mặt"].concat(masterData.banks.map(b => b.short));
         common.forEach(c => { if(!existing.includes(c)) opts.push(`<option value="${c}">${c} (Tạo kho mới)</option>`); });
         document.getElementById('sel-transfer-target-storage').innerHTML = opts.join('');
+
+        // Nạp danh sách Quỹ con cho Quỹ Đích
+        let tgtSubHtml = `<option value="">-- Cộng vào tiền chung của Quỹ mẹ --</option>`;
+        if(tq.subFunds) {
+            tq.subFunds.forEach(sf => {
+                tgtSubHtml += `<option value="${sf.name}">Quỹ con: ${sf.name}</option>`;
+            });
+        }
+        document.getElementById('sel-transfer-target-sub').innerHTML = tgtSubHtml;
     }
 }
 
@@ -3807,6 +3844,8 @@ function confirmTransferQuy() {
     let amt = cleanTien(document.getElementById('in-transfer-amt').value);
     let srcStorage = document.getElementById('sel-transfer-source-storage').value;
     let tgtStorage = document.getElementById('sel-transfer-target-storage').value;
+    let srcSub = document.getElementById('sel-transfer-source-sub').value;
+    let tgtSub = document.getElementById('sel-transfer-target-sub').value;
     let transDate = document.getElementById('in-transfer-date').value;
 
     if(!transDate || amt <= 0) { alert("Vui lòng nhập số tiền và ngày hợp lệ!"); return; }
@@ -3818,21 +3857,75 @@ function confirmTransferQuy() {
     let srcSIdx = qSrc.storages.findIndex(s => s.name === srcStorage);
     if(srcSIdx === -1 || qSrc.storages[srcSIdx].v < amt) { alert("Kho lưu trữ của quỹ nguồn không đủ tiền!"); return; }
 
-    // Trừ tiền Quỹ Nguồn
+    // Xử lý trừ Quỹ con (Nguồn)
+    if(srcSub && qSrc.subFunds) {
+        let sfSrc = qSrc.subFunds.find(x => x.name === srcSub);
+        if(!sfSrc || sfSrc.v < amt) { alert(`Lỗi: Quỹ con [${srcSub}] không đủ tiền để chuyển!`); return; }
+        sfSrc.v -= amt;
+    }
+
+    // Xử lý cộng Quỹ con (Đích)
+    if(tgtSub && qTgt.subFunds) {
+        let sfTgt = qTgt.subFunds.find(x => x.name === tgtSub);
+        if(sfTgt) sfTgt.v += amt;
+    }
+
+    // Trừ tiền Quỹ Nguồn tổng
     qSrc.storages[srcSIdx].v -= amt;
     if(!qSrc.history) qSrc.history = [];
-    qSrc.history.push({ d: transDate, type: 'rut', amount: amt, storage: srcStorage, reason: `Luân chuyển sang quỹ: ${qTgt.name}` });
+    qSrc.history.push({ d: transDate, type: 'rut', amount: amt, storage: srcStorage, subFund: srcSub || null, reason: `Luân chuyển sang quỹ: ${qTgt.name}` + (tgtSub ? ` (Vào quỹ con: ${tgtSub})` : '') });
 
-    // Cộng tiền Quỹ Đích
+    // Cộng tiền Quỹ Đích tổng
     let tgtSIdx = qTgt.storages.findIndex(s => s.name === tgtStorage);
     if(tgtSIdx > -1) { qTgt.storages[tgtSIdx].v += amt; } else { qTgt.storages.push({name: tgtStorage, v: amt, isLinked: false}); }
     if(!qTgt.history) qTgt.history = [];
-    qTgt.history.push({ d: transDate, type: 'nop', amount: amt, storage: tgtStorage, reason: `Nhận luân chuyển từ quỹ: ${qSrc.name}` });
+    qTgt.history.push({ d: transDate, type: 'nop', amount: amt, storage: tgtStorage, subFund: tgtSub || null, reason: `Nhận luân chuyển từ quỹ: ${qSrc.name}` + (srcSub ? ` (Từ quỹ con: ${srcSub})` : '') });
 
     saveMaster(); loadDay(); closeModal('modal-quy-transfer'); alert("Luân chuyển tiền thành công!");
 }
 
-// 2. MỞ RỘNG TÁCH QUỸ LOẠI 2 ĐỘNG
+// ===============================================
+// LOGIC TÁCH QUỸ (ĐÃ SỬA LỖI HOẠT ĐỘNG)
+// ===============================================
+function openSplitQuy(id) {
+    let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); 
+    if(!q) return;
+    
+    document.getElementById('hid-split-quy-id').value = id;
+    document.getElementById('split-quy-origin-name').innerText = q.name;
+    document.getElementById('split-quy-origin-amt').innerText = formatTien(getQuyTotalAmt(q)) + " đ";
+
+    let storageHtml = q.storages.map(s => `<option value="${s.name}">${s.name} (Tồn: ${formatTien(s.v)}đ)</option>`).join('');
+    document.getElementById('sel-split-storage').innerHTML = storageHtml;
+
+    // Load các Quỹ con hiện tại làm Mục tiêu trích xuất
+    let targetHtml = `<option value="NEW">-- Tạo Quỹ mới hoàn toàn --</option>`;
+    if(q.subFunds) {
+        q.subFunds.forEach(sf => {
+            if(sf.v > 0) targetHtml += `<option value="${sf.id}">Tách từ Quỹ con: ${sf.name} (${formatTien(sf.v)}đ)</option>`;
+        });
+    }
+    document.getElementById('sel-split-target-1').innerHTML = targetHtml;
+
+    document.getElementById('in-split-amt').value = "";
+    document.getElementById('in-split-date').value = currentDay;
+    document.getElementById('in-split-date').max = getGMT7Date();
+    document.getElementById('in-split-new-name1').value = "";
+
+    // Reset Tách Quỹ Loại 2 (Nhiều dòng)
+    let totalAvailEl = document.getElementById('split2-total-available');
+    if(totalAvailEl) {
+        totalAvailEl.innerText = formatTien(getQuyTotalAmt(q));
+        document.getElementById('split2-rows').innerHTML = '';
+        addSplit2Row(); addSplit2Row(); // Sinh sẵn 2 dòng
+        calcSplit2Remain();
+    }
+
+    changeSplitType(); 
+    changeSplitTarget();
+    openModal('modal-quy-split');
+}
+
 function addSplit2Row() {
     let q = (masterData[currentDay]?.quy || []).find(x => x.id === parseInt(document.getElementById('hid-split-quy-id').value));
     let subOpts = `<option value="NEW">-- Tạo Quỹ Mới --</option>`;
@@ -3859,7 +3952,9 @@ function toggleSplit2Input(sel) {
 }
 
 function calcSplit2Remain() {
-    let total = cleanTien(document.getElementById('split2-total-available').innerText);
+    let totalStr = document.getElementById('split2-total-available').innerText;
+    if(!totalStr) return;
+    let total = cleanTien(totalStr);
     let used = 0;
     document.querySelectorAll('.in-split2-amt').forEach(inp => { used += cleanTien(inp.value); });
     let remain = total - used;
