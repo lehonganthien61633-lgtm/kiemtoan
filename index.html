@@ -353,17 +353,32 @@ body * { visibility: hidden; }
         <div class="sub-total-box">LƯỢNG TIỀN TRONG NGÂN HÀNG: <br><span id="val-nh" style="font-size:32px; color:var(--primary)">0</span> đ</div>
         </div>
 
+        <!-- BẮT ĐẦU SỬA: THÊM TAB MỤC TIÊU VÀ SORT SỔ TIẾT KIỆM (HTML) -->
         <div id="sheet-stk-quy" class="page">
         <div style="display:flex; margin-bottom:25px; border:1px solid #000">
         <button class="tab-btn active" id="btn-tab-stk" onclick="switchInternalTab('stk')">DANH SÁCH SỔ TIẾT KIỆM</button>
         <button class="tab-btn" id="btn-tab-quy" onclick="switchInternalTab('quy')">QUẢN LÝ CÁC QUỸ</button>
+        <button class="tab-btn" id="btn-tab-mt" onclick="switchInternalTab('mt')">MỤC TIÊU TIẾT KIỆM</button>
         </div>
 
         <div id="content-stk">
-        <div style="display:flex; gap:10px; margin-bottom:15px;">
-            <button class="btn-sm stk-filter-btn active" style="flex:1; background:var(--primary); color:var(--accent);" onclick="filterSTK('all', this)">Tất cả</button>
-            <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('ky-han', this)">Kỳ hạn cố định</button>
-            <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('tich-luy', this)">Góp tích lũy</button>
+        <div style="display:flex; gap:10px; margin-bottom:15px; align-items:center;">
+            <div style="display:flex; gap:5px; flex:1.5;">
+                <button class="btn-sm stk-filter-btn active" style="flex:1; background:var(--primary); color:var(--accent);" onclick="filterSTK('all', this)">Tất cả</button>
+                <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('ky-han', this)">Kỳ hạn</button>
+                <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('tich-luy', this)">Tích lũy</button>
+            </div>
+            <select id="sel-stk-sort" onchange="sortSTK()" style="flex:1; padding:8px; font-family:'Times New Roman'; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="default">-- Sắp xếp Mặc định --</option>
+                <option value="amt_asc">Số tiền: Nhỏ -> Lớn</option>
+                <option value="amt_desc">Số tiền: Lớn -> Nhỏ</option>
+                <option value="start_asc">Ngày gửi: Cũ -> Mới</option>
+                <option value="start_desc">Ngày gửi: Mới -> Cũ</option>
+                <option value="end_asc">Ngày đáo hạn: Gần nhất</option>
+                <option value="end_desc">Ngày đáo hạn: Xa nhất</option>
+                <option value="mo_asc">Thời gian gửi: Ngắn -> Dài</option>
+                <option value="mo_desc">Thời gian gửi: Dài -> Ngắn</option>
+            </select>
         </div>
         <div id="stk-container"></div>
         <button class="btn-main" style="background:var(--success); color:white; border:none" onclick="openModal('modal-stk-add')">TẠO SỔ TIẾT KIỆM MỚI</button>
@@ -378,7 +393,14 @@ body * { visibility: hidden; }
             </div>
             <div class="sub-total-box" style="border-color:var(--accent); background:#fffdf5;">TỔNG CÁC QUỸ: <span id="val-quy" style="font-size:26px; color:var(--accent)">0</span> đ</div>
         </div>
+
+        <div id="content-mt" style="display:none;">
+            <div id="mt-container"></div>
+            <button class="btn-main" style="background:#0056b3; color:white; border:none" onclick="openModal('modal-mt-add')">TẠO MỤC TIÊU TIẾT KIỆM MỚI</button>
+            <div class="sub-total-box" style="border-color:#0056b3; background:#f0f8ff;">TỔNG TIỀN ĐÃ TÍCH LŨY (MỤC TIÊU): <span id="val-mt-total" style="font-size:26px; color:#0056b3">0</span> đ</div>
         </div>
+        </div>
+<!-- KẾT THÚC SỬA -->
 
         <div id="sheet-tk" class="page">
         <h2>Báo Cáo Tổng Hợp</h2>
@@ -906,7 +928,36 @@ body * { visibility: hidden; }
 <button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:20px;" onclick="closeModal('modal-stk-detail')">ĐÓNG BIÊN BẢN</button>
 </div>
 </div>
+<!-- BẮT ĐẦU SỬA: THÊM MODAL MỤC TIÊU TIẾT KIỆM -->
+<div class="modal-overlay" id="modal-mt-add">
+    <div class="modal-content">
+        <div class="modal-title" style="color:#0056b3; border-bottom-color:#0056b3;">THIẾT LẬP MỤC TIÊU TIẾT KIỆM</div>
+        <div class="form-group"><label>Tên mục tiêu</label><input type="text" id="in-mt-name" placeholder="VD: Mua nhà, Mua xe, Đám cưới..."></div>
+        <div class="form-group"><label>Số tiền mục tiêu (VNĐ)</label><input type="text" id="in-mt-target" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)"></div>
+        <div class="form-group"><label>Số tiền hiện đã có (VNĐ)</label><input type="text" id="in-mt-current" oninput="formatInput(this)" value="0" style="font-size:18px; font-weight:bold; color:var(--success)"></div>
+        <div class="form-group"><label>Ngày dự kiến hoàn thành</label><input type="date" id="in-mt-deadline"></div>
+        <div style="display:flex; gap:15px; margin-top:20px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-mt-add')">HỦY BỎ</button>
+            <button class="btn-main" style="background:#0056b3; color:white; border-color:#0056b3; flex:2" onclick="saveNewMT()">TẠO MỤC TIÊU</button>
+        </div>
+    </div>
+</div>
 
+<div class="modal-overlay" id="modal-mt-nop">
+    <div class="modal-content" style="max-width:400px;">
+        <div class="modal-title" style="color:var(--success); border-bottom-color:var(--success);">CẬP NHẬT TIẾN ĐỘ</div>
+        <div class="form-group"><label>SỐ TIỀN CỘNG THÊM/RÚT BỚT (VNĐ)</label>
+        <input type="text" id="in-mt-nop-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)" placeholder="Nhập số tiền...">
+        <p style="font-size:12px; color:#666; font-style:italic; margin-top:5px;">* Dùng dấu trừ (-) đằng trước nếu muốn rút bớt tiền.</p>
+        </div>
+        <input type="hidden" id="hid-mt-nop-id">
+        <div style="display:flex; gap:15px; margin-top:30px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-mt-nop')">HỦY BỎ</button>
+            <button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2" onclick="confirmNopMT()">XÁC NHẬN CẬP NHẬT</button>
+        </div>
+    </div>
+</div>
+<!-- KẾT THÚC SỬA -->
 <div id="print-area">
 <div class="p-wrap">
 <div class="p-header">
@@ -1540,9 +1591,13 @@ function saveMaster() {
                 
                 // Dùng toán tử 3 ngôi ( ? ... : [] ) để fallback mảng rỗng
                 // Tránh lỗi Firebase bỏ qua mảng rỗng khiến tính năng Xóa không đồng bộ được
+                /* BẮT ĐẦU SỬA: TRONG HÀM saveMaster() */
+                // Thay thế block copy dữ liệu bằng block sau:
                 masterData[dNext].stk = masterData[dCurr].stk ? JSON.parse(JSON.stringify(masterData[dCurr].stk)) : [];
                 masterData[dNext].nh  = masterData[dCurr].nh  ? JSON.parse(JSON.stringify(masterData[dCurr].nh))  : [];
                 masterData[dNext].quy = masterData[dCurr].quy ? JSON.parse(JSON.stringify(masterData[dCurr].quy)) : [];
+                masterData[dNext].mt  = masterData[dCurr].mt  ? JSON.parse(JSON.stringify(masterData[dCurr].mt))  : [];
+/* KẾT THÚC SỬA */
             }
         }
         
@@ -2254,11 +2309,13 @@ function loadDay() {
         let rawBalance = hasVal ? savedVal : '0';
         bodyNH.innerHTML += `<tr><td style="font-weight:bold">${bank.short}</td><td align="right" style="color:var(--primary); font-weight:bold; font-size:16px;">${valDisplay}</td><td align="center"><button class="btn-sm" style="border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-weight:bold;" onclick="openBankInfo('${bank.full}', '${bank.short}', '${rawBalance !== '0' ? formatTien(cleanTien(rawBalance)) + ' đ' : '0 đ'}')">i</button></td></tr>`;
     });
-
+/* BẮT ĐẦU SỬA: TRONG HÀM loadDay() */
     renderQuy(data.quy || []);
     renderSTK(data.stk || []);
+    renderMT(data.mt || []); // <-- THÊM DÒNG NÀY ĐỂ RENDER MỤC TIÊU
     calcTotal();
 }
+/* KẾT THÚC SỬA */
 
 // =====================================
 // CHỈNH SỬA TIỀN MẶT (HIỂN THỊ TẤT CẢ MỆNH GIÁ)
@@ -3489,44 +3546,70 @@ saveMaster(); closeModal('modal-stk-add'); loadDay();
 document.getElementById('in-stk-name').value = ""; document.getElementById('in-stk-amt').value = "0"; document.getElementById('in-stk-ls').value = "";
 }
 
+/* BẮT ĐẦU SỬA: SẮP XẾP SỔ TIẾT KIỆM */
+function sortSTK() {
+    let list = masterData[currentDay]?.stk || [];
+    renderSTK(list);
+}
+
 function renderSTK(list) {
-const cont = document.getElementById('stk-container'); cont.innerHTML = "";
-const dToday = new Date(currentDay).getTime();
+    const cont = document.getElementById('stk-container'); cont.innerHTML = "";
+    const dToday = new Date(currentDay).getTime();
 
-let filteredList = list;
-if (currentSTKFilter !== 'all') {
-    filteredList = list.filter(s => s.type === currentSTKFilter);
+    let filteredList = [...list];
+    if (currentSTKFilter !== 'all') {
+        filteredList = filteredList.filter(s => s.type === currentSTKFilter);
+    }
+
+    // Thuật toán sắp xếp đa chiều
+    let sortType = document.getElementById('sel-stk-sort') ? document.getElementById('sel-stk-sort').value : 'default';
+    if (sortType !== 'default') {
+        filteredList.sort((a, b) => {
+            if (sortType === 'amt_asc') return a.amt - b.amt;
+            if (sortType === 'amt_desc') return b.amt - a.amt;
+            if (sortType === 'start_asc') return new Date(a.start).getTime() - new Date(b.start).getTime();
+            if (sortType === 'start_desc') return new Date(b.start).getTime() - new Date(a.start).getTime();
+            if (sortType === 'end_asc') return new Date(a.end).getTime() - new Date(b.end).getTime();
+            if (sortType === 'end_desc') return new Date(b.end).getTime() - new Date(a.end).getTime();
+            if (sortType === 'mo_asc') return (parseInt(a.mo)||0) - (parseInt(b.mo)||0);
+            if (sortType === 'mo_desc') return (parseInt(b.mo)||0) - (parseInt(a.mo)||0);
+            return 0;
+        });
+    }
+
+    if(filteredList.length === 0) {
+        cont.innerHTML = `<div style="text-align:center; padding:20px; color:#666; font-style:italic;">Không có sổ tiết kiệm nào trong danh mục này.</div>`;
+        return;
+    }
+
+    filteredList.forEach(s => {
+        let dE = new Date(s.end).getTime(), remain = Math.floor((dE - dToday)/86400000);
+        let total = Math.max(1, Math.floor((dE - new Date(s.start).getTime())/86400000));
+        let per = Math.min(100, Math.max(0, (Math.floor((dToday - new Date(s.start).getTime())/86400000) / total) * 100));
+        let laiSum = s.history.reduce((a, h) => a + (h.v > 0 ? calcH(h, s.end).lai : 0), 0);
+        
+        let txtTime = s.mo ? `Thời gian gửi: ${s.mo} tháng` : `Kỳ hạn linh hoạt`;
+
+        cont.innerHTML += `
+        <div class="stk-card ${s.type}">
+        <button class="btn-i-detail" onclick="openDetail(${s.id})">i</button>
+        <div class="stk-bank">${s.nh}</div>
+        <div style="font-weight:bold; font-size:18px; margin-bottom:5px;">${s.name} <span style="font-size:11px; border:1px solid var(--primary); padding:2px 6px; font-weight:normal; margin-left:5px;">${s.type==='ky-han'?'Kỳ hạn cố định':'Góp tích lũy'}</span></div>
+        <div style="font-size:13px; color:#666; margin-bottom:10px;">${txtTime} (Từ ${vnDate(s.start)} - ${vnDate(s.end)})</div>
+        <div class="stk-amount">${formatTien(s.amt)} đ</div>
+        <div class="stk-lai-dk">Tổng lãi ước tính: +${formatTien(laiSum)} đ</div>
+        <div style="font-size:13px; margin-top:15px; font-weight:bold;">Tình trạng: ${remain > 0 ? 'Còn ' + remain + ' ngày nữa đáo hạn' : '<span style="color:var(--danger)">SỔ ĐÃ ĐẾN HẠN</span>'}</div>
+        <div class="progress-bg"><div class="progress-bar" style="width:${per}%"></div></div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:15px;">
+        ${remain <= 0 ? `<button class="btn-sm" style="background:var(--primary); color:var(--accent); font-size:14px; padding:10px 15px; width:100%" onclick="openDH(${s.id})">XỬ LÝ ĐÁO HẠN</button>` : ''}
+        ${s.type==='tich-luy'?`<button class="btn-sm" style="background:var(--success); color:white; flex:1; min-width:80px;" onclick="openNop(${s.id})">NỘP THÊM</button>`:''}
+        ${s.type==='ky-han'?`<button class="btn-sm" style="background:var(--danger); color:white; flex:1; min-width:80px;" onclick="openRut(${s.id}, '${s.type}')">RÚT TIỀN</button>`:''}
+        <button class="btn-sm" style="color:red; border-color:red; flex:1; min-width:80px;" onclick="deleteSTK(${s.id})">XÓA SỔ</button>
+        </div>
+        </div>`;
+    });
 }
-
-if(filteredList.length === 0) {
-    cont.innerHTML = `<div style="text-align:center; padding:20px; color:#666; font-style:italic;">Không có sổ tiết kiệm nào trong danh mục này.</div>`;
-    return;
-}
-
-filteredList.forEach(s => {
-let dE = new Date(s.end).getTime(), remain = Math.floor((dE - dToday)/86400000);
-let total = Math.max(1, Math.floor((dE - new Date(s.start).getTime())/86400000));
-let per = Math.min(100, Math.max(0, (Math.floor((dToday - new Date(s.start).getTime())/86400000) / total) * 100));
-let laiSum = s.history.reduce((a, h) => a + (h.v > 0 ? calcH(h, s.end).lai : 0), 0);
-
-cont.innerHTML += `
-<div class="stk-card ${s.type}">
-<button class="btn-i-detail" onclick="openDetail(${s.id})">i</button>
-<div class="stk-bank">${s.nh}</div>
-<div style="font-weight:bold; font-size:18px; margin-bottom:10px;">${s.name} <span style="font-size:11px; border:1px solid var(--primary); padding:2px 6px; font-weight:normal; margin-left:5px;">${s.type==='ky-han'?'Kỳ hạn cố định':'Góp tích lũy'}</span></div>
-<div class="stk-amount">${formatTien(s.amt)} đ</div>
-<div class="stk-lai-dk">Tổng lãi ước tính: +${formatTien(laiSum)} đ</div>
-<div style="font-size:13px; margin-top:15px; font-weight:bold;">Tình trạng: ${remain > 0 ? 'Còn ' + remain + ' ngày nữa đáo hạn' : '<span style="color:var(--danger)">SỔ ĐÃ ĐẾN HẠN</span>'}</div>
-<div class="progress-bg"><div class="progress-bar" style="width:${per}%"></div></div>
-<div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:15px;">
-${remain <= 0 ? `<button class="btn-sm" style="background:var(--primary); color:var(--accent); font-size:14px; padding:10px 15px; width:100%" onclick="openDH(${s.id})">XỬ LÝ ĐÁO HẠN</button>` : ''}
-${s.type==='tich-luy'?`<button class="btn-sm" style="background:var(--success); color:white; flex:1; min-width:80px;" onclick="openNop(${s.id})">NỘP THÊM</button>`:''}
-${s.type==='ky-han'?`<button class="btn-sm" style="background:var(--danger); color:white; flex:1; min-width:80px;" onclick="openRut(${s.id}, '${s.type}')">RÚT TIỀN</button>`:''}
-<button class="btn-sm" style="color:red; border-color:red; flex:1; min-width:80px;" onclick="deleteSTK(${s.id})">XÓA SỔ</button>
-</div>
-</div>`;
-});
-}
+/* KẾT THÚC SỬA */
 
 function openRut(id, type) {
 if(type === 'tich-luy') { alert("Không áp dụng cho sổ tích lũy."); return; }
@@ -3904,12 +3987,16 @@ function createNewData() {
     let pastDates = Object.keys(masterData).filter(d => d < dateVal && d.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
     let validPrevDate = pastDates.find(d => masterData[d].tm?.length > 0 || masterData[d].nh?.length > 0 || masterData[d].quy?.length > 0 || masterData[d].stk?.length > 0);
 
+   /* BẮT ĐẦU SỬA: TRONG HÀM createNewData() */
+    // Thay thế block if(validPrevDate) bằng block sau:
     if (validPrevDate) {
         if(masterData[validPrevDate].tm && masterData[validPrevDate].tm.length > 0) masterData[dateVal].tm = JSON.parse(JSON.stringify(masterData[validPrevDate].tm));
         if(masterData[validPrevDate].nh && masterData[validPrevDate].nh.length > 0) masterData[dateVal].nh = JSON.parse(JSON.stringify(masterData[validPrevDate].nh));
         if(masterData[validPrevDate].quy && masterData[validPrevDate].quy.length > 0) masterData[dateVal].quy = JSON.parse(JSON.stringify(masterData[validPrevDate].quy));
         if(masterData[validPrevDate].stk && masterData[validPrevDate].stk.length > 0) masterData[dateVal].stk = JSON.parse(JSON.stringify(masterData[validPrevDate].stk));
+        if(masterData[validPrevDate].mt && masterData[validPrevDate].mt.length > 0) masterData[dateVal].mt = JSON.parse(JSON.stringify(masterData[validPrevDate].mt));
     }
+/* KẾT THÚC SỬA */
 
     saveMaster();
     renderDataList();
@@ -3962,7 +4049,17 @@ setTimeout(() => {
 }
 
 function toggleMenu() { document.getElementById('sidebarMenu').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('active'); }
-function switchInternalTab(tab) { document.getElementById('content-stk').style.display = (tab === 'stk' ? 'block' : 'none'); document.getElementById('content-quy').style.display = (tab === 'quy' ? 'block' : 'none'); document.getElementById('btn-tab-stk').classList.remove('active'); document.getElementById('btn-tab-quy').classList.remove('active'); document.getElementById('btn-tab-' + tab).classList.add('active'); }
+/* BẮT ĐẦU SỬA: HÀM CHUYỂN TAB CÓ MỤC TIÊU TIẾT KIỆM */
+function switchInternalTab(tab) { 
+    document.getElementById('content-stk').style.display = (tab === 'stk' ? 'block' : 'none'); 
+    document.getElementById('content-quy').style.display = (tab === 'quy' ? 'block' : 'none'); 
+    if(document.getElementById('content-mt')) document.getElementById('content-mt').style.display = (tab === 'mt' ? 'block' : 'none'); 
+    document.getElementById('btn-tab-stk').classList.remove('active'); 
+    document.getElementById('btn-tab-quy').classList.remove('active'); 
+    if(document.getElementById('btn-tab-mt')) document.getElementById('btn-tab-mt').classList.remove('active'); 
+    document.getElementById('btn-tab-' + tab).classList.add('active'); 
+}
+/* KẾT THÚC SỬA */
 function switchSettingsTab(tab) { document.getElementById('content-set-acc').style.display = (tab === 'acc' ? 'block' : 'none'); document.getElementById('content-set-bank').style.display = (tab === 'bank' ? 'block' : 'none'); document.getElementById('btn-tab-set-acc').classList.remove('active'); document.getElementById('btn-tab-set-bank').classList.remove('active'); document.getElementById('btn-tab-set-' + tab).classList.add('active'); }
 function openModal(id) { document.getElementById(id).classList.add('active'); document.body.classList.add('modal-open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.classList.remove('modal-open'); }
@@ -4164,6 +4261,100 @@ function calcSplit2Remain() {
 }
 // KẾT THÚC THÊM MỚI: LOGIC CHUYỂN TIỀN & TÁCH QUỸ
 // ===============================================
+    /* BẮT ĐẦU SỬA: LOGIC MỤC TIÊU TIẾT KIỆM (CRUD) */
+function renderMT(list) {
+    const cont = document.getElementById('mt-container');
+    if(!cont) return;
+    cont.innerHTML = "";
+    let totalMT = 0;
+    
+    if (!list || list.length === 0) {
+        cont.innerHTML = `<div style="text-align:center; padding:20px; color:#666; font-style:italic;">Chưa có mục tiêu tiết kiệm nào.</div>`;
+        document.getElementById('val-mt-total').innerText = "0";
+        return;
+    }
+
+    list.forEach(m => {
+        totalMT += (m.current || 0);
+        let per = Math.min(100, Math.max(0, ((m.current || 0) / (m.target || 1)) * 100));
+        let dateText = m.deadline ? `Dự kiến hoàn thành: ${vnDate(m.deadline)}` : "Không xác định hạn";
+        
+        cont.innerHTML += `
+        <div class="stk-card" style="border-top-color:#0056b3;">
+            <div style="font-weight:bold; font-size:18px; margin-bottom:5px; color:#0056b3;">🎯 ${m.name}</div>
+            <div style="font-size:13px; color:#666; margin-bottom:10px; font-style:italic;">${dateText}</div>
+            
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                <span style="font-weight:bold; color:var(--success); font-size:18px;">${formatTien(m.current || 0)} đ</span>
+                <span style="font-weight:bold; color:#666;">/ ${formatTien(m.target)} đ</span>
+            </div>
+            
+            <div class="progress-bg"><div class="progress-bar" style="width:${per}%; background:linear-gradient(90deg, #0056b3, #00c6ff);"></div></div>
+            <div style="text-align:right; font-size:12px; color:#888; margin-top:5px; font-weight:bold;">Đã đạt: ${per.toFixed(1)}%</div>
+            
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:15px;">
+                <button class="btn-sm" style="background:var(--success); color:white; flex:2;" onclick="openNopMT(${m.id})">CẬP NHẬT TIẾN ĐỘ</button>
+                <button class="btn-sm" style="color:red; border-color:red; flex:1;" onclick="deleteMT(${m.id})">XÓA</button>
+            </div>
+        </div>`;
+    });
+    document.getElementById('val-mt-total').innerText = formatTien(totalMT);
+}
+
+function saveNewMT() {
+    let name = document.getElementById('in-mt-name').value.trim();
+    let target = cleanTien(document.getElementById('in-mt-target').value);
+    let current = cleanTien(document.getElementById('in-mt-current').value) || 0;
+    let deadline = document.getElementById('in-mt-deadline').value;
+
+    if (!name || target <= 0) { alert("Vui lòng nhập Tên và Số tiền mục tiêu hợp lệ!"); return; }
+
+    if (!masterData[currentDay]) masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [], mt: [] };
+    if (!masterData[currentDay].mt) masterData[currentDay].mt = [];
+
+    masterData[currentDay].mt.push({
+        id: Date.now(), name: name, target: target, current: current, deadline: deadline
+    });
+
+    saveMaster(); closeModal('modal-mt-add'); loadDay();
+    document.getElementById('in-mt-name').value = ""; document.getElementById('in-mt-target').value = "";
+    document.getElementById('in-mt-current').value = "0"; document.getElementById('in-mt-deadline').value = "";
+}
+
+function openNopMT(id) {
+    document.getElementById('hid-mt-nop-id').value = id;
+    document.getElementById('in-mt-nop-val').value = "";
+    openModal('modal-mt-nop');
+}
+
+function confirmNopMT() {
+    let id = parseInt(document.getElementById('hid-mt-nop-id').value);
+    let rawInput = document.getElementById('in-mt-nop-val').value;
+    // Bắt trường hợp nhập số âm (có chứa dấu -)
+    let isNegative = rawInput.includes('-');
+    let addVal = cleanTien(rawInput);
+    if(isNegative) addVal = -Math.abs(addVal);
+
+    if (addVal === 0) { alert("Vui lòng nhập số tiền khác 0!"); return; }
+
+    let list = masterData[currentDay]?.mt || [];
+    let m = list.find(x => x.id === id);
+    if (m) {
+        m.current += addVal;
+        if(m.current < 0) m.current = 0; // Tránh âm tiền
+        saveMaster(); closeModal('modal-mt-nop'); loadDay();
+        if (m.current >= m.target && addVal > 0) { alert("🎉 Xin chúc mừng! Bạn đã đạt được Mục tiêu tiết kiệm: " + m.name); } 
+        else { alert("Đã cập nhật tiến độ!"); }
+    }
+}
+
+function deleteMT(id) {
+    if (confirm("Xóa mục tiêu tiết kiệm này? Tiến độ đã lưu sẽ bị xóa khỏi giao diện (Tiền thực tế trong Quỹ/Sổ không bị ảnh hưởng).")) {
+        masterData[currentDay].mt = (masterData[currentDay]?.mt || []).filter(x => x.id !== id);
+        saveMaster(); loadDay();
+    }
+}
+/* KẾT THÚC SỬA */
 generateCaptcha(); // Initialize Captcha on first load
 </script>
 </body>
