@@ -242,6 +242,84 @@ body * { visibility: hidden; }
 .cal-diff.pos { color: #2e7d32; } /* Xanh lá cho số dương */
 .cal-diff.neg { color: #c62828; } /* Đỏ cho số âm */
 /* KẾT THÚC SỬA */
+/* BẮT ĐẦU SỬA: CSS UI LỌC/SẮP XẾP SỔ TIẾT KIỆM */
+.stk-controls-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+.stk-filter-group {
+    display: flex;
+    background: #f0f2f5;
+    border-radius: 6px;
+    padding: 5px;
+    gap: 5px;
+    flex: 1;
+    min-width: 250px;
+}
+.stk-filter-btn {
+    flex: 1;
+    border: none !important;
+    background: transparent !important;
+    color: #666 !important;
+    padding: 10px 5px !important;
+    font-size: 13px !important;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    font-family: "Times New Roman", Times, serif !important;
+    cursor: pointer;
+}
+.stk-filter-btn:hover {
+    background: #e4e6e9 !important;
+    color: #333 !important;
+}
+.stk-filter-btn.active {
+    background: var(--primary) !important;
+    color: var(--accent) !important;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+.stk-sort-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 250px;
+}
+.stk-sort-group label {
+    font-size: 12px;
+    color: #555;
+    font-weight: bold;
+    white-space: nowrap;
+    margin-bottom: 0 !important;
+}
+.stk-sort-select {
+    flex: 1;
+    padding: 10px 12px !important;
+    border-radius: 6px !important;
+    border: 1px solid #ccc !important;
+    background-color: #fff !important;
+    font-weight: bold;
+    color: #333;
+    font-size: 14px !important;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+.stk-sort-select:focus {
+    border-color: var(--accent) !important;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1) !important;
+}
+/* KẾT THÚC SỬA */
 </style>
 </head>
 <body>
@@ -378,29 +456,34 @@ body * { visibility: hidden; }
         <button class="tab-btn" id="btn-tab-mt" onclick="switchInternalTab('mt')">MỤC TIÊU TIẾT KIỆM</button>
         </div>
 
+        <!-- BẮT ĐẦU SỬA: GIAO DIỆN LỌC/SẮP XẾP SỔ TIẾT KIỆM (HTML) -->
         <div id="content-stk">
-        <div style="display:flex; gap:10px; margin-bottom:15px; align-items:center;">
-            <div style="display:flex; gap:5px; flex:1.5;">
-                <button class="btn-sm stk-filter-btn active" style="flex:1; background:var(--primary); color:var(--accent);" onclick="filterSTK('all', this)">Tất cả</button>
-                <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('ky-han', this)">Kỳ hạn</button>
-                <button class="btn-sm stk-filter-btn" style="flex:1;" onclick="filterSTK('tich-luy', this)">Tích lũy</button>
+        <div class="stk-controls-wrapper">
+            <div class="stk-filter-group">
+                <button class="btn-sm stk-filter-btn active" onclick="filterSTK('all', this)">📑 Tất cả</button>
+                <button class="btn-sm stk-filter-btn" onclick="filterSTK('ky-han', this)">🔒 Kỳ hạn</button>
+                <button class="btn-sm stk-filter-btn" onclick="filterSTK('tich-luy', this)">📈 Tích lũy</button>
             </div>
-            <select id="sel-stk-sort" onchange="sortSTK()" style="flex:1; padding:8px; font-family:'Times New Roman'; border: 1px solid #ccc; border-radius: 4px;">
-                <option value="default">-- Sắp xếp Mặc định --</option>
-                <option value="amt_asc">Số tiền: Nhỏ -> Lớn</option>
-                <option value="amt_desc">Số tiền: Lớn -> Nhỏ</option>
-                <option value="start_asc">Ngày gửi: Cũ -> Mới</option>
-                <option value="start_desc">Ngày gửi: Mới -> Cũ</option>
-                <option value="end_asc">Ngày đáo hạn: Gần nhất</option>
-                <option value="end_desc">Ngày đáo hạn: Xa nhất</option>
-                <option value="mo_asc">Thời gian gửi: Ngắn -> Dài</option>
-                <option value="mo_desc">Thời gian gửi: Dài -> Ngắn</option>
-            </select>
+            <div class="stk-sort-group">
+                <label for="sel-stk-sort">SẮP XẾP:</label>
+                <select id="sel-stk-sort" class="stk-sort-select" onchange="sortSTK()">
+                    <option value="default">⚡ Sắp xếp Mặc định</option>
+                    <option value="amt_desc">💰 Số tiền: Lớn ➔ Nhỏ</option>
+                    <option value="amt_asc">💰 Số tiền: Nhỏ ➔ Lớn</option>
+                    <option value="start_desc">📅 Ngày gửi: Gần đây ➔ Cũ</option>
+                    <option value="start_asc">📅 Ngày gửi: Cũ ➔ Gần đây</option>
+                    <option value="end_asc">⏳ Đáo hạn: Gần nhất</option>
+                    <option value="end_desc">⏳ Đáo hạn: Xa nhất</option>
+                    <option value="mo_asc">⏱️ Thời gian: Ngắn ➔ Dài</option>
+                    <option value="mo_desc">⏱️ Thời gian: Dài ➔ Ngắn</option>
+                </select>
+            </div>
         </div>
         <div id="stk-container"></div>
         <button class="btn-main" style="background:var(--success); color:white; border:none" onclick="openModal('modal-stk-add')">TẠO SỔ TIẾT KIỆM MỚI</button>
         <div class="sub-total-box" style="border-color:var(--success); background:#f4f9f4;">TỔNG TIẾT KIỆM: <span id="val-stk" style="font-size:26px; color:var(--success)">0</span> đ</div>
         </div>
+<!-- KẾT THÚC SỬA -->
 
         <div id="content-quy" style="display:none;">
             <div id="quy-container"></div>
@@ -3573,18 +3656,22 @@ alert("Đã xóa quỹ thành công!");
 // =====================================
 // FILTER CHO SỔ TIẾT KIỆM
 // =====================================
+/* BẮT ĐẦU SỬA: JS LỌC SỔ TIẾT KIỆM (CẬP NHẬT CLASS) */
 function filterSTK(type, btn) {
     currentSTKFilter = type;
+    
+    // Loại bỏ class active khỏi tất cả các nút lọc
     document.querySelectorAll('.stk-filter-btn').forEach(b => {
-        b.style.background = '#fff';
-        b.style.color = '#000';
+        b.classList.remove('active');
     });
-    btn.style.background = 'var(--primary)';
-    btn.style.color = 'var(--accent)';
+    
+    // Thêm class active cho nút vừa được bấm
+    btn.classList.add('active');
     
     let list = masterData[currentDay]?.stk || [];
     renderSTK(list);
 }
+/* KẾT THÚC SỬA */
 
 // =====================================
 // SỔ TIẾT KIỆM
