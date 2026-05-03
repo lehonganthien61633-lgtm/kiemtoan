@@ -1084,21 +1084,38 @@ body * { visibility: hidden; }
     </div>
 </div>
 
-<div class="modal-overlay" id="modal-mt-history">
-    <div class="modal-content" style="max-width:550px;">
-        <div class="modal-title" style="color:#0056b3; border-bottom-color:#0056b3;">LỊCH SỬ NỘP/RÚT MỤC TIÊU</div>
-        <div style="max-height:300px; overflow-y:auto; border:1px solid #ddd;">
-            <table class="data-table" style="margin-bottom:0;">
-                <thead style="position: sticky; top:0;"><tr style="background:#e9ecef"><th>Ngày giao dịch</th><th style="text-align:right">Biến động (VNĐ)</th></tr></thead>
+<!-- BẮT ĐẦU SỬA: THÊM MODAL MỤC TIÊU TIẾT KIỆM MỚI -->
+<div class="modal-overlay" id="modal-mt-info">
+    <div class="modal-content" style="max-width:600px;">
+        <div class="modal-title" style="color:#0056b3; border-bottom-color:#0056b3;">THÔNG TIN MỤC TIÊU</div>
+        <div id="mt-info-summary" style="background:#eef5fa; padding:15px; border-left:4px solid #0056b3; margin-bottom:20px; font-size:15px; line-height:1.6;"></div>
+        
+        <h3 style="font-size:16px; color:#333; border-bottom:1px solid #ccc; padding-bottom:5px;">LỊCH SỬ GIAO DỊCH</h3>
+        <div style="max-height:250px; overflow-y:auto; border:1px solid #ddd;">
+            <table class="data-table" style="margin-bottom:0; font-size:13px;">
+                <thead style="position: sticky; top:0;"><tr style="background:#e9ecef"><th>Ngày GD</th><th>Nội dung / Lý do</th><th style="text-align:right">Biến động</th></tr></thead>
                 <tbody id="mt-history-tbody"></tbody>
             </table>
         </div>
-        <button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:15px;" onclick="closeModal('modal-mt-history')">ĐÓNG</button>
+        <button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:15px;" onclick="closeModal('modal-mt-info')">ĐÓNG</button>
     </div>
 </div>
-<!-- KẾT THÚC SỬA -->
+
+<div class="modal-overlay" id="modal-mt-rut">
+    <div class="modal-content" style="max-width:450px;">
+        <div class="modal-title" style="color:var(--danger); border-bottom-color:var(--danger);">RÚT TIỀN MỤC TIÊU</div>
+        <div class="form-group"><label>Ngày rút</label><input type="date" id="in-mt-rut-date"></div>
+        <div class="form-group"><label>SỐ TIỀN RÚT (VNĐ)</label>
+        <input type="text" id="in-mt-rut-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)" placeholder="Nhập số tiền cần rút...">
+        </div>
+        <div class="form-group"><label>Lý do rút</label><input type="text" id="in-mt-rut-reason" placeholder="Nhập lý do rút tiền (Bắt buộc)..."></div>
+        <input type="hidden" id="hid-mt-rut-id">
+        <div style="display:flex; gap:15px; margin-top:30px;">
+            <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-mt-rut')">HỦY BỎ</button>
+            <button class="btn-main" style="background:var(--danger); color:#fff; border-color:var(--danger); flex:2" onclick="confirmRutMT()">XÁC NHẬN RÚT</button>
+        </div>
+    </div>
 </div>
-<!-- KẾT THÚC SỬA -->
 <div id="print-area">
 <div class="p-wrap">
 <div class="p-header">
@@ -2344,46 +2361,106 @@ function confirmEditHoliday() {
 function getLunarDate(dd, mm, yyyy) {
     // Dùng API nội bộ nhỏ gọn xấp xỉ chuyển đổi hoặc thuật toán thu gọn. 
     // Thuật toán tính JDN và xác định tháng Âm lịch Việt Nam (Múi giờ +7).
-    function jdFromDate(dd, mm, yyyy) {
-        let a = Math.floor((14 - mm) / 12);
-        let y = yyyy + 4800 - a;
-        let m = mm + 12 * a - 3;
-        let jd = dd + Math.floor((153 + 3 * m) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
-        if (jd < 2299161) jd = dd + Math.floor((153 + 3 * m) / 5) + 365 * y + Math.floor(y / 4) - 32083;
-        return jd;
-    }
-    function jdToDate(jd) {
-        let a, b, c, d, e, m, day, month, year;
-        if (jd > 2299160) {
-            a = jd + 32044; b = Math.floor((4 * a + 3) / 146097); c = a - Math.floor((146097 * b) / 4);
-        } else {
-            b = 0; c = jd + 32082;
-        }
-        d = Math.floor((4 * c + 3) / 1461); e = c - Math.floor((1461 * d) / 4); m = Math.floor((5 * e + 2) / 153);
-        day = e - Math.floor((153 * m + 2) / 5) + 1;
-        month = m + 3 - 12 * Math.floor(m / 10);
-        year = b * 100 + d - 4800 + Math.floor(m / 10);
-        return [day, month, year];
-    }
-    function getNewMoonDay(k) {
-        let T = k / 1236.85;
-        let T2 = T * T, T3 = T2 * T;
-        let dr = 29.530588853 + 0.00000021629 * T - 0.000000000113 * T2;
-        let M = 2.5534 + 29.10535669 * k - 0.0000218 * T2 - 0.00000011 * T3;
-        let jd = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3 + 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * Math.PI / 180);
-        M = M * Math.PI / 180;
-        return Math.floor(jd + 0.1734 - 0.0065 * Math.sin(M) + 0.5 + 7 / 24); // Múi giờ +7
-    }
-    let jd = jdFromDate(dd, mm, yyyy);
-    let k = Math.floor((jd - 2415021.076998695) / 29.530588853);
-    let nm = getNewMoonDay(k);
-    if (nm > jd) nm = getNewMoonDay(--k);
-    let a = jdToDate(nm);
-    let lunarDay = jd - nm + 1;
-    let lunarMonth = a[1];
-    let lunarYear = a[2];
-    return { d: lunarDay, m: lunarMonth, y: lunarYear };
+    /* BẮT ĐẦU SỬA: THUẬT TOÁN ÂM LỊCH CHÍNH XÁC */
+function jdFromDate(dd, mm, yyyy) {
+    let a = Math.floor((14 - mm) / 12);
+    let y = yyyy + 4800 - a;
+    let m = mm + 12 * a - 3;
+    return dd + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
 }
+function jdToDate(jd) {
+    let a = jd + 32044;
+    let b = Math.floor((4 * a + 3) / 146097);
+    let c = a - Math.floor((146097 * b) / 4);
+    let d = Math.floor((4 * c + 3) / 1461);
+    let e = c - Math.floor((1461 * d) / 4);
+    let m = Math.floor((5 * e + 2) / 153);
+    let day = e - Math.floor((153 * m + 2) / 5) + 1;
+    let month = m + 3 - 12 * Math.floor(m / 10);
+    let year = b * 100 + d - 4800 + Math.floor(m / 10);
+    return [day, month, year];
+}
+function getNewMoonDay(k, timeZone) {
+    let T = k / 1236.85;
+    let T2 = T * T, T3 = T2 * T;
+    let dr = 29.530588853 + 0.00000021629 * T - 0.000000000113 * T2;
+    let M0 = 2.5534 + 29.10535669 * k - 0.0000218 * T2 - 0.00000011 * T3;
+    let M = (M0 * Math.PI) / 180;
+    let jd = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3 
+        + 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * Math.PI / 180);
+    return Math.floor(jd + 0.1734 - 0.0065 * Math.sin(M) + 0.5 + timeZone / 24);
+}
+function getSunLongitude(dayNumber, timeZone) {
+    let T = (dayNumber - 2451545.0) / 36525;
+    let T2 = T * T;
+    let M = 357.52910 + 35999.05030 * T - 0.0001559 * T2 - 0.00000048 * T2 * T;
+    let L0 = 280.46645 + 36000.76983 * T + 0.0003032 * T2;
+    let eqCenter = (1.914600 - 0.004817 * T - 0.000014 * T2) * Math.sin(M * Math.PI / 180) 
+        + (0.019993 - 0.000101 * T) * Math.sin(2 * M * Math.PI / 180) 
+        + 0.000290 * Math.sin(3 * M * Math.PI / 180);
+    let sunLong = L0 + eqCenter;
+    sunLong = sunLong % 360;
+    if (sunLong < 0) sunLong += 360;
+    return sunLong;
+}
+function getLunarMonth11(yy, timeZone) {
+    let off = jdFromDate(31, 12, yy) - 2415021.076998695;
+    let k = Math.floor(off / 29.530588853);
+    let nm = getNewMoonDay(k, timeZone);
+    let sunLong = getSunLongitude(nm, timeZone);
+    if (sunLong >= 270) nm = getNewMoonDay(k - 1, timeZone);
+    return nm;
+}
+function getLeapMonthOffset(a11, timeZone) {
+    let k = Math.floor((a11 - 2415021.076998695) / 29.530588853) + 0.5;
+    let last = 0, arc = 0, i = 1, isLeap = 0;
+    let nm = getNewMoonDay(k, timeZone);
+    let sunLong = getSunLongitude(nm, timeZone);
+    do {
+        last = arc;
+        k += 1;
+        nm = getNewMoonDay(k, timeZone);
+        sunLong = getSunLongitude(nm, timeZone);
+        arc = Math.floor(sunLong / 30);
+        if (arc === last) isLeap = i;
+        i++;
+    } while (i < 14);
+    return isLeap;
+}
+function getLunarDate(dd, mm, yyyy) {
+    let timeZone = 7;
+    let dayNumber = jdFromDate(dd, mm, yyyy);
+    let k = Math.floor((dayNumber - 2415021.076998695) / 29.530588853);
+    let monthStart = getNewMoonDay(k, timeZone);
+    if (monthStart > dayNumber) {
+        k--;
+        monthStart = getNewMoonDay(k, timeZone);
+    }
+    let a11 = getLunarMonth11(yyyy, timeZone);
+    let b11 = a11;
+    let isLeap = 0;
+    let leapMonth = 0;
+    if (a11 >= monthStart) {
+        a11 = getLunarMonth11(yyyy - 1, timeZone);
+    } else {
+        b11 = getLunarMonth11(yyyy + 1, timeZone);
+    }
+    let month = Math.floor((monthStart - a11) / 29) + 11;
+    if (b11 - a11 > 365) {
+        leapMonth = getLeapMonthOffset(a11, timeZone);
+        if (month > leapMonth) month--;
+        else if (month === leapMonth) isLeap = 1;
+    }
+    if (month > 12) month -= 12;
+    let lunarDay = dayNumber - monthStart + 1;
+    let lunarYear = yyyy;
+    if (month === 11 || month === 12) {
+        let s = jdToDate(monthStart);
+        if (s[1] === 1 || s[1] === 2) lunarYear--;
+    }
+    return { d: lunarDay, m: month, y: lunarYear, leap: isLeap };
+}
+/* KẾT THÚC SỬA */
 
 function checkIsHoliday(dateObj) {
     let sD = dateObj.getDate(), sM = dateObj.getMonth() + 1, sY = dateObj.getFullYear();
@@ -4501,6 +4578,7 @@ function deleteMT(id) {
 }
 /* KẾT THÚC SỬA */
     /* BẮT ĐẦU SỬA: LOGIC MỤC TIÊU (MỚI) + LOGIC LỊCH TÀI SẢN */
+/* BẮT ĐẦU SỬA: LOGIC MỤC TIÊU (CÓ THÔNG TIN VÀ RÚT) */
 function renderMT(list) {
     const cont = document.getElementById('mt-container');
     if(!cont) return;
@@ -4518,14 +4596,13 @@ function renderMT(list) {
         let per = Math.min(100, Math.max(0, ((m.current || 0) / (m.target || 1)) * 100));
         let startText = m.start ? `Mở sổ: ${vnDate(m.start)}` : "Chưa có ngày mở";
         let dateText = m.deadline ? `Hoàn thành: ${vnDate(m.deadline)}` : "Không xác định hạn";
-        let descHtml = m.desc ? `<div style="background:#eef5fa; border-left: 3px solid #0056b3; padding:8px 10px; font-size:13px; color:#444; margin-bottom:12px; font-style:italic;">"${m.desc}"</div>` : '';
         
         cont.innerHTML += `
-        <div class="stk-card" style="border-top-color:#0056b3;">
-            <button class="btn-i-detail" style="border-color:#0056b3; color:#0056b3;" onclick="openHistoryMT(${m.id})">h</button>
+        <div class="stk-card" style="border-top-color:#0056b3; position:relative;">
+            <button class="btn-i-detail" style="border-color:#0056b3; color:#0056b3;" onclick="openInfoMT(${m.id})">i</button>
             <div style="font-weight:bold; font-size:18px; margin-bottom:5px; color:#0056b3;">🎯 ${m.name}</div>
-            <div style="font-size:12px; color:#888; margin-bottom:8px;">${startText} | ${dateText}</div>
-            ${descHtml}
+            <div style="font-size:12px; color:#888; margin-bottom:15px;">${startText} | ${dateText}</div>
+            
             <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
                 <span style="font-weight:bold; color:var(--success); font-size:18px;">${formatTien(m.current || 0)} đ</span>
                 <span style="font-weight:bold; color:#666;">/ ${formatTien(m.target)} đ</span>
@@ -4535,7 +4612,8 @@ function renderMT(list) {
             <div style="text-align:right; font-size:12px; color:#888; margin-top:5px; font-weight:bold;">Đã đạt: ${per.toFixed(1)}%</div>
             
             <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:15px;">
-                <button class="btn-sm" style="background:var(--success); color:white; flex:2;" onclick="openNopMT(${m.id})">CẬP NHẬT TIẾN ĐỘ</button>
+                <button class="btn-sm" style="background:var(--success); color:white; flex:2;" onclick="openNopMT(${m.id})">NỘP THÊM</button>
+                <button class="btn-sm" style="background:var(--danger); color:white; flex:2;" onclick="openRutMT(${m.id})">RÚT TIỀN</button>
                 <button class="btn-sm" style="color:red; border-color:red; flex:1;" onclick="deleteMT(${m.id})">XÓA</button>
             </div>
         </div>`;
@@ -4558,7 +4636,7 @@ function saveNewMT() {
 
     masterData[currentDay].mt.push({
         id: Date.now(), name: name, desc: desc, target: target, current: current, start: start, deadline: deadline,
-        history: current > 0 ? [{ d: start || currentDay, v: current }] : []
+        history: current > 0 ? [{ d: start || currentDay, v: current, reason: "Khởi tạo mục tiêu" }] : []
     });
 
     saveMaster(); closeModal('modal-mt-add'); loadDay();
@@ -4577,25 +4655,51 @@ function openNopMT(id) {
 function confirmNopMT() {
     let id = parseInt(document.getElementById('hid-mt-nop-id').value);
     let dateVal = document.getElementById('in-mt-nop-date').value || currentDay;
-    let rawInput = document.getElementById('in-mt-nop-val').value;
-    let isNegative = rawInput.includes('-');
-    let addVal = cleanTien(rawInput);
-    if(isNegative) addVal = -Math.abs(addVal);
+    let addVal = cleanTien(document.getElementById('in-mt-nop-val').value);
 
-    if (addVal === 0) { alert("Vui lòng nhập số tiền khác 0!"); return; }
+    if (addVal <= 0) { alert("Vui lòng nhập số tiền hợp lệ!"); return; }
 
     let list = masterData[currentDay]?.mt || [];
     let m = list.find(x => x.id === id);
     if (m) {
         m.current += addVal;
-        if(m.current < 0) m.current = 0; 
-        
         if(!m.history) m.history = [];
-        m.history.push({ d: dateVal, v: addVal });
+        m.history.push({ d: dateVal, v: addVal, reason: "Nộp thêm tiền" });
         
         saveMaster(); closeModal('modal-mt-nop'); loadDay();
-        if (m.current >= m.target && addVal > 0) { alert("🎉 Xin chúc mừng! Bạn đã đạt được Mục tiêu tiết kiệm: " + m.name); } 
-        else { alert("Đã cập nhật tiến độ!"); }
+        if (m.current >= m.target) { alert("🎉 Xin chúc mừng! Bạn đã đạt được Mục tiêu tiết kiệm: " + m.name); } 
+        else { alert("Đã nộp thêm tiền!"); }
+    }
+}
+
+function openRutMT(id) {
+    document.getElementById('hid-mt-rut-id').value = id;
+    document.getElementById('in-mt-rut-val').value = "";
+    document.getElementById('in-mt-rut-reason').value = "";
+    document.getElementById('in-mt-rut-date').value = currentDay;
+    openModal('modal-mt-rut');
+}
+
+function confirmRutMT() {
+    let id = parseInt(document.getElementById('hid-mt-rut-id').value);
+    let dateVal = document.getElementById('in-mt-rut-date').value || currentDay;
+    let rutVal = cleanTien(document.getElementById('in-mt-rut-val').value);
+    let reason = document.getElementById('in-mt-rut-reason').value.trim();
+
+    if (rutVal <= 0) { alert("Vui lòng nhập số tiền rút hợp lệ!"); return; }
+    if (!reason) { alert("Vui lòng nhập lý do rút tiền!"); return; }
+
+    let list = masterData[currentDay]?.mt || [];
+    let m = list.find(x => x.id === id);
+    if (m) {
+        if (m.current < rutVal) { alert("Số dư mục tiêu không đủ để rút!"); return; }
+        m.current -= rutVal;
+        
+        if(!m.history) m.history = [];
+        m.history.push({ d: dateVal, v: -rutVal, reason: reason });
+        
+        saveMaster(); closeModal('modal-mt-rut'); loadDay();
+        alert("Đã rút tiền thành công!");
     }
 }
 
@@ -4606,25 +4710,38 @@ function deleteMT(id) {
     }
 }
 
-function openHistoryMT(id) {
+function openInfoMT(id) {
     let list = masterData[currentDay]?.mt || [];
     let m = list.find(x => x.id === id);
     if (!m) return;
     
+    let startText = m.start ? vnDate(m.start) : "---";
+    let deadlineText = m.deadline ? vnDate(m.deadline) : "---";
+    
+    document.getElementById('mt-info-summary').innerHTML = `
+        <div style="font-weight:bold; font-size:18px; margin-bottom:5px;">🎯 ${m.name}</div>
+        <div><b>Ngày mở:</b> ${startText}</div>
+        <div><b>Đáo hạn:</b> ${deadlineText}</div>
+        <div><b>Mục tiêu:</b> <span style="color:var(--danger); font-weight:bold;">${formatTien(m.target)} đ</span></div>
+        <div style="margin-top:8px;"><b>Thông tin/Nội dung:</b><br>${m.desc ? m.desc : '<i>Không có ghi chú</i>'}</div>
+    `;
+
     let tbody = document.getElementById('mt-history-tbody');
     tbody.innerHTML = '';
     if(!m.history || m.history.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="2" align="center" style="color:#888; font-style:italic;">Chưa có lịch sử.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3" align="center" style="color:#888; font-style:italic;">Chưa có lịch sử.</td></tr>`;
     } else {
         let sortedHist = [...m.history].sort((a,b) => new Date(b.d) - new Date(a.d));
         sortedHist.forEach(h => {
             let color = h.v >= 0 ? 'var(--success)' : 'var(--danger)';
             let sign = h.v >= 0 ? '+' : '';
-            tbody.innerHTML += `<tr><td align="center">${vnDate(h.d)}</td><td align="right" style="color:${color}; font-weight:bold;">${sign}${formatTien(h.v)} đ</td></tr>`;
+            let r = h.reason ? h.reason : (h.v >= 0 ? 'Nộp tiền' : 'Rút tiền');
+            tbody.innerHTML += `<tr><td align="center">${vnDate(h.d)}</td><td>${r}</td><td align="right" style="color:${color}; font-weight:bold;">${sign}${formatTien(h.v)} đ</td></tr>`;
         });
     }
-    openModal('modal-mt-history');
+    openModal('modal-mt-info');
 }
+/* KẾT THÚC SỬA */
 
 /* --- LỊCH GIAO DỊCH BIẾN ĐỘNG TÀI SẢN --- */
 let calCurrentDate = new Date();
