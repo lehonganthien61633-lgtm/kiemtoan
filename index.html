@@ -458,12 +458,28 @@ body * { visibility: hidden; }
 
         <!-- BẮT ĐẦU SỬA: GIAO DIỆN LỌC/SẮP XẾP SỔ TIẾT KIỆM (HTML) -->
         <div id="content-stk">
+        <!-- BẮT ĐẦU SỬA: GIAO DIỆN LỌC/SẮP XẾP SỔ TIẾT KIỆM (HTML) -->
         <div class="stk-controls-wrapper">
             <div class="stk-filter-group">
                 <button class="btn-sm stk-filter-btn active" onclick="filterSTK('all', this)">📑 Tất cả</button>
                 <button class="btn-sm stk-filter-btn" onclick="filterSTK('ky-han', this)">🔒 Kỳ hạn</button>
                 <button class="btn-sm stk-filter-btn" onclick="filterSTK('tich-luy', this)">📈 Tích lũy</button>
             </div>
+            <div class="stk-sort-group">
+                <label for="sel-stk-sort">SẮP XẾP:</label>
+                <div style="display: flex; flex: 1; gap: 5px; align-items: center;">
+                    <select id="sel-stk-sort" class="stk-sort-select" onchange="sortSTK()">
+                        <option value="default">⚡ Sắp xếp Mặc định</option>
+                        <option value="amt">💰 Theo số tiền</option>
+                        <option value="start">📅 Theo ngày gửi</option>
+                        <option value="end">⏳ Theo ngày đáo hạn</option>
+                        <option value="mo">⏱️ Theo thời gian gửi</option>
+                    </select>
+                    <button id="btn-stk-sort-dir" onclick="toggleSTKSortDir()" style="display: none; height: 100%; min-height: 40px; width: 45px; background: #fff; border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.2s;" title="Đảo chiều sắp xếp">⬇</button>
+                </div>
+            </div>
+        </div>
+<!-- KẾT THÚC SỬA -->
             <div class="stk-sort-group">
                 <label for="sel-stk-sort">SẮP XẾP:</label>
                 <select id="sel-stk-sort" class="stk-sort-select" onchange="sortSTK()">
@@ -3771,7 +3787,28 @@ document.getElementById('in-stk-name').value = ""; document.getElementById('in-s
 }
 
 /* BẮT ĐẦU SỬA: SẮP XẾP SỔ TIẾT KIỆM */
+let currentSTKSortDir = 'desc'; // Mặc định chiều giảm dần (từ lớn xuống nhỏ)
+
+function toggleSTKSortDir() {
+    let sel = document.getElementById('sel-stk-sort').value;
+    if(sel === 'default') return; // Không đảo chiều nếu đang ở mặc định
+    
+    currentSTKSortDir = currentSTKSortDir === 'asc' ? 'desc' : 'asc';
+    document.getElementById('btn-stk-sort-dir').innerText = currentSTKSortDir === 'asc' ? '⬆' : '⬇';
+    sortSTK();
+}
+
 function sortSTK() {
+    let sel = document.getElementById('sel-stk-sort').value;
+    let btnDir = document.getElementById('btn-stk-sort-dir');
+    
+    // Hiện/ẩn nút mũi tên dựa trên việc có chọn tiêu chí sắp xếp không
+    if(sel === 'default') {
+        btnDir.style.display = 'none';
+    } else {
+        btnDir.style.display = 'block';
+    }
+    
     let list = masterData[currentDay]?.stk || [];
     renderSTK(list);
 }
@@ -3785,18 +3822,26 @@ function renderSTK(list) {
         filteredList = filteredList.filter(s => s.type === currentSTKFilter);
     }
 
-    // Thuật toán sắp xếp đa chiều
+    // Thuật toán sắp xếp đa chiều kết hợp với mũi tên
     let sortType = document.getElementById('sel-stk-sort') ? document.getElementById('sel-stk-sort').value : 'default';
     if (sortType !== 'default') {
         filteredList.sort((a, b) => {
-            if (sortType === 'amt_asc') return a.amt - b.amt;
-            if (sortType === 'amt_desc') return b.amt - a.amt;
-            if (sortType === 'start_asc') return new Date(a.start).getTime() - new Date(b.start).getTime();
-            if (sortType === 'start_desc') return new Date(b.start).getTime() - new Date(a.start).getTime();
-            if (sortType === 'end_asc') return new Date(a.end).getTime() - new Date(b.end).getTime();
-            if (sortType === 'end_desc') return new Date(b.end).getTime() - new Date(a.end).getTime();
-            if (sortType === 'mo_asc') return (parseInt(a.mo)||0) - (parseInt(b.mo)||0);
-            if (sortType === 'mo_desc') return (parseInt(b.mo)||0) - (parseInt(a.mo)||0);
+            let valA, valB;
+            
+            // Trích xuất giá trị dựa theo tiêu chí
+            if (sortType === 'amt') {
+                valA = a.amt; valB = b.amt;
+            } else if (sortType === 'start') {
+                valA = new Date(a.start).getTime(); valB = new Date(b.start).getTime();
+            } else if (sortType === 'end') {
+                valA = new Date(a.end).getTime(); valB = new Date(b.end).getTime();
+            } else if (sortType === 'mo') {
+                valA = parseInt(a.mo) || 0; valB = parseInt(b.mo) || 0;
+            }
+            
+            // So sánh dựa trên chiều mũi tên
+            if (valA < valB) return currentSTKSortDir === 'asc' ? -1 : 1;
+            if (valA > valB) return currentSTKSortDir === 'asc' ? 1 : -1;
             return 0;
         });
     }
