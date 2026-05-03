@@ -2357,17 +2357,14 @@ function confirmEditHoliday() {
         alert("Cập nhật ngày lễ thành công!");
     }
 }
-// Thuật toán chuyển đổi DL -> AL cơ bản (Simplified JS JDN)
-function getLunarDate(dd, mm, yyyy) {
-    // Dùng API nội bộ nhỏ gọn xấp xỉ chuyển đổi hoặc thuật toán thu gọn. 
-    // Thuật toán tính JDN và xác định tháng Âm lịch Việt Nam (Múi giờ +7).
-    /* BẮT ĐẦU SỬA: THUẬT TOÁN ÂM LỊCH CHÍNH XÁC */
+/* BẮT ĐẦU SỬA: THUẬT TOÁN ÂM LỊCH CHUẨN XÁC VÀ GỌN GÀNG */
 function jdFromDate(dd, mm, yyyy) {
     let a = Math.floor((14 - mm) / 12);
     let y = yyyy + 4800 - a;
     let m = mm + 12 * a - 3;
     return dd + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
 }
+
 function jdToDate(jd) {
     let a = jd + 32044;
     let b = Math.floor((4 * a + 3) / 146097);
@@ -2380,6 +2377,7 @@ function jdToDate(jd) {
     let year = b * 100 + d - 4800 + Math.floor(m / 10);
     return [day, month, year];
 }
+
 function getNewMoonDay(k, timeZone) {
     let T = k / 1236.85;
     let T2 = T * T, T3 = T2 * T;
@@ -2390,6 +2388,7 @@ function getNewMoonDay(k, timeZone) {
         + 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * Math.PI / 180);
     return Math.floor(jd + 0.1734 - 0.0065 * Math.sin(M) + 0.5 + timeZone / 24);
 }
+
 function getSunLongitude(dayNumber, timeZone) {
     let T = (dayNumber - 2451545.0) / 36525;
     let T2 = T * T;
@@ -2403,6 +2402,7 @@ function getSunLongitude(dayNumber, timeZone) {
     if (sunLong < 0) sunLong += 360;
     return sunLong;
 }
+
 function getLunarMonth11(yy, timeZone) {
     let off = jdFromDate(31, 12, yy) - 2415021.076998695;
     let k = Math.floor(off / 29.530588853);
@@ -2411,6 +2411,7 @@ function getLunarMonth11(yy, timeZone) {
     if (sunLong >= 270) nm = getNewMoonDay(k - 1, timeZone);
     return nm;
 }
+
 function getLeapMonthOffset(a11, timeZone) {
     let k = Math.floor((a11 - 2415021.076998695) / 29.530588853) + 0.5;
     let last = 0, arc = 0, i = 1, isLeap = 0;
@@ -2427,6 +2428,7 @@ function getLeapMonthOffset(a11, timeZone) {
     } while (i < 14);
     return isLeap;
 }
+
 function getLunarDate(dd, mm, yyyy) {
     let timeZone = 7;
     let dayNumber = jdFromDate(dd, mm, yyyy);
