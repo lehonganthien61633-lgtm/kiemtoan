@@ -227,7 +227,21 @@ body * { visibility: hidden; }
 .p-sign > div:first-child { border-right: 1px solid #000; }
 .p-sign-name { position: absolute; bottom: 10px; width: 100%; text-align: center; left: 0; font-weight: bold;}
 .p-absolute-footer { text-align: center; padding: 10px; font-size: 12px; }
-}
+}/* BẮT ĐẦU SỬA: CSS CHO LỊCH GIAO DỊCH */
+.cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: #ddd; border: 1px solid #ccc; border-radius: 4px; overflow: hidden; }
+.cal-col-name { background: #fff; padding: 12px 10px; text-align: center; font-weight: bold; font-size: 14px; color: #555; }
+.cal-cell { background: #fff; min-height: 100px; padding: 8px; display: flex; flex-direction: column; justify-content: space-between; transition: background 0.2s;}
+.cal-cell:hover { background: #fdfdfd; }
+.cal-cell.empty { background: #fafafa; }
+.cal-cell.today { background: #fffdf5; border: 2px solid var(--accent); }
+.cal-date-wrap { display: flex; justify-content: space-between; align-items: flex-start; }
+.cal-solar { font-family: 'Segoe UI', Arial, sans-serif; font-weight: bold; font-size: 16px; color: #333; }
+.cal-lunar { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; color: #0056b3; font-weight: bold; }
+.cal-diff { font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; font-weight: bold; text-align: right; margin-top: auto; }
+.cal-diff.pos { color: #2e7d32; } /* Xanh lá cho số dương */
+.cal-diff.neg { color: #c62828; } /* Đỏ cho số âm */
+/* KẾT THÚC SỬA */
 </style>
 </head>
 <body>
@@ -315,12 +329,14 @@ body * { visibility: hidden; }
         HỆ THỐNG KIỂM TOÁN<br>
         <span id="display-user-phone" style="font-size:13px; font-weight:normal; color:#fff; display:block; margin-top:5px;"></span>
     </div>
+    <!-- BẮT ĐẦU SỬA: THÊM MENU LỊCH -->
     <div class="sidebar-menu-items">
         <div class="nav-item active" onclick="showSheet('sheet-tm', this)">1. Tiền Mặt</div>
         <div class="nav-item" onclick="showSheet('sheet-nh', this)">2. Ngân Hàng</div>
         <div class="nav-item" onclick="showSheet('sheet-stk-quy', this)">3. Tiết Kiệm & Quỹ</div>
         <div class="nav-item" onclick="showSheet('sheet-tk', this)" style="color:var(--success)">4. Tổng Kết</div>
-        <div class="nav-item" onclick="showSheet('sheet-data', this)" style="color:var(--info)">5. Dữ Liệu</div>
+        <div class="nav-item" onclick="showSheet('sheet-calendar', this)" style="color:#d84315">5. Lịch Giao Dịch</div>
+        <div class="nav-item" onclick="showSheet('sheet-data', this)" style="color:var(--info)">6. Dữ Liệu</div>
         <div class="nav-item hide-on-mobile" onclick="showSheet('sheet-print', this)" style="color:var(--info); border-top: 2px solid #eee;">🖨️ In Báo Cáo</div>
         <div class="nav-item" onclick="showSheet('sheet-settings', this)" style="color:var(--accent);">⚙️ Cài Đặt</div>
         <div class="nav-item" id="nav-admin" onclick="showSheet('sheet-admin', this)" style="display:none; color:var(--danger); border-top: 2px solid #eee;">
@@ -328,6 +344,7 @@ body * { visibility: hidden; }
         </div>
         <div class="nav-item" onclick="handleLogout()" style="color:#666;">🚪 Đăng Xuất</div>
     </div>
+<!-- KẾT THÚC SỬA -->
 </div>
 
 <div class="main-wrapper">
@@ -413,7 +430,25 @@ body * { visibility: hidden; }
         </div>
         <button class="btn-main" style="background:#eee; color:#000; margin-top:30px; border-color:#ccc" onclick="clearDayData()">XOÁ TOÀN BỘ DỮ LIỆU NGÀY NÀY</button>
         </div>
-
+<!-- BẮT ĐẦU SỬA: GIAO DIỆN LỊCH GIAO DỊCH -->
+        <div id="sheet-calendar" class="page">
+            <h2>Lịch Biến Động Tài Sản</h2>
+            <div style="background:white; padding:20px; border:1px solid #000; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                <div class="cal-header">
+                    <button class="btn-sm" style="background:var(--primary); color:white; font-size:14px; padding:10px 15px;" onclick="changeCalMonth(-1)">◀ Tháng Trước</button>
+                    <div style="font-size:20px; font-weight:bold; color:var(--primary);" id="cal-month-year-label">THÁNG ...</div>
+                    <button class="btn-sm" style="background:var(--primary); color:white; font-size:14px; padding:10px 15px;" onclick="changeCalMonth(1)">Tháng Sau ▶</button>
+                </div>
+                <div class="cal-grid" id="cal-grid-container">
+                    <!-- Sẽ được fill tự động bằng JS -->
+                </div>
+                <div style="margin-top:20px; font-size:13px; color:#555; line-height: 1.6;">
+                    * <b>Quy tắc hiển thị:</b> Lịch tính toán và so sánh tự động <b>Tổng Tài Sản</b> của ngày có dữ liệu so với ngày liền trước nó.<br>
+                    * Số màu xanh (<span style="color:#2e7d32; font-weight:bold;">+</span>) thể hiện tài sản tăng. Số màu đỏ (<span style="color:#c62828; font-weight:bold;">-</span>) thể hiện tài sản giảm. Số nhỏ góc phải là ngày Âm lịch.
+                </div>
+            </div>
+        </div>
+<!-- KẾT THÚC SỬA -->
         <div id="sheet-data" class="page">
         <h2>Quản Lý Dữ Liệu Kiểm Toán</h2>
         <div style="background:white; padding:30px; border:1px solid #000; margin-bottom:20px;">
@@ -929,23 +964,31 @@ body * { visibility: hidden; }
 </div>
 </div>
 <!-- BẮT ĐẦU SỬA: THÊM MODAL MỤC TIÊU TIẾT KIỆM -->
+<!-- BẮT ĐẦU SỬA: THÊM TRƯỜNG DỮ LIỆU & LỊCH SỬ CHO MỤC TIÊU -->
 <div class="modal-overlay" id="modal-mt-add">
     <div class="modal-content">
         <div class="modal-title" style="color:#0056b3; border-bottom-color:#0056b3;">THIẾT LẬP MỤC TIÊU TIẾT KIỆM</div>
         <div class="form-group"><label>Tên mục tiêu</label><input type="text" id="in-mt-name" placeholder="VD: Mua nhà, Mua xe, Đám cưới..."></div>
-        <div class="form-group"><label>Số tiền mục tiêu (VNĐ)</label><input type="text" id="in-mt-target" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--danger)"></div>
-        <div class="form-group"><label>Số tiền hiện đã có (VNĐ)</label><input type="text" id="in-mt-current" oninput="formatInput(this)" value="0" style="font-size:18px; font-weight:bold; color:var(--success)"></div>
-        <div class="form-group"><label>Ngày dự kiến hoàn thành</label><input type="date" id="in-mt-deadline"></div>
+        <div class="form-group"><label>Thông tin / Nội dung mục tiêu</label><input type="text" id="in-mt-desc" placeholder="VD: Kế hoạch tiết kiệm 50% lương mỗi tháng..."></div>
+        <div style="display:flex; gap:15px;">
+            <div class="form-group" style="flex:1"><label>Số tiền mục tiêu (VNĐ)</label><input type="text" id="in-mt-target" oninput="formatInput(this)" style="font-size:20px; font-weight:bold; color:var(--danger)"></div>
+            <div class="form-group" style="flex:1"><label>Số tiền khởi tạo (VNĐ)</label><input type="text" id="in-mt-current" oninput="formatInput(this)" value="0" style="font-size:20px; font-weight:bold; color:var(--success)"></div>
+        </div>
+        <div style="display:flex; gap:15px;">
+            <div class="form-group" style="flex:1"><label>Ngày mở sổ</label><input type="date" id="in-mt-start"></div>
+            <div class="form-group" style="flex:1"><label>Ngày dự kiến hoàn thành</label><input type="date" id="in-mt-deadline"></div>
+        </div>
         <div style="display:flex; gap:15px; margin-top:20px;">
             <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-mt-add')">HỦY BỎ</button>
-            <button class="btn-main" style="background:#0056b3; color:white; border-color:#0056b3; flex:2" onclick="saveNewMT()">TẠO MỤC TIÊU</button>
+            <button class="btn-main" style="background:#0056b3; color:white; border-color:#0056b3; flex:2" onclick="saveNewMT()">LƯU MỤC TIÊU</button>
         </div>
     </div>
 </div>
 
 <div class="modal-overlay" id="modal-mt-nop">
-    <div class="modal-content" style="max-width:400px;">
+    <div class="modal-content" style="max-width:450px;">
         <div class="modal-title" style="color:var(--success); border-bottom-color:var(--success);">CẬP NHẬT TIẾN ĐỘ</div>
+        <div class="form-group"><label>Ngày giao dịch (Nộp/Rút)</label><input type="date" id="in-mt-nop-date"></div>
         <div class="form-group"><label>SỐ TIỀN CỘNG THÊM/RÚT BỚT (VNĐ)</label>
         <input type="text" id="in-mt-nop-val" oninput="formatInput(this)" style="font-size:22px; font-weight:bold; color:var(--success)" placeholder="Nhập số tiền...">
         <p style="font-size:12px; color:#666; font-style:italic; margin-top:5px;">* Dùng dấu trừ (-) đằng trước nếu muốn rút bớt tiền.</p>
@@ -953,9 +996,24 @@ body * { visibility: hidden; }
         <input type="hidden" id="hid-mt-nop-id">
         <div style="display:flex; gap:15px; margin-top:30px;">
             <button class="btn-main" style="background:#eee; color:#000; border-color:#ccc; flex:1" onclick="closeModal('modal-mt-nop')">HỦY BỎ</button>
-            <button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2" onclick="confirmNopMT()">XÁC NHẬN CẬP NHẬT</button>
+            <button class="btn-main" style="background:var(--success); color:#fff; border-color:var(--success); flex:2" onclick="confirmNopMT()">LƯU TIẾN ĐỘ</button>
         </div>
     </div>
+</div>
+
+<div class="modal-overlay" id="modal-mt-history">
+    <div class="modal-content" style="max-width:550px;">
+        <div class="modal-title" style="color:#0056b3; border-bottom-color:#0056b3;">LỊCH SỬ NỘP/RÚT MỤC TIÊU</div>
+        <div style="max-height:300px; overflow-y:auto; border:1px solid #ddd;">
+            <table class="data-table" style="margin-bottom:0;">
+                <thead style="position: sticky; top:0;"><tr style="background:#e9ecef"><th>Ngày giao dịch</th><th style="text-align:right">Biến động (VNĐ)</th></tr></thead>
+                <tbody id="mt-history-tbody"></tbody>
+            </table>
+        </div>
+        <button class="btn-main" style="background:#000; color:#fff; border-color:#000; margin-top:15px;" onclick="closeModal('modal-mt-history')">ĐÓNG</button>
+    </div>
+</div>
+<!-- KẾT THÚC SỬA -->
 </div>
 <!-- KẾT THÚC SỬA -->
 <div id="print-area">
@@ -4352,6 +4410,245 @@ function deleteMT(id) {
     if (confirm("Xóa mục tiêu tiết kiệm này? Tiến độ đã lưu sẽ bị xóa khỏi giao diện (Tiền thực tế trong Quỹ/Sổ không bị ảnh hưởng).")) {
         masterData[currentDay].mt = (masterData[currentDay]?.mt || []).filter(x => x.id !== id);
         saveMaster(); loadDay();
+    }
+}
+/* KẾT THÚC SỬA */
+    /* BẮT ĐẦU SỬA: LOGIC MỤC TIÊU (MỚI) + LOGIC LỊCH TÀI SẢN */
+function renderMT(list) {
+    const cont = document.getElementById('mt-container');
+    if(!cont) return;
+    cont.innerHTML = "";
+    let totalMT = 0;
+    
+    if (!list || list.length === 0) {
+        cont.innerHTML = `<div style="text-align:center; padding:20px; color:#666; font-style:italic;">Chưa có mục tiêu tiết kiệm nào.</div>`;
+        document.getElementById('val-mt-total').innerText = "0";
+        return;
+    }
+
+    list.forEach(m => {
+        totalMT += (m.current || 0);
+        let per = Math.min(100, Math.max(0, ((m.current || 0) / (m.target || 1)) * 100));
+        let startText = m.start ? `Mở sổ: ${vnDate(m.start)}` : "Chưa có ngày mở";
+        let dateText = m.deadline ? `Hoàn thành: ${vnDate(m.deadline)}` : "Không xác định hạn";
+        let descHtml = m.desc ? `<div style="background:#eef5fa; border-left: 3px solid #0056b3; padding:8px 10px; font-size:13px; color:#444; margin-bottom:12px; font-style:italic;">"${m.desc}"</div>` : '';
+        
+        cont.innerHTML += `
+        <div class="stk-card" style="border-top-color:#0056b3;">
+            <button class="btn-i-detail" style="border-color:#0056b3; color:#0056b3;" onclick="openHistoryMT(${m.id})">h</button>
+            <div style="font-weight:bold; font-size:18px; margin-bottom:5px; color:#0056b3;">🎯 ${m.name}</div>
+            <div style="font-size:12px; color:#888; margin-bottom:8px;">${startText} | ${dateText}</div>
+            ${descHtml}
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                <span style="font-weight:bold; color:var(--success); font-size:18px;">${formatTien(m.current || 0)} đ</span>
+                <span style="font-weight:bold; color:#666;">/ ${formatTien(m.target)} đ</span>
+            </div>
+            
+            <div class="progress-bg"><div class="progress-bar" style="width:${per}%; background:linear-gradient(90deg, #0056b3, #00c6ff);"></div></div>
+            <div style="text-align:right; font-size:12px; color:#888; margin-top:5px; font-weight:bold;">Đã đạt: ${per.toFixed(1)}%</div>
+            
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:15px;">
+                <button class="btn-sm" style="background:var(--success); color:white; flex:2;" onclick="openNopMT(${m.id})">CẬP NHẬT TIẾN ĐỘ</button>
+                <button class="btn-sm" style="color:red; border-color:red; flex:1;" onclick="deleteMT(${m.id})">XÓA</button>
+            </div>
+        </div>`;
+    });
+    document.getElementById('val-mt-total').innerText = formatTien(totalMT);
+}
+
+function saveNewMT() {
+    let name = document.getElementById('in-mt-name').value.trim();
+    let desc = document.getElementById('in-mt-desc').value.trim();
+    let target = cleanTien(document.getElementById('in-mt-target').value);
+    let current = cleanTien(document.getElementById('in-mt-current').value) || 0;
+    let start = document.getElementById('in-mt-start').value;
+    let deadline = document.getElementById('in-mt-deadline').value;
+
+    if (!name || target <= 0) { alert("Vui lòng nhập Tên và Số tiền mục tiêu hợp lệ!"); return; }
+
+    if (!masterData[currentDay]) masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [], mt: [] };
+    if (!masterData[currentDay].mt) masterData[currentDay].mt = [];
+
+    masterData[currentDay].mt.push({
+        id: Date.now(), name: name, desc: desc, target: target, current: current, start: start, deadline: deadline,
+        history: current > 0 ? [{ d: start || currentDay, v: current }] : []
+    });
+
+    saveMaster(); closeModal('modal-mt-add'); loadDay();
+    document.getElementById('in-mt-name').value = ""; document.getElementById('in-mt-desc').value = ""; 
+    document.getElementById('in-mt-target').value = ""; document.getElementById('in-mt-current').value = "0"; 
+    document.getElementById('in-mt-start').value = ""; document.getElementById('in-mt-deadline').value = "";
+}
+
+function openNopMT(id) {
+    document.getElementById('hid-mt-nop-id').value = id;
+    document.getElementById('in-mt-nop-val').value = "";
+    document.getElementById('in-mt-nop-date').value = currentDay;
+    openModal('modal-mt-nop');
+}
+
+function confirmNopMT() {
+    let id = parseInt(document.getElementById('hid-mt-nop-id').value);
+    let dateVal = document.getElementById('in-mt-nop-date').value || currentDay;
+    let rawInput = document.getElementById('in-mt-nop-val').value;
+    let isNegative = rawInput.includes('-');
+    let addVal = cleanTien(rawInput);
+    if(isNegative) addVal = -Math.abs(addVal);
+
+    if (addVal === 0) { alert("Vui lòng nhập số tiền khác 0!"); return; }
+
+    let list = masterData[currentDay]?.mt || [];
+    let m = list.find(x => x.id === id);
+    if (m) {
+        m.current += addVal;
+        if(m.current < 0) m.current = 0; 
+        
+        if(!m.history) m.history = [];
+        m.history.push({ d: dateVal, v: addVal });
+        
+        saveMaster(); closeModal('modal-mt-nop'); loadDay();
+        if (m.current >= m.target && addVal > 0) { alert("🎉 Xin chúc mừng! Bạn đã đạt được Mục tiêu tiết kiệm: " + m.name); } 
+        else { alert("Đã cập nhật tiến độ!"); }
+    }
+}
+
+function deleteMT(id) {
+    if (confirm("Xóa mục tiêu tiết kiệm này? Tiến độ đã lưu sẽ bị xóa khỏi giao diện.")) {
+        masterData[currentDay].mt = (masterData[currentDay]?.mt || []).filter(x => x.id !== id);
+        saveMaster(); loadDay();
+    }
+}
+
+function openHistoryMT(id) {
+    let list = masterData[currentDay]?.mt || [];
+    let m = list.find(x => x.id === id);
+    if (!m) return;
+    
+    let tbody = document.getElementById('mt-history-tbody');
+    tbody.innerHTML = '';
+    if(!m.history || m.history.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="2" align="center" style="color:#888; font-style:italic;">Chưa có lịch sử.</td></tr>`;
+    } else {
+        let sortedHist = [...m.history].sort((a,b) => new Date(b.d) - new Date(a.d));
+        sortedHist.forEach(h => {
+            let color = h.v >= 0 ? 'var(--success)' : 'var(--danger)';
+            let sign = h.v >= 0 ? '+' : '';
+            tbody.innerHTML += `<tr><td align="center">${vnDate(h.d)}</td><td align="right" style="color:${color}; font-weight:bold;">${sign}${formatTien(h.v)} đ</td></tr>`;
+        });
+    }
+    openModal('modal-mt-history');
+}
+
+/* --- LỊCH GIAO DỊCH BIẾN ĐỘNG TÀI SẢN --- */
+let calCurrentDate = new Date();
+
+function calculateTotalAsset(dStr) {
+    let data = masterData[dStr];
+    if(!data) return 0;
+    let tTM = 0; denoms.forEach((m, i) => { let v = parseInt(data.tm && data.tm[i])||0; tTM += v*m; });
+    let tNH = (data.nh || []).reduce((s,x)=>s+cleanTien(x.v),0);
+    let tQuy = (data.quy || []).reduce((s,q)=>s+getQuyTotalAmt(q),0);
+    let tSTK = (data.stk || []).reduce((s,x)=>s+(x.amt||0),0);
+    return tTM + tNH + tQuy + tSTK;
+}
+
+function renderCalendar() {
+    const month = calCurrentDate.getMonth();
+    const year = calCurrentDate.getFullYear();
+    document.getElementById('cal-month-year-label').innerText = `THÁNG ${month + 1} NĂM ${year}`;
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const prevMonthDays = new Date(year, month, 0).getDate();
+    
+    let startDay = firstDay === 0 ? 6 : firstDay - 1; // 0:T2 -> 6:CN
+
+    let html = `
+        <div class="cal-col-name">T2</div>
+        <div class="cal-col-name">T3</div>
+        <div class="cal-col-name">T4</div>
+        <div class="cal-col-name">T5</div>
+        <div class="cal-col-name">T6</div>
+        <div class="cal-col-name">T7</div>
+        <div class="cal-col-name" style="color:var(--danger)">CN</div>
+    `;
+
+    let availableDates = Object.keys(masterData).filter(d => d.match(/^\d{4}-\d{2}-\d{2}$/)).sort();
+
+    // Điền ô trống của tháng trước
+    for (let i = 0; i < startDay; i++) {
+        let pd = prevMonthDays - startDay + i + 1;
+        html += `<div class="cal-cell empty"><div class="cal-solar" style="color:#aaa">${pd}</div></div>`;
+    }
+
+    let todayStr = getGMT7Date();
+
+    // Render từng ngày trong tháng
+    for (let i = 1; i <= daysInMonth; i++) {
+        let dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+        let isToday = (dStr === todayStr) ? 'today' : '';
+        let lunar = getLunarDate(i, month + 1, year);
+        let lunarText = lunar.d === 1 ? `${lunar.d}/${lunar.m}` : lunar.d; // Hiện tháng nếu mùng 1
+
+        let diffHtml = '';
+        
+        // Tính toán độ lệch Tài sản Net của ngày này so với ngày gần nhất trước đó
+        if (masterData[dStr]) {
+            let currentAssets = calculateTotalAsset(dStr);
+            let prevDateStr = null;
+            
+            // Lùi về quá khứ để tìm snapshot gần nhất
+            for (let k = availableDates.length - 1; k >= 0; k--) {
+                if (availableDates[k] < dStr) {
+                    prevDateStr = availableDates[k];
+                    break;
+                }
+            }
+            
+            if (prevDateStr) {
+                let prevAssets = calculateTotalAsset(prevDateStr);
+                let diff = currentAssets - prevAssets;
+                if (diff !== 0) {
+                    let sign = diff > 0 ? '+' : '-';
+                    let cssClass = diff > 0 ? 'pos' : 'neg';
+                    diffHtml = `<div class="cal-diff ${cssClass}">${sign} ${formatTien(Math.abs(diff))} ₫</div>`;
+                }
+            }
+        }
+
+        html += `
+        <div class="cal-cell ${isToday}">
+            <div class="cal-date-wrap">
+                <span class="cal-solar">${i}</span>
+                <span class="cal-lunar">${lunarText}</span>
+            </div>
+            ${diffHtml}
+        </div>`;
+    }
+
+    // Điền ô trống cuối cùng cho vuông vức
+    let totalCells = startDay + daysInMonth;
+    let rem = totalCells % 7;
+    if (rem !== 0) {
+        for (let i = 1; i <= 7 - rem; i++) {
+            html += `<div class="cal-cell empty"><div class="cal-solar" style="color:#aaa">${i}</div></div>`;
+        }
+    }
+
+    document.getElementById('cal-grid-container').innerHTML = html;
+}
+
+function changeCalMonth(step) {
+    calCurrentDate.setMonth(calCurrentDate.getMonth() + step);
+    renderCalendar();
+}
+
+/* OVERRIDE SHOWSHEET ĐỂ TRIGGER LỊCH LÊN MÀN HÌNH */
+const originalShowSheet = showSheet;
+showSheet = function(id, el) {
+    originalShowSheet(id, el);
+    if(id === 'sheet-calendar') {
+        renderCalendar();
     }
 }
 /* KẾT THÚC SỬA */
