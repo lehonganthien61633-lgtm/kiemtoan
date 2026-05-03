@@ -130,7 +130,7 @@ justify-content: center;
 }
 
 /* BẮT ĐẦU SỬA: MỞ RỘNG GIAO DIỆN NỘI DUNG */
-.page { display: none; max-width: 1400px; margin: 0 auto; padding-bottom: 40px; width: 100%; min-height: calc(100% - 150px); }
+.page { display: none; max-width: 1400px; margin: 0 auto; padding-bottom: 40px; width: 100%; }
 /* KẾT THÚC SỬA */
 .page.active { display: block; animation: fadeIn 0.4s; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -188,11 +188,13 @@ body.modal-open { overflow: hidden; }
 }
 /* BẮT ĐẦU SỬA: MỞ RỘNG GIAO DIỆN DESKTOP */
 /* RESPONSIVE LAYOUT CHO DESKTOP */
+/* BẮT ĐẦU SỬA: KÉO GIÃN KHUNG LÀM VIỆC DESKTOP */
+/* RESPONSIVE LAYOUT CHO DESKTOP */
 @media (min-width: 850px) {
-    body { padding: 2vh 2vw; background-color: #e0e0e0;} /* Giảm lề ngoài cùng của màn hình */
+    body { padding: 2vh 2vw; background-color: #e0e0e0;}
     .app-container { 
         flex-direction: row; 
-        max-width: 1600px; /* Tăng giới hạn khung app lên 1600px */
+        max-width: 1600px; /* Mở rộng tối đa lên 1600px */
         width: 96vw; /* Chiếm 96% chiều rộng màn hình */
         height: 96vh; /* Tăng chiều cao lên 96% màn hình */
         border-radius: 8px; 
@@ -203,9 +205,10 @@ body.modal-open { overflow: hidden; }
     .sidebar { position: static; left: 0; width: 280px; min-width: 280px; height: 100%; border-right: 1px solid var(--primary); }
     .hamburger-btn { display: none; }
     .main-wrapper { height: 100%; border-radius: 0 8px 8px 0; width: calc(100% - 280px); }
-    .app-content { padding: 40px 5vw; } /* Tăng khoảng trống 2 bên cho thoáng mắt */
+    .app-content { padding: 40px 5vw; } /* Tăng khoảng trắng 2 bên mép để thoáng mắt hơn */
     .sidebar-overlay { display: none !important; }
 }
+/* KẾT THÚC SỬA */
 /* KẾT THÚC SỬA */
 /* KHU VỰC IN ẤN ĐẶC BIỆT (PRINT CSS) */
 #print-area { display: none; }
