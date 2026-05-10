@@ -2518,6 +2518,7 @@ function updateSingleNHDiff() {
     diffCell.innerText = sign + formatTien(diff) + " đ";
 }
 
+// BẮT ĐẦU CHỈNH SỬA TỪ ĐÂY: Hàm confirmSingleBankEdit
 function confirmSingleBankEdit() {
     if (!masterData[currentDay]) masterData[currentDay] = { tm: [], nh: [], quy: [], stk: [] };
     let newNHData = [...(masterData[currentDay].nh || [])];
@@ -2565,7 +2566,8 @@ function confirmSingleBankEdit() {
         masterData.nh_history.push({ date: currentDay, time: nowTime, bank: currentEditBankShortName, oldVal: currentEditBankOldVal, newVal: calcNewVal, diff: diff, reason: reasonSelect });
     }
     
-    if (diff < 0) { 
+    // ĐÃ SỬA: Thêm điều kiện && deductFund để đảm bảo chỉ trừ tiền quỹ khi có tích chọn
+    if (diff < 0 && deductFund) { 
         let amountToDeduct = Math.abs(diff);
         if(masterData[currentDay].quy) {
             masterData[currentDay].quy.forEach(q => {
@@ -2585,6 +2587,7 @@ function confirmSingleBankEdit() {
     saveMaster(); loadDay(); closeModal('modal-edit-single-nh');
     alert("Đã cập nhật số dư Ngân hàng!");
 }
+// KẾT THÚC CHỈNH SỬA
 
 function refreshBankReasonOptions() {
     if(!masterData.bankReasons) masterData.bankReasons = ["Chuyển khoản", "Nhận lương", "Rút tiền"];
