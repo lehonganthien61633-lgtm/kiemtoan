@@ -3700,15 +3700,16 @@ function deleteSTK(id) {
 
 // BẮT ĐẦU SỬA: TỐI ƯU HÓA LẤY ĐỊA ĐIỂM CHÍNH XÁC
 // BẮT ĐẦU SỬA: TỐI ƯU HÓA LẤY ĐỊA ĐIỂM CHÍNH XÁC
+// BẮT ĐẦU SỬA: LẤY ĐỊA CHỈ CHI TIẾT & VÁ LỖI DỮ LIỆU BẢN ĐỒ
 function getLocation() {
     const addrInput = document.getElementById('in-print-address'); 
-    addrInput.value = "Đang quét vị trí GPS vệ tinh (vui lòng chờ)...";
+    addrInput.value = "Đang quét vị trí GPS chi tiết (vui lòng chờ)...";
     
     if (navigator.geolocation) {
         const options = {
-            enableHighAccuracy: true, // Ép sử dụng GPS phần cứng thay vì tháp viễn thông
-            timeout: 10000,           // Đợi tối đa 10 giây
-            maximumAge: 0             // Không lấy cache cũ
+            enableHighAccuracy: true, // Ép dùng phần cứng GPS để lấy vị trí
+            timeout: 10000,
+            maximumAge: 0
         };
 
         navigator.geolocation.getCurrentPosition(
@@ -3716,53 +3717,30 @@ function getLocation() {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
                 
-                // Gọi API Nominatim với format JSON để lấy cấu trúc chi tiết
                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=vi`)
                     .then(res => res.json())
                     .then(data => { 
-                        if (data && data.address) {
-                            let a = data.address;
-                            let parts = [];
+                        if (data && data.display_name) {
+                            // 1. Lấy toàn bộ chuỗi chi tiết và cắt thành mảng
+                            let arr = data.display_name.split(",").map(s => s.trim());
                             
-                            // 1. Tên tòa nhà / Địa điểm nổi bật
-                            if (a.amenity || a.building) parts.push(a.amenity || a.building);
+                            // 2. Lọc bỏ mã bưu điện (chuỗi 4-6 số vô nghĩa) và tên Quốc gia
+                            arr = arr.filter(x => !/^\d{4,6}$/.test(x) && x.toLowerCase() !== "việt nam");
                             
-                            // 2. Số nhà + Tên đường
-                            let street = [];
-                            if (a.house_number) street.push(a.house_number);
-                            if (a.road) street.push(a.road);
-                            if (street.length > 0) parts.push(street.join(" "));
-                            
-                            // 3. Phường / Xã
-                            if (a.suburb) parts.push(a.suburb);
-                            else if (a.quarter) parts.push(a.quarter);
-                            else if (a.village) parts.push(a.village);
-                            
-                            // 4. Quận / Huyện
-                            if (a.city_district) parts.push(a.city_district);
-                            else if (a.district) parts.push(a.district);
-                            else if (a.county) parts.push(a.county);
-                            
-                            // 5. Tỉnh / Thành Phố
-                            if (a.city) parts.push(a.city);
-                            else if (a.province) parts.push(a.province);
-                            else if (a.state) parts.push(a.state);
-                            
-                            // 6. Lọc sạch trùng lặp (Ngăn lỗi lặp 2 lần TP.HCM hoặc Thành phố Thủ Đức)
-                            let cleanParts = [];
-                            parts.forEach(p => {
-                                if (p && !cleanParts.includes(p)) cleanParts.push(p);
-                            });
-                            
-                            addrInput.value = cleanParts.join(", "); 
-                            
-                        } else if (data && data.display_name) {
-                            // Dự phòng: Nếu API không bóc tách được address, tiến hành dọn dẹp chuỗi gốc
-                            let arr = data.display_name.split(", ");
-                            // Xóa mã zip code (5-6 số) và chữ Việt Nam
-                            addrInput.value = arr.filter(x => !/^\d{5,6}$/.test(x.trim()) && x.trim() !== "Việt Nam").join(", ");
+                            // 3. Lọc bỏ các khu vực bị lặp lại
+                            arr = [...new Set(arr)];
+                            let finalAddress = arr.join(", ");
+
+                            // 4. VÁ LỖI DỮ LIỆU BẢN ĐỒ OPENSTREETMAP: 
+                            // Khu vực KTX Bách Khoa hiện bị cộng đồng gán sai ranh giới trên bản đồ gốc
+                            if (finalAddress.includes("Hòa Hảo") || finalAddress.includes("ĐH Bách Khoa")) {
+                                finalAddress = finalAddress.replace(/Phường Vườn Lài,?\s*/gi, "");
+                                finalAddress = finalAddress.replace(/Thành phố Thủ Đức,?\s*/gi, "Quận 10, ");
+                            }
+
+                            addrInput.value = finalAddress;
                         } else {
-                            addrInput.value = "Không nhận diện được vị trí, vui lòng nhập tay";
+                            addrInput.value = "Không nhận diện được chi tiết vị trí, vui lòng nhập tay";
                         }
                     })
                     .catch(err => { 
@@ -3792,7 +3770,6 @@ function getLocation() {
     }
 }
 // KẾT THÚC SỬA
-
 function getWeekNumber(d) { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7)); let yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1)); return Math.ceil((((d - yearStart) / 86400000) + 1)/7); }
 function getDayName(d) { let day = new Date(d).getDay(); if (day === 1) return "KIỂM KÊ ĐẦU TUẦN"; if (day === 0) return "KIỂM KÊ CUỐI TUẦN"; return "KIỂM KÊ TRONG TUẦN"; }
 function docTien(so) { if (so === 0) return "KHÔNG ĐỒNG"; let chuSo = ["KHÔNG", "MỘT", "HAI", "BA", "BỐN", "NĂM", "SÁU", "BẢY", "TÁM", "CHÍN"]; let donVi = ["", "NGHÌN", "TRIỆU", "TỶ"]; function docBlock(so, dayDu) { let chuoi = ""; let tram = Math.floor(so / 100); let chuc = Math.floor((so % 100) / 10); let donvi = so % 10; if (dayDu || tram > 0) { chuoi += chuSo[tram] + " TRĂM "; chuoi += (chuc === 0 && donvi > 0) ? "LẺ " : ""; } if (chuc === 1) chuoi += "MƯỜI "; if (chuc > 1) chuoi += chuSo[chuc] + " MƯƠI "; if (donvi === 1 && chuc > 1) chuoi += "MỐT "; else if (donvi === 5 && chuc > 0) chuoi += "LĂM "; else if (donvi === 4 && chuc > 1) chuoi += "TƯ "; else if (donvi > 0) chuoi += chuSo[donvi] + " "; return chuoi.trim(); } let strSo = so.toString(); let blocks = []; while (strSo.length > 0) { blocks.push(strSo.slice(-3)); strSo = strSo.slice(0, -3); } let result = ""; for (let i = 0; i < blocks.length; i++) { let blockVal = parseInt(blocks[i]); if (blockVal > 0 || (i === 0 && blocks.length === 1)) { let doc = docBlock(blockVal, i < blocks.length - 1); if(doc) result = doc + " " + donVi[i] + " " + result; } } return result.trim().replace(/\s+/g, ' ') + " ĐỒNG"; }
