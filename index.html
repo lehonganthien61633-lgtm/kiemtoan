@@ -3094,35 +3094,46 @@ refreshQuyReasons();
 openModal('modal-quy-rut');
 }
 
+// BẮT ĐẦU SỬA: BẢO VỆ TIỀN CHUNG QUỸ MẸ KHI RÚT
 function confirmRutQuy() {
-let id = parseInt(document.getElementById('hid-quy-rut-id').value), 
-    val = cleanTien(document.getElementById('in-quy-rut-val').value), 
-    storageName = document.getElementById('sel-quy-rut-storage').value,
+let id = parseInt(document.getElementById('hid-quy-rut-id').value), 
+    val = cleanTien(document.getElementById('in-quy-rut-val').value), 
+    storageName = document.getElementById('sel-quy-rut-storage').value,
     subName = document.getElementById('sel-quy-rut-sub').value,
-    reason = document.getElementById('sel-quy-rut-reason').value,
-    rutDate = document.getElementById('in-quy-rut-date').value;
+    reason = document.getElementById('sel-quy-rut-reason').value,
+    rutDate = document.getElementById('in-quy-rut-date').value;
 
 if (val <= 0 || !rutDate) { alert("Vui lòng nhập số tiền và ngày rút hợp lệ!"); return; }
 let q = (masterData[currentDay]?.quy || []).find(x => x.id === id);
 if (q) {
-    let storageIndex = q.storages.findIndex(s => s.name === storageName);
-    if (storageIndex > -1) {
-        if (q.storages[storageIndex].v < val) { alert("Lỗi: Nơi cất giữ này không đủ tiền!"); return; }
+    let storageIndex = q.storages.findIndex(s => s.name === storageName);
+    if (storageIndex > -1) {
+        if (q.storages[storageIndex].v < val) { alert("Lỗi: Nơi cất giữ này không đủ tiền!"); return; }
 
         // Kiểm tra tiền của Quỹ con nếu có chọn
         if(subName && q.subFunds) {
             let sf = q.subFunds.find(x => x.name === subName);
             if(!sf || sf.v < val) { alert(`Lỗi: Quỹ con [${subName}] không đủ tiền để rút!`); return; }
             sf.v -= val; // Trừ tiền quỹ con
+        } else {
+            // Rút từ quỹ chung, kiểm tra tiền chung chưa phân bổ
+            let totalStorage = getQuyTotalAmt(q);
+            let totalSub = (q.subFunds || []).reduce((a, b) => a + b.v, 0);
+            let unassigned = totalStorage - totalSub;
+            if (unassigned < val) {
+                alert("Lỗi: Tiền chung chưa phân bổ của Quỹ không đủ để rút. Tiền đang nằm trong các Quỹ con. Vui lòng chọn Quỹ con để rút!");
+                return;
+            }
         }
 
-        q.storages[storageIndex].v -= val; // Trừ tiền kho lưu trữ thực tế
-        if(!q.history) q.history = [];
-        q.history.push({ d: rutDate, type: 'rut', amount: val, storage: storageName, subFund: subName || null, reason: reason });
-        saveMaster(); closeModal('modal-quy-rut'); loadDay();
-    }
+        q.storages[storageIndex].v -= val; // Trừ tiền kho lưu trữ thực tế
+        if(!q.history) q.history = [];
+        q.history.push({ d: rutDate, type: 'rut', amount: val, storage: storageName, subFund: subName || null, reason: reason });
+        saveMaster(); closeModal('modal-quy-rut'); loadDay();
+    }
 }
 }
+// KẾT THÚC SỬA
 // KẾT THÚC SỬA
 // ==== THÊM HÀM GỌI MODAL XÓA QUỸ MỚI ====
 function deleteQuy(id) {
@@ -3328,6 +3339,7 @@ function changeSplitType() {
     document.getElementById('box-split-type-2').style.display = type === '2' ? 'block' : 'none';
 }
 
+// BẮT ĐẦU SỬA: BẢO VỆ TIỀN CHUNG KHI TÁCH QUỸ
 function confirmSplitQuy() {
     let id = parseInt(document.getElementById('hid-split-quy-id').value);
     let type = document.getElementById('sel-split-type').value;
@@ -3351,6 +3363,15 @@ function confirmSplitQuy() {
         if(targetVal === 'NEW') {
             newName = document.getElementById('in-split-new-name1').value.trim();
             if(!newName) { alert("Vui lòng nhập tên cho quỹ phụ mới!"); return; }
+            
+            // Kiểm tra tiền chung (chưa phân bổ) có đủ để tách không
+            let totalStorage = getQuyTotalAmt(q);
+            let totalSub = (q.subFunds || []).reduce((a, b) => a + b.v, 0);
+            let unassigned = totalStorage - totalSub;
+            if (unassigned < amt) {
+                alert("Lỗi: Số tiền chung chưa phân bổ không đủ để tách quỹ mới (Tiền đang nằm trong Quỹ con). Vui lòng chọn Tách từ Quỹ con!");
+                return;
+            }
         } else {
             let sfId = parseInt(targetVal);
             let sf = q.subFunds.find(x => x.id === sfId);
@@ -3431,6 +3452,7 @@ function confirmSplitQuy() {
     saveMaster(); loadDay(); closeModal('modal-quy-split');
     alert("Thực hiện tách quỹ thành công!");
 }
+// KẾT THÚC SỬA
 
 // Bổ sung code để hiển thị logic mới khi bấm "Tách Quỹ"
 const originalOpenSplitQuy = openSplitQuy;
@@ -4037,6 +4059,7 @@ function changeTransferTarget() {
     }
 }
 
+// BẮT ĐẦU SỬA: BẢO VỆ TIỀN CHUNG KHI LUÂN CHUYỂN
 function confirmTransferQuy() {
     let srcId = parseInt(document.getElementById('hid-transfer-source-id').value);
     let tgtId = parseInt(document.getElementById('sel-transfer-target-id').value);
@@ -4066,6 +4089,15 @@ function confirmTransferQuy() {
         let sfSrc = qSrc.subFunds.find(x => x.name === srcSub);
         if(!sfSrc || sfSrc.v < amt) { alert(`Lỗi: Quỹ con [${srcSub}] không đủ tiền để chuyển!`); return; }
         sfSrc.v -= amt;
+    } else {
+        // Chuyển từ tiền chung của Quỹ mẹ
+        let totalStorage = getQuyTotalAmt(qSrc);
+        let totalSub = (qSrc.subFunds || []).reduce((a, b) => a + b.v, 0);
+        let unassigned = totalStorage - totalSub;
+        if (unassigned < amt) {
+            alert("Lỗi: Số dư chung chưa phân bổ của Quỹ Nguồn không đủ. Vui lòng chuyển trực tiếp từ Quỹ con!");
+            return;
+        }
     }
 
     // Xử lý cộng Quỹ con (Đích)
@@ -4087,9 +4119,7 @@ function confirmTransferQuy() {
 
     saveMaster(); loadDay(); closeModal('modal-quy-transfer'); alert("Luân chuyển tiền thành công!");
 }
-// ===============================================
-// LOGIC TÁCH QUỸ (ĐÃ SỬA LỖI HOẠT ĐỘNG)
-// ===============================================
+// KẾT THÚC SỬA
 function openSplitQuy(id) {
     let q = (masterData[currentDay]?.quy || []).find(x => x.id === id); 
     if(!q) return;
