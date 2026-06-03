@@ -3699,16 +3699,16 @@ function deleteSTK(id) {
 }
 
 // BẮT ĐẦU SỬA: TỐI ƯU HÓA LẤY ĐỊA ĐIỂM CHÍNH XÁC
+// BẮT ĐẦU SỬA: TỐI ƯU HÓA LẤY ĐỊA ĐIỂM CHÍNH XÁC
 function getLocation() {
     const addrInput = document.getElementById('in-print-address'); 
-    addrInput.value = "Đang tìm vị trí chính xác (vui lòng chờ)...";
+    addrInput.value = "Đang quét vị trí GPS vệ tinh (vui lòng chờ)...";
     
     if (navigator.geolocation) {
-        // Cấu hình yêu cầu độ chính xác cao nhất
         const options = {
-            enableHighAccuracy: true, // Ép sử dụng GPS của thiết bị nếu có
-            timeout: 10000,           // Chờ phản hồi tối đa 10 giây
-            maximumAge: 0             // Không dùng dữ liệu cache cũ, luôn quét mới
+            enableHighAccuracy: true, // Ép sử dụng GPS phần cứng thay vì tháp viễn thông
+            timeout: 10000,           // Đợi tối đa 10 giây
+            maximumAge: 0             // Không lấy cache cũ
         };
 
         navigator.geolocation.getCurrentPosition(
@@ -3716,22 +3716,60 @@ function getLocation() {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
                 
-                // Gọi API Nominatim, thêm accept-language=vi để ưu tiên trả về tiếng Việt chuẩn
+                // Gọi API Nominatim với format JSON để lấy cấu trúc chi tiết
                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=vi`)
                     .then(res => res.json())
                     .then(data => { 
-                        if(data && data.display_name) {
-                            addrInput.value = data.display_name; 
+                        if (data && data.address) {
+                            let a = data.address;
+                            let parts = [];
+                            
+                            // 1. Tên tòa nhà / Địa điểm nổi bật
+                            if (a.amenity || a.building) parts.push(a.amenity || a.building);
+                            
+                            // 2. Số nhà + Tên đường
+                            let street = [];
+                            if (a.house_number) street.push(a.house_number);
+                            if (a.road) street.push(a.road);
+                            if (street.length > 0) parts.push(street.join(" "));
+                            
+                            // 3. Phường / Xã
+                            if (a.suburb) parts.push(a.suburb);
+                            else if (a.quarter) parts.push(a.quarter);
+                            else if (a.village) parts.push(a.village);
+                            
+                            // 4. Quận / Huyện
+                            if (a.city_district) parts.push(a.city_district);
+                            else if (a.district) parts.push(a.district);
+                            else if (a.county) parts.push(a.county);
+                            
+                            // 5. Tỉnh / Thành Phố
+                            if (a.city) parts.push(a.city);
+                            else if (a.province) parts.push(a.province);
+                            else if (a.state) parts.push(a.state);
+                            
+                            // 6. Lọc sạch trùng lặp (Ngăn lỗi lặp 2 lần TP.HCM hoặc Thành phố Thủ Đức)
+                            let cleanParts = [];
+                            parts.forEach(p => {
+                                if (p && !cleanParts.includes(p)) cleanParts.push(p);
+                            });
+                            
+                            addrInput.value = cleanParts.join(", "); 
+                            
+                        } else if (data && data.display_name) {
+                            // Dự phòng: Nếu API không bóc tách được address, tiến hành dọn dẹp chuỗi gốc
+                            let arr = data.display_name.split(", ");
+                            // Xóa mã zip code (5-6 số) và chữ Việt Nam
+                            addrInput.value = arr.filter(x => !/^\d{5,6}$/.test(x.trim()) && x.trim() !== "Việt Nam").join(", ");
                         } else {
-                            addrInput.value = "Không nhận diện được tên đường, vui lòng nhập tay";
+                            addrInput.value = "Không nhận diện được vị trí, vui lòng nhập tay";
                         }
                     })
                     .catch(err => { 
-                        addrInput.value = "Lỗi mạng khi tải địa chỉ, vui lòng nhập tay"; 
+                        addrInput.value = "Lỗi kết nối bản đồ, vui lòng nhập tay"; 
                     });
             }, 
             (error) => { 
-                // Bắt lỗi chi tiết để người dùng dễ xử lý
                 switch(error.code) {
                     case error.PERMISSION_DENIED:
                         addrInput.value = "Bạn chưa cấp quyền truy cập vị trí";
@@ -3747,10 +3785,10 @@ function getLocation() {
                         break;
                 }
             },
-            options // Truyền cấu hình độ chính xác cao vào
+            options
         );
     } else { 
-        addrInput.value = "Trình duyệt của bạn không hỗ trợ định vị"; 
+        addrInput.value = "Trình duyệt không hỗ trợ định vị"; 
     }
 }
 // KẾT THÚC SỬA
