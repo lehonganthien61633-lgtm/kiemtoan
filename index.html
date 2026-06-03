@@ -3698,16 +3698,62 @@ function deleteSTK(id) {
     }
 }
 
+// BẮT ĐẦU SỬA: TỐI ƯU HÓA LẤY ĐỊA ĐIỂM CHÍNH XÁC
 function getLocation() {
-const addrInput = document.getElementById('in-print-address'); addrInput.value = "Đang tìm vị trí...";
-if (navigator.geolocation) {
-navigator.geolocation.getCurrentPosition((position) => {
-fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
-.then(res => res.json()).then(data => { addrInput.value = data.display_name || "Không lấy được"; })
-.catch(err => { addrInput.value = "Hồ Chí Minh, Việt Nam (Mặc định)"; });
-}, () => { addrInput.value = "Chưa cấp quyền vị trí, tự nhập tay"; });
-} else { addrInput.value = "Trình duyệt không hỗ trợ"; }
+    const addrInput = document.getElementById('in-print-address'); 
+    addrInput.value = "Đang tìm vị trí chính xác (vui lòng chờ)...";
+    
+    if (navigator.geolocation) {
+        // Cấu hình yêu cầu độ chính xác cao nhất
+        const options = {
+            enableHighAccuracy: true, // Ép sử dụng GPS của thiết bị nếu có
+            timeout: 10000,           // Chờ phản hồi tối đa 10 giây
+            maximumAge: 0             // Không dùng dữ liệu cache cũ, luôn quét mới
+        };
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                
+                // Gọi API Nominatim, thêm accept-language=vi để ưu tiên trả về tiếng Việt chuẩn
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=vi`)
+                    .then(res => res.json())
+                    .then(data => { 
+                        if(data && data.display_name) {
+                            addrInput.value = data.display_name; 
+                        } else {
+                            addrInput.value = "Không nhận diện được tên đường, vui lòng nhập tay";
+                        }
+                    })
+                    .catch(err => { 
+                        addrInput.value = "Lỗi mạng khi tải địa chỉ, vui lòng nhập tay"; 
+                    });
+            }, 
+            (error) => { 
+                // Bắt lỗi chi tiết để người dùng dễ xử lý
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        addrInput.value = "Bạn chưa cấp quyền truy cập vị trí";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        addrInput.value = "Tín hiệu GPS yếu, không thể xác định";
+                        break;
+                    case error.TIMEOUT:
+                        addrInput.value = "Quá thời gian quét vị trí";
+                        break;
+                    default:
+                        addrInput.value = "Lỗi GPS không xác định";
+                        break;
+                }
+            },
+            options // Truyền cấu hình độ chính xác cao vào
+        );
+    } else { 
+        addrInput.value = "Trình duyệt của bạn không hỗ trợ định vị"; 
+    }
 }
+// KẾT THÚC SỬA
 
 function getWeekNumber(d) { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7)); let yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1)); return Math.ceil((((d - yearStart) / 86400000) + 1)/7); }
 function getDayName(d) { let day = new Date(d).getDay(); if (day === 1) return "KIỂM KÊ ĐẦU TUẦN"; if (day === 0) return "KIỂM KÊ CUỐI TUẦN"; return "KIỂM KÊ TRONG TUẦN"; }
